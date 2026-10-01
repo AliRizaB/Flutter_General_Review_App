@@ -1,23 +1,25 @@
+import 'package:flutter_general_reviewer/services/database_service.dart';
+
 class AppCategory {
-  final int categoryId;
-  final String categoryName;
-  final String categoryColor;
+  final int id;
+  final String name;
+  final String color;
 
-  AppCategory({
-    required this.categoryId,
-    required this.categoryName,
-    required this.categoryColor,
-  });
+  AppCategory({required this.id, required this.name, required this.color});
 
-  // CRUD OP's For Categories
-  // Create operation
-  
-  // Read operation
   factory AppCategory.fromMap(Map<String, dynamic> map) {
     return AppCategory(
-      categoryId: map['CategoryId'] as int,
-      categoryName: map['CategoryName'] as String,
-      categoryColor: map['CategoryColor'] as String,
+      id: map[DBConstants.categoryId] as int,
+      name: map[DBConstants.categoryName] as String,
+      color: map[DBConstants.categoryColor] as String,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      if (id > 0) DBConstants.categoryId: id,
+      DBConstants.categoryName: name,
+      DBConstants.categoryColor: color,
+    };
   }
 }

@@ -1,7 +1,37 @@
-import 'package:flutter_general_reviewer/models/app_category.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+
+abstract class DBConstants {
+  // For Categories
+  static const categoryTable = "Categories";
+  static const categoryId = "CategoryId";
+  static const categoryName = "CategoryName";
+  static const categoryColor = "CategoryColor";
+
+  // For Status
+  static const statusTable = "Statuses";
+  static const statusId = "StatusId";
+  static const statusName = "StatusName";
+  static const statusColor = "StatusColor";
+
+  // For Medias
+  static const mediaTable = "Medias";
+  static const mediaId = "MediaId";
+  static const mediaCategoryId = "CategoryId";
+  static const mediaStatusId = "StatusId";
+  static const mediaName = "MediaName";
+  static const mediaRating = "MediaRating";
+  static const mediaDescription = "MediaDescription";
+  static const mediaImage = "ImagePath";
+
+  // For Reviews
+  static const reviewTable = "Reviews";
+  static const reviewId = "ReviewId";
+  static const reviewMediaId = "MediaId";
+  static const reviewContent = "Content";
+  static const reviewDate = "Date";
+}
 
 class DatabaseService extends GetxService {
   static Database? _db;
@@ -24,48 +54,65 @@ class DatabaseService extends GetxService {
       },
 
       onCreate: (db, version) async {
+        // Categories Table Creation
         await db.execute('''
-        CREATE TABLE Categories (
-          CategoryId INTEGER PRIMARY KEY AUTOINCREMENT,
-          CategoryName TEXT NOT NULL,
-          CategoryColor TEXT NOT NULL
-        )
+          CREATE TABLE ${DBConstants.categoryTable} (
+            ${DBConstants.categoryId} INTEGER PRIMARY KEY AUTOINCREMENT,
+            ${DBConstants.categoryName} TEXT NOT NULL,
+            ${DBConstants.categoryColor} TEXT NOT NULL
+          )
         ''');
-        await db.execute('''
-        CREATE TABLE Medias (
-          MediaId INTEGER PRIMARY KEY AUTOINCREMENT,
-          CategoryId INTEGER NOT NULL,
-          MediaName TEXT NOT NULL,
-          MediaRating INTEGER NOT NULL,
-          MediaDescription TEXT,
-          ImagePath TEXT,
-          Status TEXT,
 
-          FOREIGN KEY(CategoryId) REFERENCES Categories (CategoryId) ON DELETE CASCADE
-        ) 
+        // Status Table Creation
+        await db.execute('''
+          CREATE TABLE ${DBConstants.statusTable} (
+            ${DBConstants.statusId} INTEGER PRIMARY KEY AUTOINCREMENT,
+            ${DBConstants.statusName} TEXT NOT NULL UNIQUE,
+            ${DBConstants.statusColor} TEXT NOT NULL
+          );
         ''');
-        await db.execute('''
-        CREATE TABLE Review (
-          ReviewId INTEGER PRIMARY KEY AUTOINCREMENT,
-          MediaId INTEGER NOT NULL,
-          UserReview TEXT NOT NULL,
-          ReviewDate TEXT NOT NULL,
 
-          FOREIGN KEY(MediaId) REFERENCES Medias (MediaId) ON DELETE CASCADE
-        )
+        // Some Pre Defined Values For Status Table
+        await db.execute('''
+          INSERT INTO ${DBConstants.statusTable} (${DBConstants.statusName}, ${DBConstants.statusColor})
+          VALUES 
+            ('Completed', '#4CAF50'),
+            ('In Progress', '#FF9800'),
+            ('Plan to Watch', '#2196F3'),
+            ('Dropped', '#F44336')
+        ''');
+
+        // Media Table Creation
+        await db.execute('''
+          CREATE TABLE ${DBConstants.mediaTable} (
+            ${DBConstants.mediaId} INTEGER PRIMARY KEY AUTOINCREMENT,
+            ${DBConstants.mediaCategoryId} INTEGER NOT NULL,
+            ${DBConstants.mediaStatusId} INTEGER ,
+
+            ${DBConstants.mediaName} TEXT NOT NULL,
+            ${DBConstants.mediaRating} INTEGER NOT NULL,
+            ${DBConstants.mediaDescription} TEXT,
+            ${DBConstants.mediaImage} TEXT,
+            
+
+            FOREIGN KEY(${DBConstants.mediaCategoryId}) REFERENCES ${DBConstants.categoryTable} (${DBConstants.categoryId}) ON DELETE CASCADE,
+            FOREIGN KEY(${DBConstants.mediaStatusId}) REFERENCES ${DBConstants.statusTable} (${DBConstants.statusId}) ON DELETE SET NULL 
+          ) 
+        ''');
+
+        // Review Table Creation
+        await db.execute('''
+          CREATE TABLE ${DBConstants.reviewTable} (
+            ${DBConstants.reviewId} INTEGER PRIMARY KEY AUTOINCREMENT,
+            ${DBConstants.reviewMediaId} INTEGER NOT NULL,
+            ${DBConstants.reviewContent} TEXT NOT NULL,
+            ${DBConstants.reviewDate} TEXT NOT NULL,
+
+            FOREIGN KEY(${DBConstants.reviewMediaId}) REFERENCES ${DBConstants.mediaTable} (${DBConstants.mediaId}) ON DELETE CASCADE
+          )
         ''');
       },
     );
     return database;
-  }
-
-  // CRUD Operations
-  Future<List<AppCategory>?> getCategories() async {
-    final db = await init();
-    final data = await db.query("Categories");
-    List<AppCategory> categories = data
-        .map((e) => AppCategory.fromMap(e))
-        .toList();
-    return categories;
   }
 }
