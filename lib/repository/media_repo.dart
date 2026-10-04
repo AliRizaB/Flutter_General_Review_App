@@ -4,7 +4,7 @@ import 'package:flutter_general_reviewer/services/database_service.dart';
 import 'package:get/instance_manager.dart';
 import 'package:sqflite/sqflite.dart';
 
-class MediaCrudController extends BaseController {
+class MediaRepository extends BaseController {
   late final DatabaseService databaseService;
   late final Database db;
 
