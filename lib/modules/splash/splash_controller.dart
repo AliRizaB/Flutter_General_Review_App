@@ -1,4 +1,3 @@
-
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/routes/app_pages.dart';
 import 'package:flutter_general_reviewer/services/database_service.dart';
@@ -19,5 +18,4 @@ class SplashController extends BaseController {
       await Future.delayed(const Duration(milliseconds: 100));
     }
   }
-
 }

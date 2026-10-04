@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   dio: ^5.11.1
+  flex_color_picker: ^3.8.0
   flutter:
     sdk: flutter
   get: ^4.7.3
@@ -23,3 +24,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Isometra
+      fonts:
+        - asset: assets/fonts/Isometra-Regular.ttf 

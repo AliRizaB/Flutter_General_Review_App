@@ -2,23 +2,30 @@
 
 import 'package:flutter_general_reviewer/modules/home/home_binding.dart';
 import 'package:flutter_general_reviewer/modules/home/home_page.dart';
+import 'package:flutter_general_reviewer/modules/splash/splash_binding.dart';
+import 'package:flutter_general_reviewer/modules/splash/splash_page.dart';
 import 'package:get/get.dart';
 
-abstract class AppRoutes{
-  static const INITAL = SPLASH;
+abstract class AppRoutes {
+  static const INITIAL = SPLASH;
   static const SPLASH = '/splash';
   static const HOME = '/home';
   static const PROFILE = '/profile';
   static const CATEGORY = '/category';
   static const MEDIA = '/media';
-} 
+}
 
-class AppPages{
+class AppPages {
   static final pages = <GetPage>[
     GetPage(
       name: AppRoutes.HOME,
       page: () => HomePage(),
       binding: HomeBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.SPLASH,
+      page: () => SplashPage(),
+      binding: SplashBinding(),
     ),
   ];
 }

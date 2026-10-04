@@ -11,7 +11,7 @@ class BaseController extends GetxController {
 
   void showErrorSnackBar({
     required String message,
-    String title = "Hata",
+    String title = "ERROR",
     Duration duration = const Duration(seconds: 3),
   }) {
     final isDark = Get.isDarkMode;
@@ -65,7 +65,7 @@ class BaseController extends GetxController {
 
   void showSuccessSnackBar({
     required String message,
-    String title = "Başarılı",
+    String title = "SUCCESS",
     Duration duration = const Duration(seconds: 3),
   }) {
     final isDark = Get.isDarkMode;
