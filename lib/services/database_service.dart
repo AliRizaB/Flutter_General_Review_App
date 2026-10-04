@@ -36,10 +36,12 @@ abstract class DBConstants {
 class DatabaseService extends GetxService {
   static Database? _db;
 
-  Future<Database> init() async {
-    if (_db != null) return _db!;
+  Database get db => _db!;
+
+  Future<DatabaseService> init() async {
+    if (_db != null) return this;
     _db = await getDatabase();
-    return _db!;
+    return this;
   }
 
   // DATABASE Creation

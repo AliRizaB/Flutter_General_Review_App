@@ -9,5 +9,6 @@ class BaseBinding extends Bindings {
       await service.init();
       return service;
     }, permanent: true);
+    
   }
 }

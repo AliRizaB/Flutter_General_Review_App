@@ -1,102 +1,69 @@
-import 'package:flutter_general_reviewer/base/base_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_general_reviewer/models/app_review.dart';
 import 'package:flutter_general_reviewer/services/database_service.dart';
-import 'package:get/instance_manager.dart';
+import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 
-class ReviewRepository extends BaseController {
-  late final DatabaseService databaseService;
+class ReviewRepository extends GetxController {
   late final Database db;
-
-  Future<void> init() async {
-    databaseService = Get.find<DatabaseService>();
-    db = await databaseService.init();
-  }
 
   @override
   void onInit() {
     super.onInit();
-    init();
+    db = Get.find<DatabaseService>().db;
   }
 
   // CRUD Operations
   // Create Operation For Table
   Future<void> addCReview(AppReview review) async {
     try {
-      setLoading(true);
-
       await db.insert(DBConstants.reviewTable, review.toMap());
-
-      showSuccessSnackBar(message: "Succesfully Created The Review ");
     } catch (e) {
-      showErrorSnackBar(
-        message: "Error: While creating the Review\nERROR:${e.toString()} ",
-      );
-    } finally {
-      setLoading(false);
+      debugPrint("Error while creating Review: \nERROR: ${e.toString()}");
     }
   }
 
   // Read Operation For Reviews
-  Future<List<AppReview>?> getReviews(int mediaId) async {
+  Future<List<AppReview>> getReviews(int mediaId) async {
     try {
-      setLoading(true);
       final data = await db.query(
         DBConstants.reviewTable,
         where: '${DBConstants.reviewMediaId} = ?',
         whereArgs: [mediaId],
       );
       List<AppReview> reviews = data.map((e) => AppReview.fromMap(e)).toList();
-      showSuccessSnackBar(message: "Succesfully Got Reviews");
       return reviews;
     } catch (e) {
-      showErrorSnackBar(
-        message: "Error: While Getting Reviews\nERROR:${e.toString()}",
-      );
-      return null;
-    } finally {
-      setLoading(false);
+      debugPrint("Error while getting Review: \nERROR: ${e.toString()}");
+
+      return List.empty();
     }
   }
 
   // Update Operation for Review
   Future<void> updateReview(AppReview review) async {
     try {
-      setLoading(true);
-
       await db.update(
         DBConstants.reviewTable,
         review.toMap(),
         where: '${DBConstants.reviewId} = ?',
         whereArgs: [review.id],
       );
-      showSuccessSnackBar(message: "Succesfully Updated The Review");
-    } on Exception catch (e) {
-      showErrorSnackBar(
-        message: "Error: While Updating The Review\nERROR:${e.toString()}",
-      );
-    } finally {
-      setLoading(false);
+    } catch (e) {
+      debugPrint("Error while Updating Review: \nERROR: ${e.toString()}");
     }
   }
 
   // Delete operation for review
   Future<void> deleteReview(int id) async {
     try {
-      setLoading(true);
-
       await db.delete(
         DBConstants.reviewTable,
         where: '${DBConstants.reviewId} = ?',
         whereArgs: [id],
       );
-      showSuccessSnackBar(message: "Succesfully Deleted The Review");
-    } on Exception catch (e) {
-      showErrorSnackBar(
-        message: "Error: While Deleting The Review\nERROR:${e.toString()}",
-      );
-    } finally {
-      setLoading(false);
+    } catch (e) {
+      debugPrint("Error while Deleting Review: \nERROR: ${e.toString()}");
     }
   }
 }

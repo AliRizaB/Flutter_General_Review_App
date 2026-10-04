@@ -1,0 +1,24 @@
+// ignore_for_file: constant_identifier_names
+
+import 'package:flutter_general_reviewer/modules/home/home_binding.dart';
+import 'package:flutter_general_reviewer/modules/home/home_page.dart';
+import 'package:get/get.dart';
+
+abstract class AppRoutes{
+  static const INITAL = SPLASH;
+  static const SPLASH = '/splash';
+  static const HOME = '/home';
+  static const PROFILE = '/profile';
+  static const CATEGORY = '/category';
+  static const MEDIA = '/media';
+} 
+
+class AppPages{
+  static final pages = <GetPage>[
+    GetPage(
+      name: AppRoutes.HOME,
+      page: () => HomePage(),
+      binding: HomeBinding(),
+    ),
+  ];
+}
