@@ -4,10 +4,14 @@ import 'package:flutter_general_reviewer/models/app_category.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
 import 'package:get/get.dart';
 
-void showAddCategoryDialog(
+// A dialog menu for both Update and Create usage for Categories
+// If toUpdateCategory is given it will get the values from the category
+// If not values will be empty.
+// Context is needed for Navigation.pop cause Get.back() is having problem with the snackBars ( From BaseController for success and error )
+Future<void> showAddCategoryDialog(
   BuildContext context, {
   AppCategory? toUpdateCategory,
-}) {
+}) async {
   final formKey = GlobalKey<FormState>();
   final controller = Get.find<CategoryController>();
 
@@ -21,7 +25,7 @@ void showAddCategoryDialog(
 
   final bool isEditing = (toUpdateCategory != null);
 
-  Get.dialog(
+  await Get.dialog(
     AlertDialog(
       title: Text(isEditing ? 'Update Category' : 'Add New Category'),
       content: Form(
@@ -31,6 +35,7 @@ void showAddCategoryDialog(
             mainAxisSize: MainAxisSize.min,
 
             children: [
+              // Category Name
               TextFormField(
                 controller: nameController,
                 decoration: const InputDecoration(
@@ -54,6 +59,7 @@ void showAddCategoryDialog(
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
 
+              // Category color
               Obx(
                 () => ColorPicker(
                   color: selectedColor.value,
@@ -97,6 +103,7 @@ void showAddCategoryDialog(
                       final String selectedColorHex = selectedColor.value.hex;
 
                       // Dismiss dialog explicitly
+                      // Can not use Get.Back() cause it is cauisng problem with the Success Snackbar
                       Navigator.of(context).pop();
 
                       if (isEditing) {
@@ -109,6 +116,7 @@ void showAddCategoryDialog(
                         await controller.updateCategory(updatedCategory);
                       } else {
                         
+                        // New category Creation
                         final newCategory = AppCategory(
                           name: newCategoryName,
                           color: selectedColorHex,

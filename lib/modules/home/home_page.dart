@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/modules/category/category_page.dart';
 import 'package:flutter_general_reviewer/modules/home/home_controller.dart';
-import 'package:flutter_general_reviewer/modules/home/widget/dialog_add_category.dart';
+import 'package:flutter_general_reviewer/modules/home/widget/home_appbar.dart';
 import 'package:flutter_general_reviewer/modules/profile/profile_page.dart';
 import 'package:get/get.dart';
 
@@ -11,15 +11,7 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Review App"),
-        actions: [
-          IconButton(
-            onPressed: () async => showAddCategoryDialog(context),
-            icon: Icon(Icons.add),
-          ),
-        ],
-      ),
+      appBar: homeAppBar(context),
       body: Obx(
         () => IndexedStack(
           index: controller.currentIndex.value,

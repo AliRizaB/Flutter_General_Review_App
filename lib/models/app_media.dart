@@ -1,19 +1,18 @@
 import '../services/database_service.dart';
 
 class AppMedia {
-  final int id;
+  final int? id;
   final int? statusId;
   final int categoryId;
   final String name;
   final int rating;
   final String? description;
   final String? imagePath;
-  
 
   AppMedia({
-    required this.id,
+    this.id,
     required this.name,
-    this.description,
+    required this.description,
     required this.rating,
     this.imagePath,
     this.statusId,
@@ -29,13 +28,12 @@ class AppMedia {
       description: map[DBConstants.mediaDescription] as String?,
       rating: map[DBConstants.mediaRating] as int,
       imagePath: map[DBConstants.mediaImage] as String?,
-      
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      if (id > 0) DBConstants.mediaId: id,
+      if (id != null) DBConstants.mediaId: id,
       DBConstants.mediaCategoryId: categoryId,
       DBConstants.mediaStatusId: statusId,
       DBConstants.mediaName: name,

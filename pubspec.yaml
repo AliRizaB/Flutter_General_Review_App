@@ -1,6 +1,6 @@
 name: flutter_general_reviewer
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0+1
 
 environment:
@@ -11,6 +11,7 @@ dependencies:
   flex_color_picker: ^3.8.0
   flutter:
     sdk: flutter
+  flutter_rating_bar: ^4.0.1
   get: ^4.7.3
   image_picker: ^1.2.3
   path: ^1.9.1
@@ -24,7 +25,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/noImage.jpg
   fonts:
     - family: Isometra
       fonts:
-        - asset: assets/fonts/Isometra-Regular.ttf 
+        - asset: assets/fonts/Isometra-Regular.ttf

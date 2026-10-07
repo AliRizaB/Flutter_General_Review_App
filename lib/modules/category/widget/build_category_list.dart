@@ -67,8 +67,12 @@ class CategoryList extends GetView<CategoryController> {
 
             child: ListTile(
               onTap: () {
-                Get.toNamed(AppRoutes.MEDIA, arguments: [currentCategory.id]);
+                Get.toNamed(
+                  AppRoutes.MEDIA,
+                  arguments: [currentCategory.id, currentCategory.name],
+                );
               },
+
               title: Text(
                 currentCategory.name,
                 style: TextStyle(
