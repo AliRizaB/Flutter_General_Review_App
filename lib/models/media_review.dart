@@ -1,14 +1,14 @@
 import '../services/database_service.dart';
 
 class MediaReview {
-  final int id;
+  final int? id;
   final int mediaId;
 
   final String content;
   final DateTime date;
 
   MediaReview({
-    required this.id,
+    this.id,
     required this.mediaId,
     required this.content,
     required this.date,
@@ -25,7 +25,7 @@ class MediaReview {
 
   Map<String, dynamic> toMap() {
     return {
-      if (id > 0) DBConstants.reviewId: id,
+      if (id != null) DBConstants.reviewId: id,
       DBConstants.reviewMediaId: mediaId,
       DBConstants.reviewContent: content,
       DBConstants.reviewDate: date.toIso8601String(),

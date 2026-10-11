@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/Utilities/status_controller.dart';
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
@@ -108,9 +107,6 @@ class MediaListController extends BaseController {
         rating: rating.value,
         description: description.value,
         imagePath: imagePath.value,
-      );
-      debugPrint(
-        "CREATED: ${newMedia.id}, ${newMedia.categoryId}, ${newMedia.name}, ${newMedia.rating}",
       );
       await _mediaRepository.addMedia(newMedia);
       await fetchMedias();

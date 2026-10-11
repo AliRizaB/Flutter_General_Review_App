@@ -1,10 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_general_reviewer/Utilities/rating_details.dart';
 import 'package:flutter_general_reviewer/Utilities/status_controller.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/media_list_controller.dart';
+import 'package:flutter_general_reviewer/modules/review/review_list.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/widgets/add_media_dialog.dart';
+import 'package:flutter_general_reviewer/modules/review/widget/add_review_dialog.dart';
+import 'package:flutter_general_reviewer/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class MediaPage extends GetView<MediaListController> {
@@ -40,94 +44,39 @@ class MediaPage extends GetView<MediaListController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.secondaryContainer,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                      children: [
-                        // Expanded(
-                        //   child: Container(
-                        //     padding: EdgeInsets.all(8),
-                        //     decoration: BoxDecoration(
-                        //       borderRadius: BorderRadius.circular(8),
-                        //       color: theme.colorScheme.secondaryContainer,
-                        //     ),
-                        //     child: Text(
-                        //       media.name,
-                        //       style: theme.textTheme.headlineSmall?.copyWith(
-                        //         fontWeight: FontWeight.bold,
-                        //         fontFamily: 'Isometra',
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-                        _buildRatingCard(context),
-
-                        _buildStatusBadge(context),
-                      ],
-                    ),
-                  ),
+                  _buildAboutMedia(context),
 
                   const SizedBox(height: 16),
 
                   // Description Section
-                  if (media.description != null &&
-                      media.description!.isNotEmpty) ...[
-                    Text(
-                      'Description',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: theme.colorScheme.primary,
-                      ),
+                  Text(
+                    'Description',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: theme.colorScheme.primary,
                     ),
-                    const SizedBox(height: 8),
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.secondaryContainer,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        media.description!,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          height: 1.5,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                  ],
-
-                  // Reviews
-                  SizedBox(
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
                     width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        elevation: 2,
-                      ),
-                      onPressed: () => _openReviewDialog(context),
-                      icon: const Icon(Icons.rate_review_rounded),
-                      label: const Text(
-                        'Write a Review',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.secondaryContainer,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      media.description!,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        height: 1.5,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 32),
+                  // Reviews
+                  _buildReviewButton(context),
                 ],
               ),
             ),
@@ -137,6 +86,9 @@ class MediaPage extends GetView<MediaListController> {
     );
   }
 
+  //
+  // BUILD MORE OPTION BUTTONS
+  //
   PopupMenuButton<String> _buildOptionButtons(BuildContext context) {
     return PopupMenuButton<String>(
       icon: const Icon(Icons.more_vert),
@@ -175,6 +127,9 @@ class MediaPage extends GetView<MediaListController> {
     );
   }
 
+  //
+  //  MEDIA IMAGE BUILD
+  //
   Widget _buildMediaBanner(BuildContext context) {
     final hasImagePath = media.imagePath != null && media.imagePath!.isNotEmpty;
 
@@ -217,7 +172,28 @@ class MediaPage extends GetView<MediaListController> {
     return Image.asset('assets/images/noImage.jpg', fit: BoxFit.contain);
   }
 
+  //
+  // BUILD PERSONAL INFO ABOUT MEDIA
+  //
+  Container _buildAboutMedia(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+        children: [_buildRatingCard(context), _buildStatusBadge(context)],
+      ),
+    );
+  }
+
+  //
   // Connected Status Badge from StatusController
+  //
   Widget _buildStatusBadge(BuildContext context) {
     return Obx(() {
       // Find matching status by status identifier
@@ -247,9 +223,11 @@ class MediaPage extends GetView<MediaListController> {
     });
   }
 
+  //
   // Rating Display Component
+  //
   Widget _buildRatingCard(BuildContext context) {
-    final ratingInfo = _getRatingDetails(media.rating);
+    final RatingDetails ratingInfo = getRatingDetails(media.rating);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -284,44 +262,28 @@ class MediaPage extends GetView<MediaListController> {
     );
   }
 
-  // Rating Meta helper
-  _RatingDetails _getRatingDetails(int rating) {
-    switch (rating) {
-      case 1:
-        return _RatingDetails(
-          Icons.sentiment_very_dissatisfied,
-          Colors.red,
-          'Terrible',
-        );
-      case 2:
-        return _RatingDetails(
-          Icons.sentiment_dissatisfied,
-          Colors.redAccent,
-          'Poor',
-        );
-      case 3:
-        return _RatingDetails(
-          Icons.sentiment_neutral,
-          Colors.amber.shade700,
-          'Average',
-        );
-      case 4:
-        return _RatingDetails(
-          Icons.sentiment_satisfied,
-          Colors.lightGreen.shade700,
-          'Good',
-        );
-      case 5:
-        return _RatingDetails(
-          Icons.sentiment_very_satisfied,
-          Colors.green,
-          'Very Good',
-        );
-      case 6:
-        return _RatingDetails(Icons.star_rounded, Colors.blue, 'Excellent');
-      default:
-        return _RatingDetails(Icons.help_outline, Colors.grey, 'Unrated');
-    }
+  //
+  // Review Button
+  //
+  SizedBox _buildReviewButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          elevation: 2,
+        ),
+        onPressed: () => Get.toNamed(AppRoutes.REVIEWS),
+        icon: const Icon(Icons.rate_review_rounded),
+        label: const Text(
+          'Write a Review',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
   }
 
   // Review Dialog placeholder
@@ -329,19 +291,16 @@ class MediaPage extends GetView<MediaListController> {
     Get.dialog(
       AlertDialog(
         title: const Text('Write a Review'),
-        content: const Text('Review dialog coming soon...'),
+        content: ReviewList(),
+        actionsAlignment: MainAxisAlignment.center,
         actions: [
+          TextButton(
+            onPressed: () => showAddReviewDialog(context),
+            child: const Text("Add Review"),
+          ),
           TextButton(onPressed: () => Get.back(), child: const Text('Close')),
         ],
       ),
     );
   }
-}
-
-class _RatingDetails {
-  final IconData icon;
-  final Color color;
-  final String label;
-
-  _RatingDetails(this.icon, this.color, this.label);
 }

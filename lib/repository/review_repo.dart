@@ -15,7 +15,7 @@ class ReviewRepository extends GetxController {
 
   // CRUD Operations
   // Create Operation For Table
-  Future<void> addCReview(MediaReview review) async {
+  Future<void> addReview(MediaReview review) async {
     try {
       await db.insert(DBConstants.reviewTable, review.toMap());
     } catch (e) {

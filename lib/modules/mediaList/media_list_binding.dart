@@ -9,6 +9,7 @@ class MediaListBinding extends Bindings {
   void dependencies() {
     Get.lazyPut(() => MediaRepository());
     Get.lazyPut(() => StatusRepository());
+
     Get.lazyPut(() => MediaListController());
     Get.lazyPut(() => StatusController());
   }

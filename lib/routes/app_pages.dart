@@ -5,6 +5,8 @@ import 'package:flutter_general_reviewer/modules/home/home_page.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/media_list_binding.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/media_list_page.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_page.dart';
+import 'package:flutter_general_reviewer/modules/review/review_binding.dart';
+import 'package:flutter_general_reviewer/modules/review/review_list.dart';
 import 'package:flutter_general_reviewer/modules/splash/splash_binding.dart';
 import 'package:flutter_general_reviewer/modules/splash/splash_page.dart';
 import 'package:get/get.dart';
@@ -17,6 +19,7 @@ abstract class AppRoutes {
   static const CATEGORY = '/categories';
   static const MEDIAS = '/medias';
   static const MEDIAVIEW = '/mediaView';
+  static const REVIEWS = '/review';
 }
 
 class AppPages {
@@ -43,6 +46,11 @@ class AppPages {
       name: AppRoutes.MEDIAVIEW,
       page: () => MediaPage(),
       binding: MediaListBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.REVIEWS,
+      page: () => ReviewList(),
+      binding: ReviewBinding(),
     ),
   ];
 }
