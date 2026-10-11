@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/app_category.dart';
-import 'package:flutter_general_reviewer/modules/home/widget/dialog_add_category.dart';
+import 'package:flutter_general_reviewer/modules/category/widget/dialog_add_category.dart';
 import 'package:get/get.dart';
 
 Future<bool?> confirmDialog(

@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_general_reviewer/models/app_review.dart';
+import 'package:flutter_general_reviewer/models/media_review.dart';
 import 'package:flutter_general_reviewer/services/database_service.dart';
 import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
@@ -15,7 +15,7 @@ class ReviewRepository extends GetxController {
 
   // CRUD Operations
   // Create Operation For Table
-  Future<void> addCReview(AppReview review) async {
+  Future<void> addCReview(MediaReview review) async {
     try {
       await db.insert(DBConstants.reviewTable, review.toMap());
     } catch (e) {
@@ -24,14 +24,16 @@ class ReviewRepository extends GetxController {
   }
 
   // Read Operation For Reviews
-  Future<List<AppReview>> getReviews(int mediaId) async {
+  Future<List<MediaReview>> getReviews(int mediaId) async {
     try {
       final data = await db.query(
         DBConstants.reviewTable,
         where: '${DBConstants.reviewMediaId} = ?',
         whereArgs: [mediaId],
       );
-      List<AppReview> reviews = data.map((e) => AppReview.fromMap(e)).toList();
+      List<MediaReview> reviews = data
+          .map((e) => MediaReview.fromMap(e))
+          .toList();
       return reviews;
     } catch (e) {
       debugPrint("Error while getting Review: \nERROR: ${e.toString()}");
@@ -41,7 +43,7 @@ class ReviewRepository extends GetxController {
   }
 
   // Update Operation for Review
-  Future<void> updateReview(AppReview review) async {
+  Future<void> updateReview(MediaReview review) async {
     try {
       await db.update(
         DBConstants.reviewTable,

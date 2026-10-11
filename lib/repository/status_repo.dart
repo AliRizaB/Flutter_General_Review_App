@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_general_reviewer/models/app_status.dart';
+import 'package:flutter_general_reviewer/models/media_status.dart';
 import 'package:flutter_general_reviewer/services/database_service.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
@@ -16,7 +16,7 @@ class StatusRepository extends GetxController {
 
   // CRUD Operations
   // Create Operation For Table
-  Future<void> addStatus(AppStatus status) async {
+  Future<void> addStatus(MediaStatus status) async {
     try {
       await db.insert(DBConstants.statusTable, status.toMap());
     } catch (e) {
@@ -24,11 +24,32 @@ class StatusRepository extends GetxController {
     }
   }
 
+  Future<MediaStatus> getStatus(int id) async {
+    try {
+      final data = await db.query(
+        DBConstants.statusTable,
+        where: '${DBConstants.statusId} = ?',
+        whereArgs: [id],
+        limit: 1,
+      );
+      if (data.isNotEmpty) {
+        return MediaStatus.fromMap(data.first);
+      } else {
+        throw Exception("Status with ID $id not found");
+      }
+    } catch (e) {
+      debugPrint("Error while Getting Status: \nERROR: ${e.toString()}");
+      rethrow;
+    }
+  }
+
   // Read Operation For Statuses
-  Future<List<AppStatus>> getStatuses() async {
+  Future<List<MediaStatus>> getStatuses() async {
     try {
       final data = await db.query(DBConstants.statusTable);
-      List<AppStatus> statuses = data.map((e) => AppStatus.fromMap(e)).toList();
+      List<MediaStatus> statuses = data
+          .map((e) => MediaStatus.fromMap(e))
+          .toList();
       return statuses;
     } catch (e) {
       debugPrint("Error while Getting Status: \nERROR: ${e.toString()}");
@@ -37,7 +58,7 @@ class StatusRepository extends GetxController {
   }
 
   // Update Operation for Status
-  Future<void> updateStatus(AppStatus status) async {
+  Future<void> updateStatus(MediaStatus status) async {
     try {
       await db.update(
         DBConstants.statusTable,

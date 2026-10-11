@@ -1,21 +1,21 @@
 import '../services/database_service.dart';
 
-class AppReview {
+class MediaReview {
   final int id;
   final int mediaId;
 
   final String content;
   final DateTime date;
 
-  AppReview({
+  MediaReview({
     required this.id,
     required this.mediaId,
     required this.content,
     required this.date,
   });
 
-  factory AppReview.fromMap(Map<String, dynamic> map) {
-    return AppReview(
+  factory MediaReview.fromMap(Map<String, dynamic> map) {
+    return MediaReview(
       id: map[DBConstants.reviewId] as int,
       mediaId: map[DBConstants.reviewMediaId] as int,
       content: map[DBConstants.reviewContent] as String,

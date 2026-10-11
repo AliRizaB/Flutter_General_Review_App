@@ -1,3 +1,8 @@
+import 'dart:ui';
+
+import 'package:flutter_general_reviewer/Utilities/status_controller.dart';
+import 'package:get/get.dart';
+
 import '../services/database_service.dart';
 
 class AppMedia {
@@ -41,5 +46,9 @@ class AppMedia {
       DBConstants.mediaDescription: description,
       DBConstants.mediaImage: imagePath,
     };
+  }
+
+  Future<Color> getStatusColor() async{
+    return Get.find<StatusController>().getStatusColor(statusId);
   }
 }
