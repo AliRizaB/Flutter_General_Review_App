@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class StorageKeys {
+abstract class PreferenceKeys {
   //
-  static const int theme = 0;
+  static const String themeScheme = 'theme_scheme';
   static const String themeMode = 'theme_mode';
 
-  static const String API_GAME = '';
-  static const String API_MOVIE = '';
-  static const String API_SERIES = '';
-  static const String API_ANIME = '';
-  static const String API_BOOK = '';
+  static const String apiGame = '';
+  static const String apiMovie = '';
+  static const String apiSeries = '';
+  static const String apiAnime = '';
+  static const String apiBook = '';
 }
 
-class StorageService extends GetxController {
+class PreferenceService extends GetxController {
   // Flutterda servisler get ile kullanımda genellikle
   // late ve final ile tanıtılırlar edilirler.
   late final SharedPreferences _preferences;
 
   // Bu servisler sonradan Future init() ile initialize edilirler.
-  Future<StorageService> init() async {
+  Future<PreferenceService> init() async {
     _preferences = await SharedPreferences.getInstance();
     return this;
   }

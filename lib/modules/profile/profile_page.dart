@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/modules/profile/profile_controller.dart';
+import 'package:flutter_general_reviewer/modules/profile/widgets/change_theme_dialog.dart';
 import 'package:flutter_general_reviewer/routes/app_pages.dart';
 import 'package:get/get.dart';
 
@@ -17,7 +18,7 @@ class ProfilePage extends GetView<ProfileController> {
           BuildButton(
             icon: Icons.palette,
             label: 'Change Theme',
-            onTap: _showChangeThemeDialog,
+            onTap: showChangeThemeDialog,
           ),
 
           BuildButton(
@@ -35,8 +36,6 @@ class ProfilePage extends GetView<ProfileController> {
       ),
     );
   }
-
-  void _showChangeThemeDialog() {}
 
   void _showAPIKeyDialog() {}
 }
