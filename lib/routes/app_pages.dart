@@ -9,6 +9,8 @@ import 'package:flutter_general_reviewer/modules/review/review_binding.dart';
 import 'package:flutter_general_reviewer/modules/review/review_list.dart';
 import 'package:flutter_general_reviewer/modules/splash/splash_binding.dart';
 import 'package:flutter_general_reviewer/modules/splash/splash_page.dart';
+import 'package:flutter_general_reviewer/modules/status/status_binding.dart';
+import 'package:flutter_general_reviewer/modules/status/status_page.dart';
 import 'package:get/get.dart';
 
 abstract class AppRoutes {
@@ -20,6 +22,7 @@ abstract class AppRoutes {
   static const MEDIAS = '/medias';
   static const MEDIAVIEW = '/mediaView';
   static const REVIEWS = '/review';
+  static const STATUS = '/status';
 }
 
 class AppPages {
@@ -51,6 +54,11 @@ class AppPages {
       name: AppRoutes.REVIEWS,
       page: () => ReviewList(),
       binding: ReviewBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.STATUS,
+      page: () => StatusPage(),
+      binding: StatusBinding(),
     ),
   ];
 }

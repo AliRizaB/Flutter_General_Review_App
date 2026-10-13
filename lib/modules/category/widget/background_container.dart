@@ -11,7 +11,7 @@ Widget backgroundContainer({
       borderRadius: BorderRadius.circular(8),
     ),
     alignment: alignment,
-    padding: EdgeInsets.only(right: 16),
+    padding: EdgeInsets.symmetric(horizontal: 16),
     child: icon,
   );
 }

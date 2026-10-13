@@ -2,20 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/modules/category/widget/dialog_add_category.dart';
 
 AppBar homeAppBar(BuildContext context) {
+  final theme = Theme.of(context);
   return AppBar(
-    title: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          "Review App",
-          style: TextStyle(fontFamily: 'Isometra', fontSize: 25),
-        ),
-        IconButton(
-          onPressed: () async => showAddCategoryDialog(context),
-          icon: Icon(Icons.add, size: 30),
-        ),
-      ],
+    backgroundColor: theme.colorScheme.primary,
+    title: Text(
+      "Review App",
+      style: theme.textTheme.headlineMedium!.copyWith(fontFamily: 'Isometra'),
     ),
-    backgroundColor: Theme.of(context).colorScheme.onSecondary,
+    actions: [
+      IconButton(
+        onPressed: () async => showAddCategoryDialog(context),
+        icon: Icon(Icons.add, size: 30),
+      ),
+    ],
   );
 }

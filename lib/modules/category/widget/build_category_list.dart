@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_general_reviewer/Utilities/empty_state.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
 import 'package:flutter_general_reviewer/modules/category/widget/background_container.dart';
+import 'package:flutter_general_reviewer/modules/category/widget/category_tile.dart';
 import 'package:flutter_general_reviewer/modules/category/widget/confirm_dialog.dart';
-import 'package:flutter_general_reviewer/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class CategoryList extends GetView<CategoryController> {
@@ -12,11 +13,10 @@ class CategoryList extends GetView<CategoryController> {
   Widget build(BuildContext context) {
     return Obx(() {
       if (controller.categories.isEmpty) {
-        return Card(
-          child: ListTile(
-            title: Text('There is no Categories'),
-            subtitle: Text('Please Add A category via top right icon'),
-          ),
+        return EmptyState(
+          icon: Icons.cabin,
+          title: 'There is no Categories',
+          subtitle: 'Please Add A category via top right icon',
         );
       }
 
@@ -36,7 +36,7 @@ class CategoryList extends GetView<CategoryController> {
             direction: DismissDirection.horizontal,
 
             confirmDismiss: (direction) async {
-              final isConfirmed = await confirmDialog(
+              final isConfirmed = await handleDismiss(
                 direction,
                 currentCategory,
                 context,
@@ -55,50 +55,17 @@ class CategoryList extends GetView<CategoryController> {
 
             secondaryBackground: backgroundContainer(
               color: Theme.of(context).colorScheme.errorContainer,
-              icon: Icon(Icons.delete, color: Colors.black87),
+              icon: Icon(Icons.delete),
               alignment: Alignment.centerRight,
             ),
 
             background: backgroundContainer(
-              color: Theme.of(context).colorScheme.onPrimary,
-              icon: Icon(Icons.system_security_update, color: Colors.black87),
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              icon: Icon(Icons.edit),
               alignment: Alignment.centerLeft,
             ),
 
-            child: ListTile(
-              onTap: () {
-                Get.toNamed(
-                  AppRoutes.MEDIAS,
-                  arguments: [currentCategory.id, currentCategory.name],
-                );
-              },
-
-              title: Text(
-                currentCategory.name,
-                style: TextStyle(
-                  fontFamily: 'Isometra',
-                  fontSize: 25,
-                  color: currentCategory.contrastTextColor,
-                ),
-              ),
-
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: currentCategory.contrastTextColor.withValues(
-                    alpha: 0.4,
-                  ),
-                  width: 1.5,
-                ),
-              ),
-
-              tileColor: currentCategory.getColor,
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 30,
-                color: currentCategory.contrastTextColor,
-              ),
-            ),
+            child: CategoryTile(category: currentCategory),
           );
         },
       );

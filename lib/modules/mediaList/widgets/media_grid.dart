@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/Utilities/status_controller.dart';
+import 'package:flutter_general_reviewer/Utilities/empty_state.dart';
+import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/media_list_controller.dart';
 import 'package:get/get.dart';
@@ -23,16 +24,10 @@ class MediaGridView extends GetView<MediaListController> {
       }
 
       if (controller.medias.isEmpty) {
-        return const Center(
-          child: ListTile(
-            tileColor: Colors.redAccent,
-            title: Text(
-              "NO MEDIA",
-              textAlign: TextAlign
-                  .center, // Centers the text inside the full-width tile
-              style: TextStyle(fontFamily: 'Isometra', fontSize: 30),
-            ),
-          ),
+        return const EmptyState(
+          icon: Icons.no_photography,
+          title: 'No Media',
+          subtitle: 'Please add media via top right button',
         );
       }
       return Padding(
@@ -68,75 +63,62 @@ class MediaGridView extends GetView<MediaListController> {
 
   DottedBorder _buildMedia(Color statusColor, AppMedia currentMedia) {
     return DottedBorder(
-              options: RectDottedBorderOptions(
-                dashPattern: const [20, 25],
-                stackFit: StackFit.passthrough,
-                strokeWidth: 5,
-                padding: const EdgeInsets.all(2),
-                color: statusColor,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(9),
-                child: Stack(
-                  children: [
-                    // Media Image Render
-                    _buildMediaImage(currentMedia),
+      options: RectDottedBorderOptions(
+        dashPattern: const [20, 25],
+        stackFit: StackFit.passthrough,
+        strokeWidth: 5,
+        padding: const EdgeInsets.all(2),
+        color: statusColor,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(9),
+        child: Stack(
+          children: [
+            // Media Image Render
+            _buildMediaImage(currentMedia),
 
-                    // Title of the media is showing
-                    _buildMediaTitle(currentMedia),
-                  ],
-                ),
-              ),
-            );
+            // Title of the media is showing
+            _buildMediaTitle(currentMedia),
+          ],
+        ),
+      ),
+    );
   }
 
   Positioned _buildMediaImage(AppMedia currentMedia) {
     return Positioned.fill(
-                      child:
-                          (currentMedia.imagePath != null &&
-                              currentMedia.imagePath!.isNotEmpty)
-                          ? Image.file(
-                              File(currentMedia.imagePath!),
-                              fit: BoxFit.cover,
-                            )
-                          : Image.asset(
-                              'assets/images/noImage.jpg',
-                              fit: BoxFit.cover,
-                            ),
-                    );
+      child:
+          (currentMedia.imagePath != null && currentMedia.imagePath!.isNotEmpty)
+          ? Image.file(File(currentMedia.imagePath!), fit: BoxFit.cover)
+          : Image.asset('assets/images/noImage.jpg', fit: BoxFit.cover),
+    );
   }
 
   Positioned _buildMediaTitle(AppMedia currentMedia) {
     return Positioned(
-                      bottom: 8,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 4,
-                          horizontal: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.black.withValues(alpha: 0.5),
-                              Colors.black,
-                            ],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                          ),
-                        ),
-                        child: Text(
-                          currentMedia.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontFamily: 'Isometra',
-                          ),
-                        ),
-                      ),
-                    );
+      bottom: 8,
+      left: 0,
+      right: 0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.black.withValues(alpha: 0.5), Colors.black],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+          ),
+        ),
+        child: Text(
+          currentMedia.name,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontFamily: 'Isometra',
+          ),
+        ),
+      ),
+    );
   }
 }

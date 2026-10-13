@@ -16,23 +16,23 @@ class MediaListPage extends GetView<MediaListController> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(categoryId.toString());
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              categoryName,
-              style: TextStyle(fontFamily: 'Isometra', fontSize: 25),
-            ),
-            IconButton(
-              onPressed: () => showMediaDialog(context),
-              icon: Icon(Icons.add, size: 30),
-            ),
-          ],
+        backgroundColor: theme.colorScheme.primary,
+        title: Text(
+          categoryName,
+          style: theme.textTheme.headlineMedium!.copyWith(
+            fontFamily: 'Isometra',
+          ),
         ),
-        backgroundColor: Theme.of(context).colorScheme.onSecondary,
+
+        actions: [
+          IconButton(
+            onPressed: () => showMediaDialog(context),
+            icon: Icon(Icons.add, size: 30),
+          ),
+        ],
       ),
 
       body: SizedBox.expand(child: const MediaGridView()),

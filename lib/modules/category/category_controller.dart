@@ -1,5 +1,7 @@
 // After Debug remove foundation.dart
 
+import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/models/app_category.dart';
@@ -10,6 +12,11 @@ class CategoryController extends BaseController {
   final CategoryRepository _categoryRepository = Get.find<CategoryRepository>();
   RxList<AppCategory> categories = <AppCategory>[].obs;
 
+  // AppCategory attributes
+  int? categoryId;
+  Rx<String> categoryName = ''.obs;
+  Rx<Color> categoryColor = const Color(0xff443a49).obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -18,6 +25,18 @@ class CategoryController extends BaseController {
     setLoading(false);
   }
 
+  void initCategoryForm(AppCategory? category) {
+    if (category != null) {
+      categoryId = category.id;
+      categoryName.value = category.name;
+      categoryColor.value = category.getColor;
+    } else {
+      categoryName.value = '';
+      categoryColor.value = const Color(0xff443a49);
+    }
+  }
+
+  // CRUD OPERATIONS
   Future<void> fetchCategories() async {
     try {
       final list = await _categoryRepository.getCategories();
@@ -27,10 +46,15 @@ class CategoryController extends BaseController {
     }
   }
 
-  Future<void> addCategory(AppCategory category) async {
+  Future<void> addCategory() async {
     try {
       setLoading(true);
-      await _categoryRepository.addCategory(category);
+      final newCategory = AppCategory(
+        name: categoryName.value,
+        color: categoryColor.value.hex,
+      );
+
+      await _categoryRepository.addCategory(newCategory);
       await fetchCategories();
       showSuccessSnackBar(message: "Succesfully Created Category");
     } catch (e) {
@@ -42,10 +66,16 @@ class CategoryController extends BaseController {
     }
   }
 
-  Future<void> updateCategory(AppCategory category) async {
+  Future<void> updateCategory() async {
     try {
       setLoading(true);
-      await _categoryRepository.updateCategory(category);
+      final updatedCategory = AppCategory(
+        id: categoryId,
+        name: categoryName.value,
+        color: categoryColor.value.hex,
+      );
+
+      await _categoryRepository.updateCategory(updatedCategory);
       await fetchCategories();
       showSuccessSnackBar(message: "Succesfully Updated Category");
     } catch (e) {

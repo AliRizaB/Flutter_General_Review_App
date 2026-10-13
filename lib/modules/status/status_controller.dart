@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/models/media_status.dart';
@@ -9,9 +10,9 @@ class StatusController extends BaseController {
   RxList<MediaStatus> statuses = <MediaStatus>[].obs;
 
   // Status Attributes
-  int? id;
-  Rx<String> name = ''.obs;
-  Rx<String> color = ''.obs;
+  int? statusId;
+  Rx<String> statusName = ''.obs;
+  Rx<Color> statusColor = const Color(0xff443a49).obs;
 
   @override
   void onInit() {
@@ -19,6 +20,17 @@ class StatusController extends BaseController {
     setLoading(true);
     fetchStatuses();
     setLoading(false);
+  }
+
+  void initStatusForm(MediaStatus? status) {
+    if (status != null) {
+      statusId = status.id;
+      statusName.value = status.name;
+      statusColor.value = status.getColor;
+    } else {
+      statusName.value = '';
+      statusColor.value = const Color(0xff443a49);
+    }
   }
 
   Future<void> fetchStatuses() async {
@@ -50,7 +62,10 @@ class StatusController extends BaseController {
   Future<void> addStatus() async {
     try {
       setLoading(true);
-      final newStatus = MediaStatus(name: name.value, color: color.value);
+      final newStatus = MediaStatus(
+        name: statusName.value,
+        color: statusColor.value.hex,
+      );
       debugPrint("CREATED: ${newStatus.id}, ${newStatus.name}");
       await _statusRepository.addStatus(newStatus);
       await fetchStatuses();
@@ -67,14 +82,14 @@ class StatusController extends BaseController {
   Future<void> updateStatus() async {
     try {
       setLoading(true);
-      if (id == null) {
+      if (statusId == null) {
         showErrorSnackBar(message: "No status selected to update");
         return;
       }
       final updatedStatus = MediaStatus(
-        id: id,
-        name: name.value,
-        color: color.value,
+        id: statusId,
+        name: statusName.value,
+        color: statusColor.value.hex,
       );
       await _statusRepository.updateStatus(updatedStatus);
       await fetchStatuses();

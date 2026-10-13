@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 // App Controllers and Models
-import 'package:flutter_general_reviewer/Utilities/status_controller.dart';
+import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/media_list_controller.dart';
 
@@ -20,6 +20,8 @@ Future showMediaDialog(BuildContext context, {AppMedia? toUpdateMedia}) async {
   final mediaController = Get.find<MediaListController>();
   final statusController = Get.find<StatusController>();
 
+  final theme = Theme.of(context);
+
   mediaController.initMediaForm(toUpdateMedia);
 
   if (statusController.statuses.isEmpty) {
@@ -32,6 +34,8 @@ Future showMediaDialog(BuildContext context, {AppMedia? toUpdateMedia}) async {
   }
   await Get.dialog(
     AlertDialog(
+      surfaceTintColor: theme.colorScheme.primary,
+      backgroundColor: theme.colorScheme.surface,
       title: Text(
         isEditing
             ? 'Update The ${mediaController.categoryName}'
@@ -68,6 +72,7 @@ Future showMediaDialog(BuildContext context, {AppMedia? toUpdateMedia}) async {
           ),
         ),
       ),
+      actionsAlignment: MainAxisAlignment.center,
       actions: [
         TextButton(
           onPressed: () {
@@ -113,7 +118,9 @@ Future showMediaDialog(BuildContext context, {AppMedia? toUpdateMedia}) async {
 
 Obx _imageSelector(MediaListController mediaController) {
   return Obx(() {
-    final hasImage = mediaController.imagePath.value.isNotEmpty;
+    final hasImage =
+        mediaController.imagePath.value.isNotEmpty &&
+        mediaController.imagePath.value != 'assets/images/noImage.jpg';
 
     return Column(
       children: [

@@ -20,6 +20,7 @@ class ReviewController extends BaseController {
   void onInit() {
     super.onInit();
     setLoading(true);
+    mediaId = Get.arguments as int;
     fetchReviews();
     setLoading(false);
   }

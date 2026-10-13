@@ -12,21 +12,20 @@ Future<void> showAddCategoryDialog(
   BuildContext context, {
   AppCategory? toUpdateCategory,
 }) async {
+  final theme = Theme.of(context);
   final formKey = GlobalKey<FormState>();
   final controller = Get.find<CategoryController>();
 
-  final nameController = TextEditingController(
-    text: toUpdateCategory?.name ?? '',
-  );
-
-  final Rx<Color> selectedColor = (toUpdateCategory != null)
-      ? toUpdateCategory.getColor.obs
-      : const Color(0xff443a49).obs;
-
   final bool isEditing = (toUpdateCategory != null);
+
+  controller.initCategoryForm(toUpdateCategory);
 
   await Get.dialog(
     AlertDialog(
+      // Theme
+      surfaceTintColor: theme.colorScheme.primary,
+      backgroundColor: theme.colorScheme.surface,
+
       title: Text(isEditing ? 'Update Category' : 'Add New Category'),
       content: Form(
         key: formKey,
@@ -36,21 +35,7 @@ Future<void> showAddCategoryDialog(
 
             children: [
               // Category Name
-              TextFormField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Category Name',
-                  hintText: 'e.g., Movies, Books, Games',
-                  border: OutlineInputBorder(),
-                ),
-
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Please Enter A Category Name";
-                  }
-                  return null;
-                },
-              ),
+              _buildCategoryNameField(controller),
 
               const SizedBox(height: 16),
 
@@ -60,21 +45,7 @@ Future<void> showAddCategoryDialog(
               ),
 
               // Category color
-              Obx(
-                () => ColorPicker(
-                  color: selectedColor.value,
-                  onColorChanged: (Color newColor) {
-                    selectedColor.value = newColor;
-                  },
-                  wheelDiameter: 250,
-                  enableShadesSelection: true,
-                  pickersEnabled: const {
-                    ColorPickerType.primary: false,
-                    ColorPickerType.accent: false,
-                    ColorPickerType.wheel: true,
-                  },
-                ),
-              ),
+              _buildColorPicker(controller),
             ],
           ),
         ),
@@ -90,57 +61,85 @@ Future<void> showAddCategoryDialog(
           child: const Text('Cancel'),
         ),
 
-        Obx(
-          () => ElevatedButton(
-            onPressed: controller.isLoading
-                ? null
-                : () async {
-                    if (formKey.currentState!.validate()) {
-                      // Unfocus keyboard
-                      FocusManager.instance.primaryFocus?.unfocus();
-
-                      final String newCategoryName = nameController.text.trim();
-                      final String selectedColorHex = selectedColor.value.hex;
-
-                      // Dismiss dialog explicitly
-                      // Can not use Get.Back() cause it is cauisng problem with the Success Snackbar
-                      Navigator.of(context).pop();
-
-                      if (isEditing) {
-                        final updatedCategory = AppCategory(
-                          id: toUpdateCategory.id,
-                          name: newCategoryName,
-                          color: selectedColorHex,
-                        );
-                        
-                        await controller.updateCategory(updatedCategory);
-                      } else {
-                        
-                        // New category Creation
-                        final newCategory = AppCategory(
-                          name: newCategoryName,
-                          color: selectedColorHex,
-                        );
-                        await controller.addCategory(newCategory);
-                      }
-                    }
-                  },
-            child: controller.isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Text(isEditing ? 'Update' : 'Add'),
-          ),
-        ),
+        _buildConfirmationButton(controller, formKey, context, isEditing),
       ],
     ),
     barrierDismissible: true,
-  ).then((_) {
-    // Safely dispose text controller after dialog closes
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      nameController.dispose();
-    });
-  });
+  );
+}
+
+TextFormField _buildCategoryNameField(CategoryController controller) {
+  return TextFormField(
+    initialValue: controller.categoryName.value,
+    onChanged: (value) => controller.categoryName.value = value,
+
+    decoration: const InputDecoration(
+      labelText: 'Category Name',
+      hintText: 'e.g., Movies, Books, Games',
+      border: OutlineInputBorder(),
+    ),
+
+    validator: (value) {
+      if (value == null || value.trim().isEmpty) {
+        return "Please Enter A Category Name";
+      }
+      return null;
+    },
+  );
+}
+
+Obx _buildColorPicker(CategoryController controller) {
+  return Obx(
+    () => ColorPicker(
+      color: controller.categoryColor.value,
+      onColorChanged: (Color newColor) {
+        controller.categoryColor.value = newColor;
+      },
+      wheelDiameter: 250,
+      enableShadesSelection: true,
+      pickersEnabled: const {
+        ColorPickerType.primary: false,
+        ColorPickerType.accent: false,
+        ColorPickerType.wheel: true,
+      },
+    ),
+  );
+}
+
+Obx _buildConfirmationButton(
+  CategoryController controller,
+  GlobalKey<FormState> formKey,
+  BuildContext context,
+  bool isEditing,
+) {
+  return Obx(
+    () => ElevatedButton(
+      onPressed: controller.isLoading
+          ? null
+          : () async {
+              if (formKey.currentState!.validate()) {
+                // Unfocus keyboard
+                FocusManager.instance.primaryFocus?.unfocus();
+
+                // Dismiss dialog explicitly
+                // Can not use Get.Back() cause it is cauisng problem with the Success Snackbar
+                Navigator.of(context).pop();
+
+                if (isEditing) {
+                  await controller.updateCategory();
+                } else {
+                  // New category Creatio
+                  await controller.addCategory();
+                }
+              }
+            },
+      child: controller.isLoading
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Text(isEditing ? 'Update' : 'Add'),
+    ),
+  );
 }

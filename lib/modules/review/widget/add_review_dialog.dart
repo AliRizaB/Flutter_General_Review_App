@@ -9,17 +9,22 @@ import 'package:get/get.dart';
 // Context is needed for Navigation.pop cause Get.back() is having problem with the snackBars ( From BaseController for success and error )
 Future<void> showAddReviewDialog(
   BuildContext context, {
-  MediaReview? toUpdateReview,
+  MediaReview? toUpdateStatus,
 }) async {
   final formKey = GlobalKey<FormState>();
   final controller = Get.find<ReviewController>();
 
-  final bool isEditing = (toUpdateReview != null);
+  final bool isEditing = (toUpdateStatus != null);
 
-  controller.initReviewForm(toUpdateReview);
+  final theme = Theme.of(context);
+
+  controller.initReviewForm(toUpdateStatus);
 
   await Get.dialog(
     AlertDialog(
+      surfaceTintColor: theme.colorScheme.primary,
+      backgroundColor: theme.colorScheme.surface,
+
       title: Text(isEditing ? 'Update Review' : 'Add New Review'),
       content: Form(
         key: formKey,
@@ -31,11 +36,12 @@ Future<void> showAddReviewDialog(
               // Review Content
               TextFormField(
                 initialValue: controller.content.value,
+                onChanged: (value) => controller.content.value = value,
+                maxLines: 5,
                 decoration: const InputDecoration(
                   labelText: 'Review',
                   border: OutlineInputBorder(),
                 ),
-
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return "Please Enter A Review";

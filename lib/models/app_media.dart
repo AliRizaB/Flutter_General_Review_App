@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter_general_reviewer/Utilities/status_controller.dart';
+import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:get/get.dart';
 
 import '../services/database_service.dart';
