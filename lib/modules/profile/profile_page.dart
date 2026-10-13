@@ -8,25 +8,31 @@ class ProfilePage extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        BuildButton(
-          icon: Icons.palette,
-          label: 'Change Theme',
-          onTap: _showChangeThemeDialog,
-        ),
-        BuildButton(
-          icon: Icons.bookmark,
-          label: 'Status Options',
-          onTap: () => Get.toNamed(AppRoutes.STATUS),
-        ),
-        BuildButton(
-          icon: Icons.key,
-          label: 'Add API Keys',
-          onTap: _showAPIKeyDialog,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        spacing: 12.0,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          BuildButton(
+            icon: Icons.palette,
+            label: 'Change Theme',
+            onTap: _showChangeThemeDialog,
+          ),
+
+          BuildButton(
+            icon: Icons.bookmark,
+            label: 'Status Options',
+            onTap: () => Get.toNamed(AppRoutes.STATUS),
+          ),
+
+          BuildButton(
+            icon: Icons.key,
+            label: 'Add API Keys',
+            onTap: _showAPIKeyDialog,
+          ),
+        ],
+      ),
     );
   }
 
