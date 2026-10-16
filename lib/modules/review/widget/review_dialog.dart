@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/media_review.dart';
 import 'package:flutter_general_reviewer/modules/review/review_controller.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_form.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/form_cancel_button.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/form_submit_button.dart';
 import 'package:get/get.dart';
 
@@ -49,13 +50,7 @@ Future<void> showReviewDialog(
 
       actionsAlignment: MainAxisAlignment.center,
       actions: [
-        ElevatedButton(
-          onPressed: () {
-            FocusManager.instance.primaryFocus?.unfocus();
-            Navigator.of(context).pop();
-          },
-          child: const Text('Cancel'),
-        ),
+        FormCancelButton(),
 
         FormSubmitButton(
           formKey: formKey,

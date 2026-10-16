@@ -4,6 +4,7 @@ import 'package:flutter_general_reviewer/modules/mediaList/widgets/add_media_wid
 import 'package:flutter_general_reviewer/modules/mediaList/widgets/add_media_widgets/rating_widget.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/widgets/add_media_widgets/status_selector.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/widgets/add_media_widgets/title_field.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/form_cancel_button.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/form_submit_button.dart';
 
@@ -95,13 +96,7 @@ Future showMediaDialog(BuildContext context, {AppMedia? toUpdateMedia}) async {
       ),
       actionsAlignment: MainAxisAlignment.center,
       actions: [
-        ElevatedButton(
-          onPressed: () {
-            FocusManager.instance.primaryFocus?.unfocus();
-            Navigator.of(context).pop();
-          },
-          child: const Text('Cancel'),
-        ),
+        FormCancelButton(),
 
         FormSubmitButton(
           formKey: formKey,

@@ -3,6 +3,7 @@ import 'package:flutter_general_reviewer/models/app_category.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/build_color_picker.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_form.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/form_cancel_button.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/form_submit_button.dart';
 import 'package:get/get.dart';
 
@@ -65,13 +66,7 @@ Future<void> showCategoryDialog(
 
       actionsAlignment: MainAxisAlignment.center,
       actions: [
-        ElevatedButton(
-          onPressed: () {
-            FocusManager.instance.primaryFocus?.unfocus();
-            Navigator.of(context).pop();
-          },
-          child: const Text('Cancel'),
-        ),
+        FormCancelButton(),
 
         FormSubmitButton(
           formKey: formKey,

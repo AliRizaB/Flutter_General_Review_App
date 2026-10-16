@@ -17,7 +17,7 @@ import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_page_wi
 import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_page_widgets/build_review_button.dart';
 
 // Connection to Widget
-import 'package:flutter_general_reviewer/modules/mediaList/widgets/add_media_dialog.dart';
+import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_dialog.dart';
 
 class MediaPage extends GetView<MediaController> {
   MediaPage({super.key});
