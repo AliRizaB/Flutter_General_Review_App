@@ -9,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
-class MediaListController extends BaseController {
+class MediaController extends BaseController {
   final MediaRepository _mediaRepository = Get.find<MediaRepository>();
   RxList<AppMedia> medias = <AppMedia>[].obs;
 
@@ -32,6 +32,7 @@ class MediaListController extends BaseController {
     categoryName = Get.arguments[1];
     fetchMedias();
   }
+
 
   void initMediaForm(AppMedia? media) {
     if (media != null) {

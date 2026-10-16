@@ -2,23 +2,19 @@
 
 import 'package:flutter_general_reviewer/modules/home/home_binding.dart';
 import 'package:flutter_general_reviewer/modules/home/home_page.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/media_list_binding.dart';
+import 'package:flutter_general_reviewer/modules/mediaList/media_binding.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/media_list_page.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_page.dart';
 import 'package:flutter_general_reviewer/modules/review/review_binding.dart';
 import 'package:flutter_general_reviewer/modules/review/review_list.dart';
-import 'package:flutter_general_reviewer/modules/splash/splash_binding.dart';
-import 'package:flutter_general_reviewer/modules/splash/splash_page.dart';
+
 import 'package:flutter_general_reviewer/modules/status/status_binding.dart';
 import 'package:flutter_general_reviewer/modules/status/status_page.dart';
 import 'package:get/get.dart';
 
 abstract class AppRoutes {
-  static const INITIAL = SPLASH;
-  static const SPLASH = '/splash';
+  static const INITIAL = HOME;
   static const HOME = '/home';
-  static const PROFILE = '/profile';
-  static const CATEGORY = '/categories';
   static const MEDIAS = '/medias';
   static const MEDIAVIEW = '/mediaView';
   static const REVIEWS = '/review';
@@ -33,22 +29,17 @@ class AppPages {
       binding: HomeBinding(),
     ),
     GetPage(
-      name: AppRoutes.SPLASH,
-      page: () => SplashPage(),
-      binding: SplashBinding(),
-    ),
-    GetPage(
       name: AppRoutes.MEDIAS,
       page: () => MediaListPage(
         categoryId: Get.arguments[0],
         categoryName: Get.arguments[1],
       ),
-      binding: MediaListBinding(),
+      binding: MediaBinding(),
     ),
     GetPage(
       name: AppRoutes.MEDIAVIEW,
       page: () => MediaPage(),
-      binding: MediaListBinding(),
+      binding: MediaBinding(),
     ),
     GetPage(
       name: AppRoutes.REVIEWS,

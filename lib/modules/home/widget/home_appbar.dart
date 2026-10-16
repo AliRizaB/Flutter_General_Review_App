@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/category/widget/dialog_add_category.dart';
+import 'package:flutter_general_reviewer/utilities/app_bar_theme.dart';
+import 'package:flutter_general_reviewer/modules/category/widget/dialog_category.dart';
 
 AppBar homeAppBar(BuildContext context) {
   final theme = Theme.of(context);
   return AppBar(
-    backgroundColor: theme.colorScheme.primary,
+    backgroundColor: getAppBarColor(theme),
+    foregroundColor: getAppBarForegroundColor(theme),
     title: Text(
       "Review App",
-      style: theme.textTheme.headlineMedium!.copyWith(fontFamily: 'Isometra'),
+      style: theme.textTheme.headlineMedium!.copyWith(
+        color: getAppBarForegroundColor(theme),
+        fontFamily: 'Isometra',
+      ),
     ),
     actions: [
       IconButton(
-        onPressed: () async => showAddCategoryDialog(context),
+        onPressed: () async => showCategoryDialog(context),
         icon: Icon(Icons.add, size: 30),
       ),
     ],

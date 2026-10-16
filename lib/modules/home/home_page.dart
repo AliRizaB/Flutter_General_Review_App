@@ -12,6 +12,7 @@ class HomePage extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: homeAppBar(context),
+
       body: Obx(
         () => IndexedStack(
           index: controller.currentIndex.value,
@@ -19,19 +20,36 @@ class HomePage extends GetView<HomeController> {
         ),
       ),
 
-      bottomNavigationBar: Obx(
-        () => NavigationBar(
+      bottomNavigationBar: Obx(() {
+        final theme = Theme.of(context);
+        final isDark = theme.brightness == Brightness.dark;
+
+        final navBarColor = isDark
+            ? Color.alphaBlend(
+                theme.colorScheme.primary.withValues(alpha: 0.22),
+                theme.colorScheme.surface,
+              )
+            : Color.alphaBlend(
+                theme.colorScheme.primary.withValues(alpha: 0.12),
+                theme.colorScheme.surface,
+              );
+
+        return NavigationBar(
+          backgroundColor: navBarColor,
+          indicatorColor: theme.colorScheme.primaryContainer,
           selectedIndex: controller.currentIndex.value,
           onDestinationSelected: controller.changePage,
-          destinations: [
+
+          destinations: const [
             NavigationDestination(
               icon: Icon(Icons.shelves),
+
               label: 'Categories',
             ),
             NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
           ],
-        ),
-      ),
+        );
+      }),
     );
   }
 }

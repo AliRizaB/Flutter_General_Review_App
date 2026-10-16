@@ -1,16 +1,19 @@
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/media_list_controller.dart';
+import 'package:flutter_general_reviewer/modules/mediaList/media_controller.dart';
 import 'package:flutter_general_reviewer/repository/media_repo.dart';
 import 'package:flutter_general_reviewer/repository/status_repo.dart';
+import 'package:flutter_general_reviewer/services/api_service.dart';
 import 'package:get/get.dart';
 
-class MediaListBinding extends Bindings {
+class MediaBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => MediaRepository());
     Get.lazyPut(() => StatusRepository());
 
-    Get.lazyPut(() => MediaListController());
+    Get.lazyPut(() => MediaController());
     Get.lazyPut(() => StatusController());
+
+    Get.lazyPut(() => ApiService());
   }
 }

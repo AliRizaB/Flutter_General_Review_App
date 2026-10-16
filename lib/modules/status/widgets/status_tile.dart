@@ -12,19 +12,23 @@ class StatusTile extends StatelessWidget {
 
     return Card(
       margin: EdgeInsets.zero,
+
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
+
       color: theme.colorScheme.primaryContainer,
+
       child: Padding(
         padding: const EdgeInsets.all(16.0),
+
         child: Container(
           padding: EdgeInsets.all(8),
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: theme.colorScheme.onPrimary,
+            color: theme.colorScheme.surface,
           ),
           alignment: Alignment.center,
           child: Text(

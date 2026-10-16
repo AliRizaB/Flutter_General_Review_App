@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class StorageKeys {
   //
-  static const int theme = 0;
+  static const String themeScheme = 'theme_scheme';
   static const String themeMode = 'theme_mode';
 
-  static const String API_GAME = '';
-  static const String API_MOVIE = '';
-  static const String API_SERIES = '';
-  static const String API_ANIME = '';
-  static const String API_BOOK = '';
+  static const String apiGame = 'api_game';
+  static const String apiMovie = 'api_movie';
+  static const String apiSeries = 'api_series';
+  static const String apiAnime = 'api_anime';
+  static const String apiBook = 'api_book';
 }
 
 class StorageService extends GetxController {
   // Flutterda servisler get ile kullanımda genellikle
   // late ve final ile tanıtılırlar edilirler.
   late final SharedPreferences _preferences;
+  var selectedCategoryKey = RxnString();
 
   // Bu servisler sonradan Future init() ile initialize edilirler.
   Future<StorageService> init() async {
