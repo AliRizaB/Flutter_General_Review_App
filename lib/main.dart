@@ -2,7 +2,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/routes/app_pages.dart';
 import 'package:flutter_general_reviewer/services/database_service.dart';
-import 'package:flutter_general_reviewer/services/preference_service.dart';
+import 'package:flutter_general_reviewer/services/storage_service.dart';
 import 'package:flutter_general_reviewer/services/theme_service.dart';
 import 'package:get/get.dart';
 
@@ -14,8 +14,8 @@ void main() async {
     () => DatabaseService().init(),
     permanent: true,
   );
-  await Get.putAsync<PreferenceService>(
-    () => PreferenceService().init(),
+  await Get.putAsync<StorageService>(
+    () => StorageService().init(),
     permanent: true,
   );
   await Get.putAsync<ThemeService>(

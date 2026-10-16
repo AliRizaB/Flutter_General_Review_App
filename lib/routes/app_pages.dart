@@ -2,7 +2,7 @@
 
 import 'package:flutter_general_reviewer/modules/home/home_binding.dart';
 import 'package:flutter_general_reviewer/modules/home/home_page.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/media_list_binding.dart';
+import 'package:flutter_general_reviewer/modules/mediaList/media_binding.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/media_list_page.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_page.dart';
 import 'package:flutter_general_reviewer/modules/review/review_binding.dart';
@@ -34,12 +34,12 @@ class AppPages {
         categoryId: Get.arguments[0],
         categoryName: Get.arguments[1],
       ),
-      binding: MediaListBinding(),
+      binding: MediaBinding(),
     ),
     GetPage(
       name: AppRoutes.MEDIAVIEW,
       page: () => MediaPage(),
-      binding: MediaListBinding(),
+      binding: MediaBinding(),
     ),
     GetPage(
       name: AppRoutes.REVIEWS,

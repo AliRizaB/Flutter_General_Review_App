@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/Utilities/empty_state.dart';
+import 'package:flutter_general_reviewer/Utilities/app_bar_theme.dart';
+import 'package:flutter_general_reviewer/Utilities/general_widgets/delete_confirmation.dart';
+import 'package:flutter_general_reviewer/Utilities/general_widgets/empty_state.dart';
 import 'package:flutter_general_reviewer/models/media_review.dart';
 import 'package:flutter_general_reviewer/modules/review/review_controller.dart';
 import 'package:flutter_general_reviewer/modules/review/widget/add_review_dialog.dart';
@@ -16,10 +18,12 @@ class ReviewList extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.colorScheme.primary,
+        backgroundColor: getAppBarColor(theme),
+        foregroundColor: getAppBarForegroundColor(theme),
         title: Text(
           'Reviews',
           style: theme.textTheme.headlineMedium!.copyWith(
+            color: getAppBarForegroundColor(theme),
             fontFamily: 'Isometra',
           ),
         ),
@@ -84,20 +88,7 @@ class ReviewList extends StatelessWidget {
   ) async {
     if (direction == DismissDirection.endToStart) {
       // Swipe Left -> Delete
-      final confirmed = await Get.defaultDialog<bool>(
-        title: 'Delete Review',
-        backgroundColor: theme.colorScheme.error,
-        buttonColor: theme.colorScheme.onError,
-        content: const Text('Are you sure?'),
-
-        confirmTextColor: Colors.white,
-        textConfirm: 'YES',
-        onConfirm: () => Get.back(result: true),
-
-        cancelTextColor: Colors.white,
-        textCancel: 'no',
-        onCancel: () => false,
-      );
+      final confirmed = await deleteConfirmDialog(theme, title: 'review');
 
       if (confirmed == true && review.id != null) {
         await controller.deleteReview(review.id!);

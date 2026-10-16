@@ -1,7 +1,8 @@
-import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/app_category.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
+import 'package:flutter_general_reviewer/modules/category/widget/add_category_widgets/color_picker.dart';
+import 'package:flutter_general_reviewer/modules/category/widget/add_category_widgets/name_field.dart';
 import 'package:get/get.dart';
 
 // A dialog menu for both Update and Create usage for Categories
@@ -35,7 +36,7 @@ Future<void> showAddCategoryDialog(
 
             children: [
               // Category Name
-              _buildCategoryNameField(controller),
+              buildCategoryNameField(controller),
 
               const SizedBox(height: 16),
 
@@ -45,7 +46,7 @@ Future<void> showAddCategoryDialog(
               ),
 
               // Category color
-              _buildColorPicker(controller),
+              buildColorPicker(controller),
             ],
           ),
         ),
@@ -53,7 +54,7 @@ Future<void> showAddCategoryDialog(
 
       actionsAlignment: MainAxisAlignment.center,
       actions: [
-        TextButton(
+        ElevatedButton(
           onPressed: () {
             FocusManager.instance.primaryFocus?.unfocus();
             Navigator.of(context).pop();
@@ -68,44 +69,6 @@ Future<void> showAddCategoryDialog(
   );
 }
 
-TextFormField _buildCategoryNameField(CategoryController controller) {
-  return TextFormField(
-    initialValue: controller.categoryName.value,
-    onChanged: (value) => controller.categoryName.value = value,
-
-    decoration: const InputDecoration(
-      labelText: 'Category Name',
-      hintText: 'e.g., Movies, Books, Games',
-      border: OutlineInputBorder(),
-    ),
-
-    validator: (value) {
-      if (value == null || value.trim().isEmpty) {
-        return "Please Enter A Category Name";
-      }
-      return null;
-    },
-  );
-}
-
-Obx _buildColorPicker(CategoryController controller) {
-  return Obx(
-    () => ColorPicker(
-      color: controller.categoryColor.value,
-      onColorChanged: (Color newColor) {
-        controller.categoryColor.value = newColor;
-      },
-      wheelDiameter: 250,
-      enableShadesSelection: true,
-      pickersEnabled: const {
-        ColorPickerType.primary: false,
-        ColorPickerType.accent: false,
-        ColorPickerType.wheel: true,
-      },
-    ),
-  );
-}
-
 Obx _buildConfirmationButton(
   CategoryController controller,
   GlobalKey<FormState> formKey,
@@ -114,6 +77,12 @@ Obx _buildConfirmationButton(
 ) {
   return Obx(
     () => ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        side: BorderSide(
+          color: Theme.of(Get.context!).colorScheme.primary,
+          width: 2, // Border width
+        ),
+      ),
       onPressed: controller.isLoading
           ? null
           : () async {

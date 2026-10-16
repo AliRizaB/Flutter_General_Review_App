@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/Utilities/empty_state.dart';
+import 'package:flutter_general_reviewer/Utilities/app_bar_theme.dart';
+import 'package:flutter_general_reviewer/Utilities/general_widgets/delete_confirmation.dart';
+import 'package:flutter_general_reviewer/Utilities/general_widgets/empty_state.dart';
 import 'package:flutter_general_reviewer/models/media_status.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:flutter_general_reviewer/modules/status/widgets/status_dialog.dart';
@@ -16,10 +18,12 @@ class StatusPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.colorScheme.primary,
+        backgroundColor: getAppBarColor(theme),
+        foregroundColor: getAppBarForegroundColor(theme),
         title: Text(
           'Statuses',
           style: theme.textTheme.headlineMedium!.copyWith(
+            color: getAppBarForegroundColor(theme),
             fontFamily: 'Isometra',
           ),
         ),
@@ -84,20 +88,7 @@ class StatusPage extends StatelessWidget {
   ) async {
     if (direction == DismissDirection.endToStart) {
       // Swipe Left -> Delete
-      final confirmed = await Get.defaultDialog<bool>(
-        title: 'Delete Status',
-        backgroundColor: theme.colorScheme.error,
-        buttonColor: theme.colorScheme.onError,
-        content: const Text('Are you sure?'),
-
-        confirmTextColor: Colors.white,
-        textConfirm: 'YES',
-        onConfirm: () => Get.back(result: true),
-
-        cancelTextColor: Colors.white,
-        textCancel: 'no',
-        onCancel: () => false,
-      );
+      final confirmed = await deleteConfirmDialog(theme, title: status.name);
 
       if (confirmed == true && status.id != null) {
         await controller.deleteStatus(status.id!);

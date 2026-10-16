@@ -35,9 +35,8 @@ Future<void> showStatusDialog(
 
             children: [
               // Status Content
-
               _buildStatusNameField(controller),
-              
+
               const SizedBox(height: 16),
 
               const Text(
@@ -54,15 +53,15 @@ Future<void> showStatusDialog(
 
       actionsAlignment: MainAxisAlignment.center,
       actions: [
-        TextButton(
+        ElevatedButton(
           onPressed: () {
             FocusManager.instance.primaryFocus?.unfocus();
             Navigator.of(context).pop();
           },
-          child: const Text('Cancel'),
+          child: Text("Cancel"),
         ),
 
-        _buildConfirmationButton(controller, formKey, context, isEditing)
+        _buildConfirmationButton(controller, formKey, context, isEditing),
       ],
     ),
   );
@@ -114,6 +113,12 @@ Obx _buildConfirmationButton(
 ) {
   return Obx(
     () => ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        side: BorderSide(
+          color: Theme.of(Get.context!).colorScheme.primary,
+          width: 2, // Border width
+        ),
+      ),
       onPressed: controller.isLoading
           ? null
           : () async {
@@ -139,8 +144,7 @@ Obx _buildConfirmationButton(
               height: 20,
               child: CircularProgressIndicator(strokeWidth: 2),
             )
-          : Text(isEditing ? 'Update' : 'Add'),
+          : Text(isEditing ? 'Update' : 'Create'),
     ),
   );
 }
-

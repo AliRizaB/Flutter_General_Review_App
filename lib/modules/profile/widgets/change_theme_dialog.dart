@@ -12,6 +12,7 @@ void showChangeThemeDialog() {
       title: const Text('Theme Settings'),
       content: SizedBox(
         width: double.maxFinite,
+        height: 420,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -126,8 +127,18 @@ void showChangeThemeDialog() {
           ),
         ),
       ),
+      actionsAlignment: MainAxisAlignment.center,
       actions: [
-        TextButton(onPressed: () => Get.back(), child: const Text('Close')),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            side: BorderSide(
+              color: Theme.of(Get.context!).colorScheme.primary,
+              width: 2, // Border width
+            ),
+          ),
+          onPressed: () => Get.back(),
+          child: const Text('Close'),
+        ),
       ],
     ),
   );

@@ -56,7 +56,7 @@ Future<void> showAddReviewDialog(
 
       actionsAlignment: MainAxisAlignment.center,
       actions: [
-        TextButton(
+        ElevatedButton(
           onPressed: () {
             FocusManager.instance.primaryFocus?.unfocus();
             Navigator.of(context).pop();
@@ -66,6 +66,12 @@ Future<void> showAddReviewDialog(
 
         Obx(
           () => ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              side: BorderSide(
+                color: Theme.of(Get.context!).colorScheme.primary,
+                width: 2, // Border width
+              ),
+            ),
             onPressed: controller.isLoading
                 ? null
                 : () async {
