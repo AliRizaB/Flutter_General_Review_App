@@ -53,11 +53,13 @@ Future<void> showStatusDialog(
               ),
 
               // Status color
-              ColorPickerField(
-                initialColor: controller.statusColor.value,
-                onColorChanged: (Color newColor) {
-                  controller.statusColor.value = newColor;
-                },
+              Obx(
+                () => ColorPickerField(
+                  initialColor: controller.statusColor.value,
+                  onColorChanged: (Color newColor) {
+                    controller.statusColor.value = newColor;
+                  },
+                ),
               ),
             ],
           ),

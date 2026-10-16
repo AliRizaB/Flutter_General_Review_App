@@ -53,11 +53,13 @@ Future<void> showCategoryDialog(
               ),
 
               // Category color
-              ColorPickerField(
-                initialColor: controller.categoryColor.value,
-                onColorChanged: (Color newColor) {
-                  controller.categoryColor.value = newColor;
-                },
+              Obx(
+                () => ColorPickerField(
+                  initialColor: controller.categoryColor.value,
+                  onColorChanged: (Color newColor) {
+                    controller.categoryColor.value = newColor;
+                  },
+                ),
               ),
             ],
           ),
