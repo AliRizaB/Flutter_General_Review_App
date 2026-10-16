@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/utilities/general_widgets/build_swipe_background.dart';
-import 'package:flutter_general_reviewer/utilities/general_widgets/handle_dismiss.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/build_swipe_background.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/handle_dismiss.dart';
 import 'package:flutter_general_reviewer/utilities/app_bar_theme.dart';
-import 'package:flutter_general_reviewer/utilities/general_widgets/empty_state.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/empty_state.dart';
 import 'package:flutter_general_reviewer/modules/review/review_controller.dart';
 import 'package:flutter_general_reviewer/modules/review/widget/review_dialog.dart';
-import 'package:flutter_general_reviewer/modules/review/widget/review_list_wigdets/review_tile.dart';
+import 'package:flutter_general_reviewer/modules/review/widget/review_tile.dart';
 import 'package:get/get.dart';
 
 class ReviewList extends StatelessWidget {

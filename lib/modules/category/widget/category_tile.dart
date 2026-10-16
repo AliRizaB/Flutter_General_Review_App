@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/app_category.dart';
 import 'package:get/get.dart';
 
-import '../../../../routes/app_pages.dart';
+import '../../../routes/app_pages.dart';
 
 class CategoryTile extends StatelessWidget {
   const CategoryTile({super.key, required this.category});

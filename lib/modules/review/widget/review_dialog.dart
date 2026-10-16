@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/media_review.dart';
 import 'package:flutter_general_reviewer/modules/review/review_controller.dart';
-import 'package:flutter_general_reviewer/modules/review/widget/review_dialog_widgets/build_content_field.dart';
-import 'package:flutter_general_reviewer/utilities/general_widgets/form_submit_button.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_form.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/form_submit_button.dart';
 import 'package:get/get.dart';
 
 // A dialog menu for both Update and Create usage for reviewies
@@ -36,7 +36,12 @@ Future<void> showReviewDialog(
 
             children: [
               // Review Content
-              buildContentField(controller),
+              CustomTextField(
+                labelText: 'Review',
+                onChanged: (value) => controller.content.value = value,
+                initialValue: controller.content.value,
+                maxLines: 5,
+              ),
             ],
           ),
         ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/category/widget/add_dialog_category.dart';
-import 'package:flutter_general_reviewer/utilities/general_widgets/build_swipe_background.dart';
-import 'package:flutter_general_reviewer/utilities/general_widgets/empty_state.dart';
+import 'package:flutter_general_reviewer/modules/category/widget/dialog_category.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/build_swipe_background.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/empty_state.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
-import 'package:flutter_general_reviewer/modules/category/widget/category_page_widgets/category_tile.dart';
-import 'package:flutter_general_reviewer/utilities/general_widgets/handle_dismiss.dart';
+import 'package:flutter_general_reviewer/modules/category/widget/category_tile.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/handle_dismiss.dart';
 import 'package:get/get.dart';
 
 class CategoryPage extends GetView<CategoryController> {
@@ -52,7 +52,7 @@ class CategoryPage extends GetView<CategoryController> {
                 itemTitle: 'Category',
                 onDelete: () => controller.deleteCategory(category.id!),
                 onEdit: () =>
-                    showAddCategoryDialog(context, toUpdateCategory: category),
+                    showCategoryDialog(context, toUpdateCategory: category),
               );
             },
 

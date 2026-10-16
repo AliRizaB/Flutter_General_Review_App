@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/utilities/app_bar_theme.dart';
-import 'package:flutter_general_reviewer/modules/category/widget/add_dialog_category.dart';
+import 'package:flutter_general_reviewer/modules/category/widget/dialog_category.dart';
 
 AppBar homeAppBar(BuildContext context) {
   final theme = Theme.of(context);
@@ -16,7 +16,7 @@ AppBar homeAppBar(BuildContext context) {
     ),
     actions: [
       IconButton(
-        onPressed: () async => showAddCategoryDialog(context),
+        onPressed: () async => showCategoryDialog(context),
         icon: Icon(Icons.add, size: 30),
       ),
     ],

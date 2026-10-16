@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/media_status.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
-import 'package:flutter_general_reviewer/modules/status/widgets/status_dialog_widgets/build_color_picker.dart';
-import 'package:flutter_general_reviewer/utilities/general_widgets/form_submit_button.dart';
-import 'package:flutter_general_reviewer/modules/status/widgets/status_dialog_widgets/build_name_field.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/build_color_picker.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_form.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/form_submit_button.dart';
 import 'package:get/get.dart';
 
 // A dialog menu for both Update and Create usage for reviewies
@@ -37,7 +37,12 @@ Future<void> showStatusDialog(
 
             children: [
               // Status Content
-              buildStatusNameField(controller),
+              CustomTextField(
+                labelText: 'Status Name',
+                hintText: 'e.g., Completed, Plan To Watch, Dropped',
+                onChanged: (value) => controller.statusName.value = value,
+                initialValue: controller.statusName.value,
+              ),
 
               const SizedBox(height: 16),
 
@@ -47,7 +52,12 @@ Future<void> showStatusDialog(
               ),
 
               // Status color
-              buildColorPicker(controller),
+              ColorPickerField(
+                initialColor: controller.statusColor.value,
+                onColorChanged: (Color newColor) {
+                  controller.statusColor.value = newColor;
+                },
+              ),
             ],
           ),
         ),
