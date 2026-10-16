@@ -1,7 +1,9 @@
-import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/media_status.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
+import 'package:flutter_general_reviewer/modules/status/widgets/status_dialog_widgets/build_color_picker.dart';
+import 'package:flutter_general_reviewer/utilities/general_widgets/form_submit_button.dart';
+import 'package:flutter_general_reviewer/modules/status/widgets/status_dialog_widgets/build_name_field.dart';
 import 'package:get/get.dart';
 
 // A dialog menu for both Update and Create usage for reviewies
@@ -35,7 +37,7 @@ Future<void> showStatusDialog(
 
             children: [
               // Status Content
-              _buildStatusNameField(controller),
+              buildStatusNameField(controller),
 
               const SizedBox(height: 16),
 
@@ -45,7 +47,7 @@ Future<void> showStatusDialog(
               ),
 
               // Status color
-              _buildColorPicker(controller),
+              buildColorPicker(controller),
             ],
           ),
         ),
@@ -61,90 +63,13 @@ Future<void> showStatusDialog(
           child: Text("Cancel"),
         ),
 
-        _buildConfirmationButton(controller, formKey, context, isEditing),
-      ],
-    ),
-  );
-}
-
-TextFormField _buildStatusNameField(StatusController controller) {
-  return TextFormField(
-    initialValue: controller.statusName.value,
-    onChanged: (value) => controller.statusName.value = value,
-
-    decoration: const InputDecoration(
-      labelText: 'Status Name',
-      hintText: 'e.g., Completed, Plan To Watch, Dropped',
-      border: OutlineInputBorder(),
-    ),
-
-    validator: (value) {
-      if (value == null || value.trim().isEmpty) {
-        return "Please Enter A Status Name";
-      }
-      return null;
-    },
-  );
-}
-
-Obx _buildColorPicker(StatusController controller) {
-  return Obx(
-    () => ColorPicker(
-      color: controller.statusColor.value,
-      onColorChanged: (Color newColor) {
-        controller.statusColor.value = newColor;
-      },
-      wheelDiameter: 250,
-      enableShadesSelection: true,
-      pickersEnabled: const {
-        ColorPickerType.primary: false,
-        ColorPickerType.accent: false,
-        ColorPickerType.wheel: true,
-      },
-    ),
-  );
-}
-
-Obx _buildConfirmationButton(
-  StatusController controller,
-  GlobalKey<FormState> formKey,
-  BuildContext context,
-  bool isEditing,
-) {
-  return Obx(
-    () => ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        side: BorderSide(
-          color: Theme.of(Get.context!).colorScheme.primary,
-          width: 2, // Border width
+        FormSubmitButton(
+          formKey: formKey,
+          isEditing: isEditing,
+          onSubmit: () =>
+              isEditing ? controller.updateStatus() : controller.addStatus(),
         ),
-      ),
-      onPressed: controller.isLoading
-          ? null
-          : () async {
-              if (formKey.currentState!.validate()) {
-                // Unfocus keyboard
-                FocusManager.instance.primaryFocus?.unfocus();
-
-                // Dismiss dialog explicitly
-                // Can not use Get.Back() cause it is cauisng problem with the Success Snackbar
-                Navigator.of(context).pop();
-
-                if (isEditing) {
-                  await controller.updateStatus();
-                } else {
-                  // New status Creatio
-                  await controller.addStatus();
-                }
-              }
-            },
-      child: controller.isLoading
-          ? const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : Text(isEditing ? 'Update' : 'Create'),
+      ],
     ),
   );
 }

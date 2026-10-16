@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/Utilities/rating_details.dart';
+import 'package:flutter_general_reviewer/utilities/rating_details.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:get/get.dart';

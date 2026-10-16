@@ -5,6 +5,7 @@ import 'package:flutter_general_reviewer/modules/mediaList/widgets/add_media_wid
 import 'package:flutter_general_reviewer/modules/mediaList/widgets/add_media_widgets/status_selector.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/widgets/add_media_widgets/title_field.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
+import 'package:flutter_general_reviewer/utilities/general_widgets/form_submit_button.dart';
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -102,40 +103,12 @@ Future showMediaDialog(BuildContext context, {AppMedia? toUpdateMedia}) async {
           child: const Text('Cancel'),
         ),
 
-        Obx(
-          () => ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              side: BorderSide(
-                color: Theme.of(Get.context!).colorScheme.primary,
-                width: 2, // Border width
-              ),
-            ),
-            onPressed: mediaController.isLoading
-                ? null
-                : () async {
-                    if (formKey.currentState!.validate()) {
-                      // Unfocus keyboard
-                      FocusManager.instance.primaryFocus?.unfocus();
-
-                      // Dismiss dialog explicitly
-                      // Can not use Get.Back() cause it is cauisng problem with the Success Snackbar
-                      Navigator.of(context).pop();
-
-                      if (isEditing) {
-                        await mediaController.updateMedia();
-                      } else {
-                        await mediaController.addMedia();
-                      }
-                    }
-                  },
-            child: mediaController.isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Text(isEditing ? 'Update' : 'Add'),
-          ),
+        FormSubmitButton(
+          formKey: formKey,
+          isEditing: isEditing,
+          onSubmit: () => isEditing
+              ? mediaController.updateMedia()
+              : mediaController.addMedia(),
         ),
       ],
     ),

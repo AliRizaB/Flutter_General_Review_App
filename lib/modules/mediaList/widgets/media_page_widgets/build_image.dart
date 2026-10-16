@@ -1,7 +1,7 @@
   import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/Utilities/general_widgets/load_image.dart';
+import 'package:flutter_general_reviewer/utilities/general_widgets/load_image.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 
 Widget buildMediaBanner(ThemeData theme, AppMedia media) {

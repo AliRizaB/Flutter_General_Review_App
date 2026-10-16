@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/Utilities/app_bar_theme.dart';
-import 'package:flutter_general_reviewer/Utilities/general_widgets/delete_confirmation.dart';
-import 'package:flutter_general_reviewer/Utilities/general_widgets/empty_state.dart';
-import 'package:flutter_general_reviewer/models/media_review.dart';
+import 'package:flutter_general_reviewer/utilities/general_widgets/build_swipe_background.dart';
+import 'package:flutter_general_reviewer/utilities/general_widgets/handle_dismiss.dart';
+import 'package:flutter_general_reviewer/utilities/app_bar_theme.dart';
+import 'package:flutter_general_reviewer/utilities/general_widgets/empty_state.dart';
 import 'package:flutter_general_reviewer/modules/review/review_controller.dart';
-import 'package:flutter_general_reviewer/modules/review/widget/add_review_dialog.dart';
-import 'package:flutter_general_reviewer/modules/review/widget/review_tile.dart';
+import 'package:flutter_general_reviewer/modules/review/widget/review_dialog.dart';
+import 'package:flutter_general_reviewer/modules/review/widget/review_list_wigdets/review_tile.dart';
 import 'package:get/get.dart';
 
 class ReviewList extends StatelessWidget {
@@ -29,7 +29,7 @@ class ReviewList extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () => showAddReviewDialog(context),
+            onPressed: () => showReviewDialog(context),
             icon: const Icon(Icons.add, size: 30),
           ),
         ],
@@ -50,26 +50,45 @@ class ReviewList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           itemCount: reviews.length,
           separatorBuilder: (context, index) => const SizedBox(height: 12),
+
           itemBuilder: (context, index) {
             final review = reviews[index];
 
             return Dismissible(
               key: ValueKey(review.id ?? index),
+
               direction: DismissDirection.horizontal,
-              confirmDismiss: (direction) =>
-                  _handleDismiss(context, direction, review, controller, theme),
-              background: _buildSwipeBackground(
-                theme: theme,
+
+              confirmDismiss: (direction) async {
+                if (review.id == null) {
+                  controller.showErrorSnackBar(
+                    message: 'Review Id can not be Null',
+                  );
+                  return false;
+                }
+
+                return handleDismiss(
+                  context: context,
+                  direction: direction,
+                  itemTitle: 'Review',
+                  onDelete: () => controller.deleteReview(review.id!),
+                  onEdit: () =>
+                      showReviewDialog(context, toUpdateReview: review),
+                );
+              },
+
+              background: buildSwipeBackground(
                 color: theme.colorScheme.inversePrimary,
                 icon: Icons.edit_outlined,
                 alignment: Alignment.centerLeft,
               ),
-              secondaryBackground: _buildSwipeBackground(
-                theme: theme,
+
+              secondaryBackground: buildSwipeBackground(
                 color: theme.colorScheme.errorContainer,
                 icon: Icons.delete_outline,
                 alignment: Alignment.centerRight,
               ),
+
               child: ReviewTile(review: review),
             );
           },
@@ -79,43 +98,4 @@ class ReviewList extends StatelessWidget {
   }
 
   /// Handles swipe actions (Edit vs Delete)
-  Future<bool> _handleDismiss(
-    BuildContext context,
-    DismissDirection direction,
-    MediaReview review,
-    ReviewController controller,
-    ThemeData theme,
-  ) async {
-    if (direction == DismissDirection.endToStart) {
-      // Swipe Left -> Delete
-      final confirmed = await deleteConfirmDialog(theme, title: 'review');
-
-      if (confirmed == true && review.id != null) {
-        await controller.deleteReview(review.id!);
-        return true;
-      }
-      return false;
-    } else {
-      showAddReviewDialog(context, toUpdateStatus: review);
-      return false;
-    }
-  }
-
-  Widget _buildSwipeBackground({
-    required ThemeData theme,
-    required Color color,
-    required IconData icon,
-    required Alignment alignment,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      alignment: alignment,
-      child: Icon(icon),
-    );
-  }
 }

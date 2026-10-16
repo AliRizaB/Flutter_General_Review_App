@@ -1,7 +1,7 @@
 // Essentials
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/Utilities/app_bar_theme.dart';
-import 'package:flutter_general_reviewer/Utilities/general_widgets/delete_confirmation.dart';
+import 'package:flutter_general_reviewer/utilities/app_bar_theme.dart';
+import 'package:flutter_general_reviewer/utilities/general_widgets/delete_confirmation.dart';
 import 'package:get/get.dart';
 
 // Models
@@ -96,10 +96,7 @@ class MediaPage extends GetView<MediaController> {
           showMediaDialog(context, toUpdateMedia: media);
         } else if (value == 'delete') {
           // Handle Delete action
-          final bool isConfirmed = await deleteConfirmDialog(
-            theme,
-            title: media.name,
-          );
+          final bool isConfirmed = await deleteConfirmDialog(title: media.name);
           if (isConfirmed) {
             await controller.deleteMedia(media);
             if (!context.mounted) return;

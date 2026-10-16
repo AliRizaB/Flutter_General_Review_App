@@ -1,6 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/Utilities/general_widgets/load_image.dart';
+import 'package:flutter_general_reviewer/utilities/general_widgets/load_image.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 
 DottedBorder buildMedia(Color statusColor, AppMedia currentMedia) {

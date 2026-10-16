@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 
-Future<bool> deleteConfirmDialog(
-  ThemeData theme, {
-  required String title,
-}) async {
-  return await Get.defaultDialog<bool>(
-        titleStyle: TextStyle(overflow: TextOverflow.ellipsis),
-        title: "Delete \"$title\"",
-        content: const Text('Are you sure?'),
+Future<bool> deleteConfirmDialog({required String title}) async {
+  final theme = Get.theme;
+  final result = await Get.defaultDialog<bool>(
+    title: "Delete \"$title\"",
+    content: const Text('Are you sure?'),
+    titleStyle: TextStyle(
+      color: theme.colorScheme.onErrorContainer,
+      fontWeight: FontWeight.bold,
+      overflow: TextOverflow.ellipsis,
+    ),
 
-        backgroundColor: theme.colorScheme.errorContainer.withAlpha(120),
+    backgroundColor: theme.colorScheme.errorContainer.withAlpha(120),
 
-        textConfirm: 'YES',
-        onConfirm: () {
-          Get.back(result: true);
-        },
+    textConfirm: 'Delete',
+    confirmTextColor: theme.colorScheme.onError,
+    buttonColor: theme.colorScheme.error,
+    onConfirm: () => Get.back(result: true),
 
-        buttonColor: theme.colorScheme.error,
-
-        cancelTextColor: Colors.white,
-        textCancel: 'no',
-        onCancel: () => false,
-      ) ??
-      false;
+    textCancel: 'Cancel',
+    cancelTextColor: theme.colorScheme.error,
+    onCancel: () {
+      // Get.defaultDialog closes automatically on cancel tap
+    },
+  );
+  return result ?? false;
 }

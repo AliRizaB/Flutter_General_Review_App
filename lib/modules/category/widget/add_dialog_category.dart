@@ -3,6 +3,7 @@ import 'package:flutter_general_reviewer/models/app_category.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
 import 'package:flutter_general_reviewer/modules/category/widget/add_category_widgets/color_picker.dart';
 import 'package:flutter_general_reviewer/modules/category/widget/add_category_widgets/name_field.dart';
+import 'package:flutter_general_reviewer/utilities/general_widgets/form_submit_button.dart';
 import 'package:get/get.dart';
 
 // A dialog menu for both Update and Create usage for Categories
@@ -62,53 +63,15 @@ Future<void> showAddCategoryDialog(
           child: const Text('Cancel'),
         ),
 
-        _buildConfirmationButton(controller, formKey, context, isEditing),
+        FormSubmitButton(
+          formKey: formKey,
+          isEditing: isEditing,
+          onSubmit: () => isEditing
+              ? controller.updateCategory()
+              : controller.addCategory(),
+        ),
       ],
     ),
     barrierDismissible: true,
-  );
-}
-
-Obx _buildConfirmationButton(
-  CategoryController controller,
-  GlobalKey<FormState> formKey,
-  BuildContext context,
-  bool isEditing,
-) {
-  return Obx(
-    () => ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        side: BorderSide(
-          color: Theme.of(Get.context!).colorScheme.primary,
-          width: 2, // Border width
-        ),
-      ),
-      onPressed: controller.isLoading
-          ? null
-          : () async {
-              if (formKey.currentState!.validate()) {
-                // Unfocus keyboard
-                FocusManager.instance.primaryFocus?.unfocus();
-
-                // Dismiss dialog explicitly
-                // Can not use Get.Back() cause it is cauisng problem with the Success Snackbar
-                Navigator.of(context).pop();
-
-                if (isEditing) {
-                  await controller.updateCategory();
-                } else {
-                  // New category Creatio
-                  await controller.addCategory();
-                }
-              }
-            },
-      child: controller.isLoading
-          ? const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : Text(isEditing ? 'Update' : 'Add'),
-    ),
   );
 }
