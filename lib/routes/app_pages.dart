@@ -2,9 +2,9 @@
 
 import 'package:flutter_general_reviewer/modules/home/home_binding.dart';
 import 'package:flutter_general_reviewer/modules/home/home_page.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/media_binding.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/media_list_page.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_page.dart';
+import 'package:flutter_general_reviewer/modules/media/media_binding.dart';
+import 'package:flutter_general_reviewer/modules/media/media_list_page.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_page.dart';
 import 'package:flutter_general_reviewer/modules/review/review_binding.dart';
 import 'package:flutter_general_reviewer/modules/review/review_list.dart';
 

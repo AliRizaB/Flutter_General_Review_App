@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/media_controller.dart';
+import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 

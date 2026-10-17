@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 // Widgets
-import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_form_fields.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_form_fields.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/alert_dialog_base.dart';
 
 // App Controllers and Services
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/media_controller.dart';
+import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
 
 // Models
