@@ -4,87 +4,64 @@ import 'package:flutter_general_reviewer/modules/mediaList/media_controller.dart
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-Obx imageSelector(MediaController mediaController) {
-  return Obx(() {
-    final path = mediaController.imagePath.value;
-    final hasImage = path.isNotEmpty && path != 'assets/images/noImage.jpg';
-    Widget imageChild = loadImage(
-      mediaController.imagePath.value,
-      BoxFit.cover,
-    );
+class ImageSelectorField extends StatelessWidget {
+  final MediaController mediaController;
 
-    return Column(
-      children: [
-        InkWell(
-          onTap: () => showImagePickerOptions(mediaController),
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            height: 150,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[400]!),
-            ),
-            child: hasImage
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: imageChild,
-                  )
-                : const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.add_a_photo, size: 40, color: Colors.grey),
-                      SizedBox(height: 8),
-                      Text('Tap to add photo'),
-                    ],
-                  ),
-          ),
-        ),
-        if (hasImage)
-          TextButton.icon(
-            onPressed: () => mediaController.imagePath.value = '',
-            icon: const Icon(Icons.delete, color: Colors.red),
-            label: const Text(
-              'Remove Photo',
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
-      ],
-    );
-  });
-}
+  const ImageSelectorField({super.key, required this.mediaController});
 
-void showImagePickerOptions(MediaController controller) {
-  Get.bottomSheet(
-    Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Theme.of(Get.context!).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      child: SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('Choose from Gallery'),
-              onTap: () async {
-                Get.back(); // Close bottom sheet
-                await controller.pickAndSaveImage(ImageSource.gallery);
-              },
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Obx(() {
+      final path = mediaController.imagePath.value;
+      final hasImage = path.isNotEmpty && path != 'assets/images/noImage.jpg';
+
+      return Column(
+        children: [
+          InkWell(
+            onTap: () => mediaController.pickAndSaveImage(ImageSource.gallery),
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              height: 150,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: theme.colorScheme.outlineVariant),
+              ),
+              child: hasImage
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: loadImage(
+                        mediaController.imagePath.value,
+                        BoxFit.cover,
+                      ),
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.add_a_photo,
+                          size: 40,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        SizedBox(height: 8),
+                        Text('Tap to select from gallery'),
+                      ],
+                    ),
             ),
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text('Take a Photo'),
-              onTap: () async {
-                Get.back(); // Close bottom sheet
-                await controller.pickAndSaveImage(ImageSource.camera);
-              },
+          ),
+          if (hasImage)
+            TextButton.icon(
+              onPressed: () => mediaController.imagePath.value = '',
+              icon: const Icon(Icons.delete, color: Colors.red),
+              label: const Text(
+                'Remove Photo',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
-          ],
-        ),
-      ),
-    ),
-  );
+        ],
+      );
+    });
+  }
 }

@@ -3,11 +3,19 @@ import 'package:flutter_general_reviewer/modules/mediaList/media_controller.dart
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:get/get.dart';
 
-Obx statusSelectorDropdown(
-  MediaController mediaController,
-  StatusController statusController,
-) {
-  return Obx(() {
+class StatusSelectorDropdown extends StatelessWidget {
+  final MediaController mediaController;
+  final StatusController statusController;
+
+  const StatusSelectorDropdown({
+    super.key,
+    required this.mediaController,
+    required this.statusController,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
     final int? selectedValue = mediaController.statusId.value == -1
         ? null
         : mediaController.statusId.value;
@@ -40,4 +48,5 @@ Obx statusSelectorDropdown(
       },
     );
   });
+  }
 }

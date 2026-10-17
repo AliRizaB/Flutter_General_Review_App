@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/repository/media_repo.dart';
+import 'package:flutter_general_reviewer/services/api_service.dart';
+import 'package:flutter_general_reviewer/services/storage_service.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
@@ -11,6 +14,8 @@ import 'package:path_provider/path_provider.dart';
 
 class MediaController extends BaseController {
   final MediaRepository _mediaRepository = Get.find<MediaRepository>();
+  final ApiService apiService = Get.find<ApiService>();
+  final StorageService _storageService = Get.find<StorageService>();
   RxList<AppMedia> medias = <AppMedia>[].obs;
 
   int? mediaId;
@@ -33,7 +38,6 @@ class MediaController extends BaseController {
     fetchMedias();
   }
 
-
   void initMediaForm(AppMedia? media) {
     if (media != null) {
       mediaId = media.id;
@@ -54,6 +58,33 @@ class MediaController extends BaseController {
     }
   }
 
+  // Api Search
+  Future<List<AppMedia>> searchMediaFromApi(String query) async {
+    final cleanQuery = query.trim();
+    if (cleanQuery.isEmpty || cleanQuery.length < 3) return [];
+
+    try {
+      final activeCategoryKey = _storageService.selectedCategoryKey.value;
+      return await apiService.searchMedia(query, activeCategoryKey, categoryId);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // Api Select
+  void applySelectedMedia({
+    required AppMedia selectedMedia,
+    required TextEditingController nameController,
+    required TextEditingController descController,
+  }) {
+    initMediaForm(selectedMedia);
+
+    // SynchFields
+    nameController.text = name.value;
+    descController.text = description.value;
+  }
+
+  // Image Writing
   Future<void> pickAndSaveImage(ImageSource source) async {
     try {
       final ImagePicker picker = ImagePicker();

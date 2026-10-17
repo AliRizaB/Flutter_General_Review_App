@@ -17,7 +17,9 @@ DottedBorder buildMedia(Color statusColor, AppMedia currentMedia) {
       child: Stack(
         children: [
           // Media Image Render
-          _buildMediaImage(currentMedia),
+          Positioned.fill(
+            child: loadImage(currentMedia.imagePath, BoxFit.cover),
+          ),
 
           // Title of the media is showing
           _buildMediaTitle(currentMedia),
@@ -25,12 +27,6 @@ DottedBorder buildMedia(Color statusColor, AppMedia currentMedia) {
       ),
     ),
   );
-}
-
-Positioned _buildMediaImage(AppMedia currentMedia) {
-  Widget imageChild = loadImage(currentMedia.imagePath, BoxFit.cover);
-
-  return Positioned.fill(child: imageChild);
 }
 
 Positioned _buildMediaTitle(AppMedia currentMedia) {

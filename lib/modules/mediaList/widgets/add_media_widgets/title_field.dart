@@ -1,65 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/modules/mediaList/media_controller.dart';
-import 'package:flutter_general_reviewer/services/api_service.dart';
-import 'package:flutter_general_reviewer/services/storage_service.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_field.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:get/instance_manager.dart';
 
-Widget mediaTitle(
-  MediaController mediaController,
-  StorageService storageService,
-  TextEditingController nameTextController,
-  TextEditingController descTextController,
-) {
-  final apiService = Get.find<ApiService>();
+class MediaTitleField extends StatelessWidget {
+  final MediaController mediaController;
+  final TextEditingController nameTextController;
+  final TextEditingController descTextController;
 
-  return TypeAheadField<AppMedia>(
-    controller: nameTextController,
-    debounceDuration: const Duration(milliseconds: 400),
-    suggestionsCallback: (search) async {
-      final activeCategoryKey = storageService.selectedCategoryKey.value;
-      return await apiService.searchMedia(
-        search,
-        activeCategoryKey,
-        mediaController.categoryId,
-      );
-    },
-    itemBuilder: (context, AppMedia suggestion) {
-      return ListTile(
-        title: Text(suggestion.name),
-        subtitle: Text(
-          suggestion.description ?? '',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      );
-    },
-    onSelected: (AppMedia selectedMedia) {
-      nameTextController.text = selectedMedia.name;
-      descTextController.text = selectedMedia.description ?? '';
+  const MediaTitleField({
+    super.key,
+    required this.mediaController,
+    required this.nameTextController,
+    required this.descTextController,
+  });
 
-      mediaController.name.value = selectedMedia.name;
-      mediaController.description.value = selectedMedia.description ?? '';
-      mediaController.imagePath.value = selectedMedia.imagePath ?? '';
-    },
-    builder: (context, textController, focusNode) {
-      return TextFormField(
-        controller: textController,
-        focusNode: focusNode,
-        decoration: InputDecoration(
+  @override
+  Widget build(BuildContext context) {
+    return TypeAheadField<AppMedia>(
+      controller: nameTextController,
+      debounceDuration: const Duration(milliseconds: 400),
+      suggestionsCallback: (search) =>
+          mediaController.searchMediaFromApi(search),
+      itemBuilder: (context, AppMedia suggestion) {
+        return ListTile(
+          title: Text(suggestion.name),
+          subtitle:
+              (suggestion.description != null &&
+                  suggestion.description!.isNotEmpty)
+              ? Text(
+                  suggestion.description ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                )
+              : null,
+        );
+      },
+      onSelected: (AppMedia selectedMedia) =>
+          mediaController.applySelectedMedia(
+            selectedMedia: selectedMedia,
+            nameController: nameTextController,
+            descController: descTextController,
+          ),
+      builder: (context, textController, focusNode) {
+        return CustomTextField(
           labelText: 'Media Name',
+          onChanged: (value) => mediaController.name.value = value,
           hintText: 'Type to search...',
-          border: const OutlineInputBorder(),
-        ),
-        onChanged: (value) => mediaController.name.value = value,
-        validator: (value) {
-          if (value == null || value.trim().isEmpty) {
-            return "Please Enter A Media Name";
-          }
-          return null;
-        },
-      );
-    },
-  );
+          controller: textController,
+          focusNode: focusNode,
+        );
+      },
+    );
+  }
 }

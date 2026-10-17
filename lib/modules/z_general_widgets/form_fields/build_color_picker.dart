@@ -13,19 +13,21 @@ class ColorPickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColorPicker(
-        color: initialColor,
-        onColorChanged: onColorChanged,
-        wheelDiameter: 250,
-        enableShadesSelection: true,
-        pickersEnabled: const {
-          ColorPickerType.primary: false,
-          ColorPickerType.accent: false,
-          ColorPickerType.wheel: true,
-        },
-      );
-    
+    return Column(
+      children: [
+        const Text('Pick Color', style: TextStyle(fontWeight: FontWeight.bold)),
+        ColorPicker(
+          color: initialColor,
+          onColorChanged: onColorChanged,
+          wheelDiameter: 250,
+          enableShadesSelection: true,
+          pickersEnabled: const {
+            ColorPickerType.primary: false,
+            ColorPickerType.accent: false,
+            ColorPickerType.wheel: true,
+          },
+        ),
+      ],
+    );
   }
 }
-
-
