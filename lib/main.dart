@@ -4,6 +4,7 @@ import 'package:flutter_general_reviewer/routes/app_pages.dart';
 import 'package:flutter_general_reviewer/services/database_service.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
 import 'package:flutter_general_reviewer/services/theme_service.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 
 void main() async {
@@ -35,6 +36,12 @@ class MainApp extends StatelessWidget {
 
     return Obx(
       () => GetMaterialApp(
+        supportedLocales: const [Locale('en', 'US'), Locale('tr', 'TR')],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
         theme: FlexThemeData.light(
           scheme: themeService.currentScheme.value,
           useMaterial3: true,

@@ -21,16 +21,37 @@ class MediaTitleField extends StatelessWidget {
     return TypeAheadField<AppMedia>(
       controller: nameTextController,
       debounceDuration: const Duration(milliseconds: 400),
-      suggestionsCallback: (search) =>
-          mediaController.searchMediaFromApi(search),
+      suggestionsCallback: (search) async {
+        final query = search.trim();
+        if (query.length < 3) return [];
+        return await mediaController.searchMediaFromApi(search);
+      },
+
+      loadingBuilder: (context) => const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Center(
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(strokeWidth: 2.5),
+          ),
+        ),
+      ),
+
+      emptyBuilder: (context) => const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Text(
+          'No items found. You can enter details manually.',
+          style: TextStyle(color: Colors.grey),
+        ),
+      ),
+
       itemBuilder: (context, AppMedia suggestion) {
         return ListTile(
           title: Text(suggestion.name),
-          subtitle:
-              (suggestion.description != null &&
-                  suggestion.description!.isNotEmpty)
+          subtitle: (suggestion.description.isNotEmpty)
               ? Text(
-                  suggestion.description ?? '',
+                  suggestion.description,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 )

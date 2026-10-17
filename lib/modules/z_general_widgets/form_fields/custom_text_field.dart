@@ -4,24 +4,31 @@ class CustomTextField extends StatelessWidget {
   final String labelText;
   final String? hintText;
   final String? initialValue;
-  final ValueChanged<String> onChanged;
+
+  final ValueChanged<String>? onChanged;
+  final FormFieldSetter<String>? onSaved;
+
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+
   final String? Function(String?)? validator;
   final int maxLines;
   final int? maxLength;
-  final TextEditingController? controller;
-  final FocusNode? focusNode;
 
   const CustomTextField({
     super.key,
     required this.labelText,
-    required this.onChanged,
-    this.validator,
     this.hintText,
     this.initialValue,
-    this.maxLines = 1,
-    this.maxLength,
+
+    this.onChanged,
+    this.onSaved,
+    this.validator,
+
     this.controller,
     this.focusNode,
+    this.maxLines = 1,
+    this.maxLength,
   }) : assert(
          initialValue == null || controller == null,
          'Cannot provide both an initialValue and a controller.',
@@ -37,12 +44,15 @@ class CustomTextField extends StatelessWidget {
       onChanged: onChanged,
       maxLines: maxLines,
       maxLength: maxLength,
+      onSaved: onSaved,
 
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
         border: const OutlineInputBorder(),
       ),
+
+      style: const TextStyle(fontFamily: null),
 
       validator:
           validator ??

@@ -42,7 +42,7 @@ class MediaController extends BaseController {
     if (media != null) {
       mediaId = media.id;
       name.value = media.name;
-      description.value = media.description ?? '';
+      description.value = media.description ;
       rating.value = media.rating;
       statusId.value = media.statusId ?? -1;
       imagePath.value = media.imagePath ?? '';
@@ -60,9 +60,6 @@ class MediaController extends BaseController {
 
   // Api Search
   Future<List<AppMedia>> searchMediaFromApi(String query) async {
-    final cleanQuery = query.trim();
-    if (cleanQuery.isEmpty || cleanQuery.length < 3) return [];
-
     try {
       final activeCategoryKey = _storageService.selectedCategoryKey.value;
       return await apiService.searchMedia(query, activeCategoryKey, categoryId);

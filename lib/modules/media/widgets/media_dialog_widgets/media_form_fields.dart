@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/api_options.dart';
-import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/image_selector.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/image_selector_field.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/rating_widget.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/status_selector.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/title_field.dart';

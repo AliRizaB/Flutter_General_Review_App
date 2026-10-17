@@ -4,15 +4,15 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 
 const Map<String, String?> _apiCategories = {
   'None': null,
-  'Game': StorageKeys.apiGame,
-  'Movie': StorageKeys.apiMovie,
-  'Series': StorageKeys.apiSeries,
   'Anime': StorageKeys.apiAnime,
   'Book': StorageKeys.apiBook,
+  'Game': StorageKeys.apiGame,
+  'Film & TV': StorageKeys.apiMovieAndSeries,
 };
 
 Widget apiSearchOptions(StorageService service) {
   return Wrap(
+    alignment: WrapAlignment.center,
     spacing: 8.0,
     runSpacing: 4.0,
     children: _apiCategories.entries.map((entry) {

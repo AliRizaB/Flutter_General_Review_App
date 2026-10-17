@@ -8,10 +8,11 @@ abstract class StorageKeys {
   static const String themeMode = 'theme_mode';
 
   static const String apiGame = 'api_game';
-  static const String apiMovie = 'api_movie';
-  static const String apiSeries = 'api_series';
+  static const String apiMovieAndSeries = 'api_movie';
   static const String apiAnime = 'api_anime';
   static const String apiBook = 'api_book';
+
+  static const String languageCode = 'languageCode';
 }
 
 class StorageService extends GetxController {

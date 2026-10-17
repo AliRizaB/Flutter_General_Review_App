@@ -11,10 +11,10 @@ import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 
 // Build Widgets
-import 'package:flutter_general_reviewer/modules/media/widgets/media_page_widgets/build_desc.dart';
-import 'package:flutter_general_reviewer/modules/media/widgets/media_page_widgets/build_image.dart';
-import 'package:flutter_general_reviewer/modules/media/widgets/media_page_widgets/build_media_info.dart';
-import 'package:flutter_general_reviewer/modules/media/widgets/media_page_widgets/build_review_button.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_page_widgets/media_description.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_page_widgets/media_banner.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_page_widgets/media_info.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_page_widgets/review_button.dart';
 
 // Connection to Widget
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog.dart';
@@ -24,88 +24,117 @@ class MediaPage extends GetView<MediaController> {
 
   final AppMedia initialMedia = Get.arguments as AppMedia;
 
-  AppMedia get media =>
-      controller.medias.firstWhereOrNull((m) => m.id == initialMedia.id) ??
-      initialMedia;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Obx(
-      () => Scaffold(
-        appBar: AppBar(
-          backgroundColor: getAppBarColor(theme),
-          foregroundColor: getAppBarForegroundColor(theme),
-
-          title: Text(
-            media.name,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: getAppBarColor(theme),
+        foregroundColor: getAppBarForegroundColor(theme),
+        centerTitle: true,
+        elevation: 0,
+        title: Obx(() {
+          // Fetching media again for updated media
+          final currentMedia =
+              controller.medias.firstWhereOrNull(
+                (media) => media.id == initialMedia.id,
+              ) ??
+              initialMedia;
+          return Text(
+            currentMedia.name,
             style: theme.textTheme.headlineMedium!.copyWith(
               color: getAppBarForegroundColor(theme),
               fontFamily: 'Isometra',
             ),
+          );
+        }),
+
+        actions: [
+          _MediaOptionsButton(
+            initialMedia: initialMedia,
+            controller: controller,
           ),
-          centerTitle: true,
-          elevation: 0,
-          actions: [_buildOptionButtons(context, theme)],
-        ),
-        body: SingleChildScrollView(
+        ],
+      ),
+      body: Obx(() {
+        final currentMedia =
+            controller.medias.firstWhereOrNull(
+              (media) => media.id == initialMedia.id,
+            ) ??
+            initialMedia;
+
+        return SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Image
-              buildMediaBanner(theme, media),
+              MediaBanner(media: currentMedia),
 
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    buildMediaInfo(theme, media),
+                    MediaInfoBar(media: currentMedia),
 
                     const SizedBox(height: 16),
 
                     // Description Section
-                    buildDescription(theme, media),
+                    MediaDescription(media: currentMedia),
 
                     const SizedBox(height: 16),
                     // Reviews
-                    buildReviewButton(theme, media.id!),
+                    ReviewButton(mediaId: currentMedia.id!),
                   ],
                 ),
               ),
             ],
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
+}
 
-  //
-  // BUILD MORE OPTION BUTTONS
-  //
-  PopupMenuButton<String> _buildOptionButtons(
-    BuildContext context,
-    ThemeData theme,
-  ) {
+class _MediaOptionsButton extends StatelessWidget {
+  final AppMedia initialMedia;
+  final MediaController controller;
+  const _MediaOptionsButton({
+    required this.initialMedia,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return PopupMenuButton<String>(
       icon: const Icon(Icons.more_vert),
       onSelected: (value) async {
+        // Fetching fresh State
+        final currentMedia =
+            controller.medias.firstWhereOrNull(
+              (m) => m.id == initialMedia.id,
+            ) ??
+            initialMedia;
+
         if (value == 'update') {
           // Handle Update action
-          showMediaDialog(context, toUpdateMedia: media);
+          showMediaDialog(context, toUpdateMedia: currentMedia);
         } else if (value == 'delete') {
           // Handle Delete action
-          final bool isConfirmed = await deleteConfirmDialog(title: media.name);
+          final bool isConfirmed = await deleteConfirmDialog(
+            title: currentMedia.name,
+          );
           if (isConfirmed) {
-            await controller.deleteMedia(media);
-            if (!context.mounted) return;
-            Navigator.of(context).pop();
+            await controller.deleteMedia(currentMedia);
+            if (context.mounted) {
+              Navigator.of(context).pop();
+            }
           }
         }
       },
-      itemBuilder: (BuildContext context) => [
-        const PopupMenuItem<String>(
+      itemBuilder: (BuildContext context) => const [
+        PopupMenuItem<String>(
           value: 'update',
           child: Row(
             children: [
@@ -115,7 +144,7 @@ class MediaPage extends GetView<MediaController> {
             ],
           ),
         ),
-        const PopupMenuItem<String>(
+        PopupMenuItem<String>(
           value: 'delete',
           child: Row(
             children: [
