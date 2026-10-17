@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/utilities/app_bar_theme.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/media_controller.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_dialog.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_grid.dart';
+import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_grid.dart';
 import 'package:get/get.dart';
 
 class MediaListPage extends GetView<MediaController> {

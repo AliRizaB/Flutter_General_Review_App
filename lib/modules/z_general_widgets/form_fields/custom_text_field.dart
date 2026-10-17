@@ -7,6 +7,9 @@ class CustomTextField extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final String? Function(String?)? validator;
   final int maxLines;
+  final int? maxLength;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
 
   const CustomTextField({
     super.key,
@@ -16,14 +19,24 @@ class CustomTextField extends StatelessWidget {
     this.hintText,
     this.initialValue,
     this.maxLines = 1,
-  });
+    this.maxLength,
+    this.controller,
+    this.focusNode,
+  }) : assert(
+         initialValue == null || controller == null,
+         'Cannot provide both an initialValue and a controller.',
+       );
+  // assertion if Both controller and initailValue given together
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      initialValue: initialValue,
+      controller: controller,
+      focusNode: focusNode,
+      initialValue: controller == null ? initialValue : null,
       onChanged: onChanged,
       maxLines: maxLines,
+      maxLength: maxLength,
 
       decoration: InputDecoration(
         labelText: labelText,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/category/widget/dialog_category.dart';
+import 'package:flutter_general_reviewer/modules/category/widget/category_dialog.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/build_swipe_background.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/empty_state.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';

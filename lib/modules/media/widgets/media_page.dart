@@ -8,16 +8,16 @@ import 'package:get/get.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 
 // Controller
-import 'package:flutter_general_reviewer/modules/mediaList/media_controller.dart';
+import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 
 // Build Widgets
-import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_page_widgets/build_desc.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_page_widgets/build_image.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_page_widgets/build_media_info.dart';
-import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_page_widgets/build_review_button.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_page_widgets/build_desc.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_page_widgets/build_image.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_page_widgets/build_media_info.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_page_widgets/build_review_button.dart';
 
 // Connection to Widget
-import 'package:flutter_general_reviewer/modules/mediaList/widgets/media_dialog.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog.dart';
 
 class MediaPage extends GetView<MediaController> {
   MediaPage({super.key});
