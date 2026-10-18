@@ -5,13 +5,7 @@ import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CategoryRepository extends GetxController {
-  late final Database db;
-
-  @override
-  void onInit() {
-    super.onInit();
-    db = Get.find<DatabaseService>().db;
-  }
+  Database get db => Get.find<DatabaseService>().db;
 
   // CRUD Operations
   // Create Operation For Table
@@ -19,7 +13,9 @@ class CategoryRepository extends GetxController {
     try {
       await db.insert(DBConstants.categoryTable, category.toMap());
     } catch (e) {
-      debugPrint("Error: while creating the category: \nERRROR: ${e.toString()}");
+      debugPrint(
+        "Error: while creating the category: \nERRROR: ${e.toString()}",
+      );
     }
   }
 
@@ -32,7 +28,9 @@ class CategoryRepository extends GetxController {
           .toList();
       return categories;
     } catch (e) {
-      debugPrint("Error: while getting the category: \nERRROR: ${e.toString()}");
+      debugPrint(
+        "Error: while getting the category: \nERRROR: ${e.toString()}",
+      );
       return List.empty();
     }
   }
@@ -47,7 +45,9 @@ class CategoryRepository extends GetxController {
         whereArgs: [category.id],
       );
     } catch (e) {
-      debugPrint("Error: while updating the category: \nERRROR: ${e.toString()}");
+      debugPrint(
+        "Error: while updating the category: \nERRROR: ${e.toString()}",
+      );
     }
   }
 
@@ -60,7 +60,9 @@ class CategoryRepository extends GetxController {
         whereArgs: [id],
       );
     } catch (e) {
-      debugPrint("Error: while deleting the category: \nERRROR: ${e.toString()}");
+      debugPrint(
+        "Error: while deleting the category: \nERRROR: ${e.toString()}",
+      );
     }
   }
 }

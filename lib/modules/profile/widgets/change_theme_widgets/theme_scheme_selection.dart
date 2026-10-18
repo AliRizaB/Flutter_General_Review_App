@@ -1,7 +1,7 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/services/theme_service.dart';
-import 'package:flutter_general_reviewer/utilities/get_scheme_name.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/get_scheme_name.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
 Obx themeSchemeSelection(

@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -116,5 +120,98 @@ class DatabaseService extends GetxService {
       },
     );
     return database;
+  }
+
+  // Database Import/Export Functions Helpers
+  Future<String> _getDbPath() async {
+    final databaseDirectory = await getDatabasesPath();
+    return join(databaseDirectory, "general_reviewer_db.db");
+  }
+
+  // // Permission Handling
+  // Future<bool> _checkAndRequestPermission() async {
+  //   if (Platform.isAndroid) {
+  //     final status = await Permission.storage.request();
+  //     if (status.isGranted) return true;
+
+  //     // Fallback for Android 13+ (API level 33+)
+  //     final photosStatus = await Permission.photos.request();
+  //     if (status.isGranted) return true;
+
+  //     if (status.isPermanentlyDenied || photosStatus.isPermanentlyDenied) {
+  //       await openAppSettings();
+  //     }
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
+  // Close DB connection safely before overwriting the file
+  Future<void> _closeDatabase() async {
+    if (_db != null && _db!.isOpen) {
+      await _db!.close();
+      _db = null;
+    }
+  }
+
+  // EXPORT DATABASE
+  Future<bool> exportDatabase() async {
+    try {
+      final dbPath = await _getDbPath();
+      final dbFile = File(dbPath);
+      if (!await dbFile.exists()) return false;
+
+      final Uint8List bytes = await dbFile.readAsBytes();
+
+      final now = DateTime.now();
+      final month = now.month.toString().padLeft(2, '0');
+      final day = now.day.toString().padLeft(2, '0');
+      final hour = now.hour.toString().padLeft(2, '0');
+      final minute = now.minute.toString().padLeft(2, '0');
+      final timeStamp = '${now.year}$month${day}_$hour$minute';
+
+      // Opens the system "Save as" dialog; the picker writes the file itself.
+      final savedPath = await FilePicker.saveFile(
+        fileName: 'general_reviewer_backup_$timeStamp.db',
+        bytes: bytes,
+      );
+
+      return savedPath != null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // IMPORT DATABASE
+  Future<bool> importDatabase() async {
+    try {
+      final result = await FilePicker.pickFile(
+        type: FileType.custom,
+        allowedExtensions: ['db', 'sqlite'],
+      );
+
+      if (result == null || result.path == null) {
+        return false;
+      }
+
+      final backupFile = File(result.path!);
+
+      
+      final header = await backupFile.openRead(0, 16).first;
+      if (String.fromCharCodes(header) != 'SQLite format 3\u0000') {
+        return false;
+      }
+
+      final dbPath = await _getDbPath();
+
+      await _closeDatabase();
+      await backupFile.copy(dbPath);
+      _db = await getDatabase();
+
+      return true;
+    } catch (e) {
+      _db ??= await getDatabase();
+      return false;
+    }
   }
 }

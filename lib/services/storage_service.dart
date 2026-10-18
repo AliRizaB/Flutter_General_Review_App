@@ -12,7 +12,7 @@ abstract class StorageKeys {
   static const String apiAnime = 'api_anime';
   static const String apiBook = 'api_book';
 
-  static const String languageCode = 'languageCode';
+  // static const String languageCode = 'languageCode';
 }
 
 class StorageService extends GetxController {

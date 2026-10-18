@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/utilities/app_bar_theme.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/app_bar_theme.dart';
 import 'package:flutter_general_reviewer/modules/category/widget/category_dialog.dart';
 
 AppBar homeAppBar(BuildContext context) {

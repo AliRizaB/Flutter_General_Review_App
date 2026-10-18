@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/utilities/app_bar_theme.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/app_bar_theme.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_grid.dart';

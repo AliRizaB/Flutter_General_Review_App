@@ -8,11 +8,11 @@ import 'dart:convert';
 class ApiService extends BaseController {
   final StorageService _storageService = Get.find<StorageService>();
 
-  String get _currentLanguage =>
-      _storageService.getValue(StorageKeys.languageCode) ?? 'en';
+  // String get _currentLanguage =>
+  //     _storageService.getValue(StorageKeys.languageCode) ?? 'en';
   late final Dio _dio;
 
- @override
+  @override
   void onInit() {
     super.onInit();
     _dio = Dio(
@@ -29,15 +29,12 @@ class ApiService extends BaseController {
     _dio.interceptors.add(Utf8Interceptor());
   }
 
-
   Future<List<AppMedia>> searchMedia(
     String query,
     String? categoryKey,
     int categoryId,
   ) async {
     if (categoryKey == null || query.trim().isEmpty) return [];
-
-    final langCode = _currentLanguage;
 
     final String? apiKey = _storageService.getValue(categoryKey);
 
@@ -49,9 +46,9 @@ class ApiService extends BaseController {
         if (apiKey == null || apiKey.isEmpty) return [];
         return await _searchMoviesAndSeries(query, apiKey, categoryId);
       } else if (categoryKey == StorageKeys.apiAnime) {
-        return await _searchAnimes(query, categoryId, langCode: langCode);
+        return await _searchAnimes(query, categoryId);
       } else if (categoryKey == StorageKeys.apiBook) {
-        return await _searchBooks(query, categoryId, langCode: langCode);
+        return await _searchBooks(query, categoryId);
       }
     } on DioException catch (e) {
       showErrorSnackBar(
@@ -264,6 +261,7 @@ class ApiService extends BaseController {
   }
 }
 
+// Interceptor
 class Utf8Interceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {

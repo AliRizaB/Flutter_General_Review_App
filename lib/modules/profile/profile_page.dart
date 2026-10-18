@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/modules/profile/widgets/api_key_dialog.dart';
 import 'package:flutter_general_reviewer/modules/profile/widgets/build_button.dart';
 import 'package:flutter_general_reviewer/modules/profile/widgets/change_theme_dialog.dart';
+import 'package:flutter_general_reviewer/modules/profile/widgets/database_options.dart';
 import 'package:flutter_general_reviewer/routes/app_pages.dart';
 import 'package:get/get.dart';
 
@@ -32,6 +33,12 @@ class ProfilePage extends StatelessWidget {
             icon: Icons.key,
             label: 'Add API Keys',
             onTap: showAPIKeyDialog,
+          ),
+
+          BuildButton(
+            icon: Icons.data_array_outlined,
+            label: 'Export/Import Database',
+            onTap: showDatabaseOptions,
           ),
         ],
       ),

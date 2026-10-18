@@ -18,7 +18,7 @@ class CategoryPage extends GetView<CategoryController> {
       final categories = controller.categories;
       if (categories.isEmpty) {
         return EmptyState(
-          icon: Icons.cabin,
+          icon: Icons.shelves,
           title: 'There is no Categories',
           subtitle: 'Please Add A category via top right icon',
         );
