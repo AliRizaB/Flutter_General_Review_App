@@ -8,12 +8,13 @@ class MediaTitleField extends StatelessWidget {
   final MediaController mediaController;
   final TextEditingController nameTextController;
   final TextEditingController descTextController;
+  final SuggestionsController<AppMedia> suggestionsController;
 
   const MediaTitleField({
     super.key,
     required this.mediaController,
     required this.nameTextController,
-    required this.descTextController,
+    required this.descTextController, required this.suggestionsController,
   });
 
   @override
@@ -21,6 +22,7 @@ class MediaTitleField extends StatelessWidget {
     return TypeAheadField<AppMedia>(
       controller: nameTextController,
       debounceDuration: const Duration(milliseconds: 400),
+      suggestionsController: suggestionsController,
       suggestionsCallback: (search) async {
         final query = search.trim();
         if (query.length < 3) return [];
@@ -49,9 +51,11 @@ class MediaTitleField extends StatelessWidget {
       itemBuilder: (context, AppMedia suggestion) {
         return ListTile(
           title: Text(suggestion.name),
-          subtitle: (suggestion.description.isNotEmpty)
+          subtitle:
+              (suggestion.description != null &&
+                  suggestion.description!.isNotEmpty)
               ? Text(
-                  suggestion.description,
+                  suggestion.description!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 )

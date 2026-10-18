@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/api_options.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/image_selector_field.dart';
@@ -8,6 +9,8 @@ import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widg
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_field.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:get/get_rx/src/rx_workers/rx_workers.dart';
 
 class MediaFormFields extends StatefulWidget {
   final MediaController mediaController;
@@ -29,6 +32,8 @@ class _MediaFormFieldsState extends State<MediaFormFields> {
   // Controllers are added cause the flutter_typeahead need them to write the text automatically.
   late final TextEditingController _nameTextController;
   late final TextEditingController _descTextController;
+  late final SuggestionsController<AppMedia> _suggestionsController;
+  late final Worker _apiKeyWorker;
 
   @override
   void initState() {
@@ -39,12 +44,22 @@ class _MediaFormFieldsState extends State<MediaFormFields> {
     _descTextController = TextEditingController(
       text: widget.mediaController.description.value,
     );
+
+    _suggestionsController = SuggestionsController<AppMedia>();
+
+    // Re-run the search whenever the API chip changes
+    _apiKeyWorker = ever(
+      widget.storageService.selectedCategoryKey,
+      (_) => _suggestionsController.refresh(),
+    );
   }
 
   @override
   void dispose() {
     _nameTextController.dispose();
     _descTextController.dispose();
+    _apiKeyWorker.dispose();
+    _suggestionsController.dispose();
     super.dispose();
   }
 
@@ -63,6 +78,7 @@ class _MediaFormFieldsState extends State<MediaFormFields> {
           mediaController: widget.mediaController,
           nameTextController: _nameTextController,
           descTextController: _descTextController,
+          suggestionsController: _suggestionsController,
         ),
 
         const SizedBox(height: 16),
@@ -76,6 +92,7 @@ class _MediaFormFieldsState extends State<MediaFormFields> {
           maxLines: 4,
           maxLength: 500,
           controller: _descTextController,
+          validator: (_) => null,
         ),
         const SizedBox(height: 16),
 

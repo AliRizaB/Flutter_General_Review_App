@@ -42,7 +42,7 @@ class MediaController extends BaseController {
     if (media != null) {
       mediaId = media.id;
       name.value = media.name;
-      description.value = media.description ;
+      description.value = media.description ?? '' ;
       rating.value = media.rating;
       statusId.value = media.statusId ?? -1;
       imagePath.value = media.imagePath ?? '';

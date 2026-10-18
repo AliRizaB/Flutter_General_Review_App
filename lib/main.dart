@@ -36,6 +36,7 @@ class MainApp extends StatelessWidget {
 
     return Obx(
       () => GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         supportedLocales: const [Locale('en', 'US'), Locale('tr', 'TR')],
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,

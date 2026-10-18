@@ -34,7 +34,7 @@ class SubCategoryPage extends GetView<SubCategoryController> {
       body: Obx(() {
         if (categories.isEmpty) {
           return EmptyState(
-            icon: Icons.shelves,
+            icon: Icons.grid_view,
             title: 'There is no Sub-Categories',
             subtitle: 'Please Add A sub-category via top right icon',
           );

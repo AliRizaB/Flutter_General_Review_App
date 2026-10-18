@@ -55,7 +55,7 @@ class DatabaseService extends GetxService {
     final path = join(databaseDirectory, "general_reviewer_db.db");
     final database = await openDatabase(
       path,
-      version: 2,
+      version: 1,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },

@@ -11,7 +11,7 @@ class AppMedia {
   final int categoryId;
   final String name;
   final int rating;
-  final String description;
+  final String? description;
   final String? imagePath;
 
   AppMedia({
@@ -30,7 +30,7 @@ class AppMedia {
       statusId: map[DBConstants.mediaStatusId] as int?,
       categoryId: map[DBConstants.mediaCategoryId] as int,
       name: map[DBConstants.mediaName] as String,
-      description: map[DBConstants.mediaDescription] as String,
+      description: map[DBConstants.mediaDescription] as String?,
       rating: map[DBConstants.mediaRating] as int,
       imagePath: map[DBConstants.mediaImage] as String?,
     );

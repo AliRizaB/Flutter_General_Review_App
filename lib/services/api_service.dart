@@ -17,8 +17,8 @@ class ApiService extends BaseController {
     super.onInit();
     _dio = Dio(
       BaseOptions(
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
         headers: {
           'Accept': 'application/json; charset=utf-8',
           'Accept-Charset': 'utf-8',
@@ -52,7 +52,8 @@ class ApiService extends BaseController {
       }
     } on DioException catch (e) {
       showErrorSnackBar(
-        message: 'API Error (${e.response?.statusCode}): ${e.message}',
+        message:
+            'API Error (${e.type.name}, ${e.response?.statusCode}): ${e.message}',
       );
     } catch (e) {
       showErrorSnackBar(message: 'Unexpected search error');
@@ -70,7 +71,7 @@ class ApiService extends BaseController {
   ) async {
     final response = await _dio.get(
       'https://api.rawg.io/api/games',
-      queryParameters: {'key': apiKey, 'search': query, 'page_size': 10},
+      queryParameters: {'key': apiKey, 'search': query, 'page_size': 5},
     );
 
     final List results = response.data['results'] ?? [];
@@ -146,7 +147,7 @@ class ApiService extends BaseController {
       'https://graphql.anilist.co',
       data: {
         'query': gql,
-        'variables': {'search': query, 'perPage': 8},
+        'variables': {'search': query, 'perPage': 5},
       },
       options: Options(headers: {'Content-Type': 'application/json'}),
     );
@@ -185,7 +186,7 @@ class ApiService extends BaseController {
       'https://openlibrary.org/search.json',
       queryParameters: {
         'q': query,
-        'limit': 10,
+        'limit': 5,
         'fields': 'title,author_name,cover_i,first_publish_year',
         'language': ollang,
       },
