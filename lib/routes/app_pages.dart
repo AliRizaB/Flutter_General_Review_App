@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:flutter_general_reviewer/modules/category/sub_category/sub_category_binding.dart';
+import 'package:flutter_general_reviewer/modules/category/sub_category/sub_category_page.dart';
 import 'package:get/get.dart';
 
 // Home
@@ -19,10 +21,10 @@ import 'package:flutter_general_reviewer/modules/review/review_list.dart';
 import 'package:flutter_general_reviewer/modules/status/status_binding.dart';
 import 'package:flutter_general_reviewer/modules/status/status_page.dart';
 
-
 abstract class AppRoutes {
   static const INITIAL = HOME;
   static const HOME = '/home';
+  static const SUBCATEGORIES = '/subCategories';
   static const MEDIAS = '/medias';
   static const MEDIA = '/mediaView';
   static const REVIEWS = '/review';
@@ -37,11 +39,13 @@ class AppPages {
       binding: HomeBinding(),
     ),
     GetPage(
+      name: AppRoutes.SUBCATEGORIES,
+      page: () => SubCategoryPage(),
+      binding: SubCategoryBinding(),
+    ),
+    GetPage(
       name: AppRoutes.MEDIAS,
-      page: () => MediaListPage(
-        categoryId: Get.arguments[0],
-        categoryName: Get.arguments[1],
-      ),
+      page: () => MediaListPage(),
       binding: MediaBinding(),
     ),
     GetPage(

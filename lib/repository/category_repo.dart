@@ -20,9 +20,15 @@ class CategoryRepository extends GetxController {
   }
 
   // Read Operation For Categories
-  Future<List<AppCategory>> getCategories() async {
+  Future<List<AppCategory>> getCategories({int? categoryParentId}) async {
     try {
-      final data = await db.query(DBConstants.categoryTable);
+      final data = await db.query(
+        DBConstants.categoryTable,
+        where: categoryParentId != null
+            ? '${DBConstants.categoryParentId} = ?'
+            : '${DBConstants.categoryParentId} IS NULL',
+        whereArgs: categoryParentId != null ? [categoryParentId] : null,
+      );
       List<AppCategory> categories = data
           .map((e) => AppCategory.fromMap(e))
           .toList();

@@ -10,6 +10,7 @@ abstract class DBConstants {
   // For Categories
   static const categoryTable = "Categories";
   static const categoryId = "CategoryId";
+  static const categoryParentId = 'CategoryParentId';
   static const categoryName = "CategoryName";
   static const categoryColor = "CategoryColor";
 
@@ -54,7 +55,7 @@ class DatabaseService extends GetxService {
     final path = join(databaseDirectory, "general_reviewer_db.db");
     final database = await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },
@@ -64,8 +65,11 @@ class DatabaseService extends GetxService {
         await db.execute('''
           CREATE TABLE ${DBConstants.categoryTable} (
             ${DBConstants.categoryId} INTEGER PRIMARY KEY AUTOINCREMENT,
+            ${DBConstants.categoryParentId} INTEGER,
             ${DBConstants.categoryName} TEXT NOT NULL,
-            ${DBConstants.categoryColor} TEXT NOT NULL
+            ${DBConstants.categoryColor} TEXT NOT NULL,
+
+            FOREIGN KEY(${DBConstants.categoryParentId}) REFERENCES ${DBConstants.categoryTable} (${DBConstants.categoryId}) ON DELETE CASCADE
           )
         ''');
 
@@ -196,7 +200,6 @@ class DatabaseService extends GetxService {
 
       final backupFile = File(result.path!);
 
-      
       final header = await backupFile.openRead(0, 16).first;
       if (String.fromCharCodes(header) != 'SQLite format 3\u0000') {
         return false;

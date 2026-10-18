@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
 import 'package:flutter_general_reviewer/modules/category/category_page.dart';
+import 'package:flutter_general_reviewer/modules/category/widget/category_dialog.dart';
 import 'package:flutter_general_reviewer/modules/home/home_controller.dart';
-import 'package:flutter_general_reviewer/modules/home/widget/home_appbar.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/appbar_base.dart';
 import 'package:flutter_general_reviewer/modules/profile/profile_page.dart';
 import 'package:get/get.dart';
 
@@ -11,7 +13,19 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: homeAppBar(context),
+      appBar: AppBarBase(
+        title: 'Review App',
+        actions: [
+          IconButton(
+            onPressed: () async => showCategoryDialog<CategoryController>(
+              'Category',
+              'Movies, Game, Book',
+              context,
+            ),
+            icon: Icon(Icons.add, size: 30),
+          ),
+        ],
+      ),
 
       body: Obx(
         () => IndexedStack(

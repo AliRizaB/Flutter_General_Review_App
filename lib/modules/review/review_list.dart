@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/appbar_base.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/build_swipe_background.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/handle_dismiss.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/app_bar_theme.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/empty_state.dart';
 import 'package:flutter_general_reviewer/modules/review/review_controller.dart';
 import 'package:flutter_general_reviewer/modules/review/widget/review_dialog.dart';
@@ -17,16 +17,8 @@ class ReviewList extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: getAppBarColor(theme),
-        foregroundColor: getAppBarForegroundColor(theme),
-        title: Text(
-          'Reviews',
-          style: theme.textTheme.headlineMedium!.copyWith(
-            color: getAppBarForegroundColor(theme),
-            fontFamily: 'Isometra',
-          ),
-        ),
+      appBar: AppBarBase(
+        title: 'Reviews',
         actions: [
           IconButton(
             onPressed: () => showReviewDialog(context),

@@ -14,20 +14,21 @@ class CategoryController extends BaseController {
 
   // AppCategory attributes
   int? categoryId;
+  int? categoryParentId;
   Rx<String> categoryName = ''.obs;
   Rx<Color> categoryColor = const Color(0xff443a49).obs;
 
   @override
   void onInit() {
     super.onInit();
-    setLoading(true);
+
     fetchCategories();
-    setLoading(false);
   }
 
   void initCategoryForm(AppCategory? category) {
     if (category != null) {
       categoryId = category.id;
+      categoryParentId = category.parentId;
       categoryName.value = category.name;
       categoryColor.value = category.getColor;
     } else {
@@ -37,9 +38,12 @@ class CategoryController extends BaseController {
   }
 
   // CRUD OPERATIONS
-  Future<void> fetchCategories() async {
+  Future<void> fetchCategories({int? categoryParentId}) async {
     try {
-      final list = await _categoryRepository.getCategories();
+      final targetParentId = categoryParentId ?? this.categoryParentId;
+      final list = await _categoryRepository.getCategories(
+        categoryParentId: targetParentId,
+      );
       categories.assignAll(list);
     } catch (e) {
       debugPrint("Error: While Getting Categories");
@@ -52,11 +56,15 @@ class CategoryController extends BaseController {
       final newCategory = AppCategory(
         name: categoryName.value,
         color: categoryColor.value.hex,
+        parentId: categoryParentId,
       );
 
       await _categoryRepository.addCategory(newCategory);
       await fetchCategories();
       showSuccessSnackBar(message: "Succesfully Created Category");
+      debugPrint(
+        '${newCategory.id}, ${newCategory.parentId}, ${newCategory.name}',
+      );
     } catch (e) {
       showErrorSnackBar(
         message: "Error: While Creating Categories \nERROR:${e.toString()}",
@@ -73,6 +81,7 @@ class CategoryController extends BaseController {
         id: categoryId,
         name: categoryName.value,
         color: categoryColor.value.hex,
+        parentId: categoryParentId,
       );
 
       await _categoryRepository.updateCategory(updatedCategory);

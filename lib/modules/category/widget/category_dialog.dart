@@ -8,11 +8,13 @@ import 'package:get/get.dart';
 
 // A dialog menu for both Update and Create usage for Categories
 // If toUpdateCategory is given it will get the values from the category
-Future<void> showCategoryDialog(
+Future<void> showCategoryDialog<T extends CategoryController>(
+  String label,
+  String hintText,
   BuildContext context, {
   AppCategory? toUpdateCategory,
 }) async {
-  final controller = Get.find<CategoryController>();
+  final controller = Get.find<T>();
   final bool isEditing = (toUpdateCategory != null);
 
   controller.initCategoryForm(toUpdateCategory);
@@ -20,7 +22,7 @@ Future<void> showCategoryDialog(
   await Get.dialog(
     AlertDialogBase(
       isEditing: isEditing,
-      label: 'Category',
+      label: label,
 
       onSubmit: () async {
         if (isEditing) {
@@ -32,8 +34,8 @@ Future<void> showCategoryDialog(
       children: [
         // Category Name
         CustomTextField(
-          labelText: 'Category Name',
-          hintText: 'e.g., Movies, Books, Games',
+          labelText: '$label Name',
+          hintText: 'e.g., $hintText',
           onChanged: (value) => controller.categoryName.value = value,
           initialValue: controller.categoryName.value,
         ),

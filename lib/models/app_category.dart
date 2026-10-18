@@ -3,14 +3,21 @@ import 'package:flutter_general_reviewer/services/database_service.dart';
 
 class AppCategory {
   final int? id;
+  final int? parentId;
   final String name;
   final String color;
 
-  AppCategory({this.id, required this.name, required this.color});
+  AppCategory({
+    this.id,
+    required this.name,
+    required this.color,
+    this.parentId,
+  });
 
   factory AppCategory.fromMap(Map<String, dynamic> map) {
     return AppCategory(
       id: map[DBConstants.categoryId] as int,
+      parentId: map[DBConstants.categoryParentId] as int?,
       name: map[DBConstants.categoryName] as String,
       color: map[DBConstants.categoryColor] as String,
     );
@@ -19,6 +26,7 @@ class AppCategory {
   Map<String, dynamic> toMap() {
     return {
       if (id != null) DBConstants.categoryId: id,
+      DBConstants.categoryParentId: parentId,
       DBConstants.categoryName: name,
       DBConstants.categoryColor: color,
     };

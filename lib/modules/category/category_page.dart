@@ -5,6 +5,7 @@ import 'package:flutter_general_reviewer/modules/z_general_widgets/empty_state.d
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
 import 'package:flutter_general_reviewer/modules/category/widget/category_tile.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/handle_dismiss.dart';
+import 'package:flutter_general_reviewer/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class CategoryPage extends GetView<CategoryController> {
@@ -13,9 +14,9 @@ class CategoryPage extends GetView<CategoryController> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final categories = controller.categories;
 
     return Obx(() {
-      final categories = controller.categories;
       if (categories.isEmpty) {
         return EmptyState(
           icon: Icons.shelves,
@@ -51,8 +52,12 @@ class CategoryPage extends GetView<CategoryController> {
                 direction: direction,
                 itemTitle: 'Category',
                 onDelete: () => controller.deleteCategory(category.id!),
-                onEdit: () =>
-                    showCategoryDialog(context, toUpdateCategory: category),
+                onEdit: () => showCategoryDialog<CategoryController>(
+                  'Category',
+                  'Movies, Game, Book',
+                  context,
+                  toUpdateCategory: category,
+                ),
               );
             },
 
@@ -68,7 +73,19 @@ class CategoryPage extends GetView<CategoryController> {
               alignment: Alignment.centerLeft,
             ),
 
-            child: CategoryTile(category: category),
+            child: CategoryTile(
+              category: category,
+              fontSize: 25,
+              iconSize: 30,
+              dense: false,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+              onTap: () {
+                Get.toNamed(
+                  AppRoutes.SUBCATEGORIES,
+                  arguments: [category.id, category.name],
+                );
+              },
+            ),
           );
         },
       );
