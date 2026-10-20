@@ -27,14 +27,19 @@ class MediaController extends BaseController {
 
   String? _originalImagePath;
 
-  late final int categoryId;
+  Rx<int> categoryId = RxInt(0);
   late final String categoryName;
 
   @override
   void onInit() {
     super.onInit();
-    categoryId = Get.arguments[0];
-    categoryName = Get.arguments[1];
+    // Just safely getting arguments
+    if (Get.arguments != null && Get.arguments is List) {
+      categoryId.value = Get.arguments[0] as int;
+      categoryName = Get.arguments[1] as String;
+    } else {
+      categoryName = 'Category';
+    }
     fetchMedias();
   }
 
@@ -42,9 +47,10 @@ class MediaController extends BaseController {
     if (media != null) {
       mediaId = media.id;
       name.value = media.name;
-      description.value = media.description ?? '' ;
+      description.value = media.description ?? '';
       rating.value = media.rating;
       statusId.value = media.statusId ?? -1;
+      categoryId.value = media.categoryId;
       imagePath.value = media.imagePath ?? '';
       _originalImagePath = media.imagePath;
     } else {
@@ -62,7 +68,11 @@ class MediaController extends BaseController {
   Future<List<AppMedia>> searchMediaFromApi(String query) async {
     try {
       final activeCategoryKey = _storageService.selectedCategoryKey.value;
-      return await apiService.searchMedia(query, activeCategoryKey, categoryId);
+      return await apiService.searchMedia(
+        query,
+        activeCategoryKey,
+        categoryId.value,
+      );
     } catch (e) {
       return [];
     }
@@ -112,9 +122,7 @@ class MediaController extends BaseController {
     try {
       final file = File(filePath);
       if (await file.exists()) await file.delete();
-    } catch (_) {
-      // Not critical
-    }
+    } catch (_) {}
   }
 
   // CRUD OPERATIONS
@@ -122,7 +130,7 @@ class MediaController extends BaseController {
     try {
       setLoading(true);
       await Get.find<StatusController>().fetchStatuses();
-      final list = await _mediaRepository.getMedias(categoryId);
+      final list = await _mediaRepository.getMedias(categoryId.value);
       medias.assignAll(list);
     } catch (e) {
       showErrorSnackBar(
@@ -138,7 +146,7 @@ class MediaController extends BaseController {
       setLoading(true);
       final newMedia = AppMedia(
         name: name.value,
-        categoryId: categoryId,
+        categoryId: categoryId.value,
         statusId: statusId.value,
         rating: rating.value,
         description: description.value,
@@ -165,14 +173,13 @@ class MediaController extends BaseController {
         id: mediaId ?? (throw ("Media ID is null")),
         statusId: statusId.value,
         name: name.value,
-        categoryId: categoryId,
+        categoryId: categoryId.value,
         rating: rating.value,
         description: description.value,
-        imagePath: newImage, // <- was missing, which wiped the photo
+        imagePath: newImage,
       );
       await _mediaRepository.updateMedia(updatedMedia);
 
-      // Photo was replaced or removed -> delete the old file
       if (_originalImagePath != null && _originalImagePath != newImage) {
         await _deleteImageFile(_originalImagePath);
       }

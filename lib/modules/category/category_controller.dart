@@ -2,7 +2,6 @@
 
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/animation.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/models/app_category.dart';
 import 'package:flutter_general_reviewer/repository/category_repo.dart';
@@ -14,24 +13,24 @@ class CategoryController extends BaseController {
 
   // AppCategory attributes
   int? categoryId;
-  int? categoryParentId;
+  Rx<int?> categoryParentId = (null as int?).obs;
   Rx<String> categoryName = ''.obs;
   Rx<Color> categoryColor = const Color(0xff443a49).obs;
 
   @override
   void onInit() {
     super.onInit();
-
     fetchCategories();
   }
 
   void initCategoryForm(AppCategory? category) {
     if (category != null) {
       categoryId = category.id;
-      categoryParentId = category.parentId;
+      categoryParentId.value = category.parentId;
       categoryName.value = category.name;
       categoryColor.value = category.getColor;
     } else {
+      categoryId = null;
       categoryName.value = '';
       categoryColor.value = const Color(0xff443a49);
     }
@@ -40,13 +39,13 @@ class CategoryController extends BaseController {
   // CRUD OPERATIONS
   Future<void> fetchCategories({int? categoryParentId}) async {
     try {
-      final targetParentId = categoryParentId ?? this.categoryParentId;
+      final targetParentId = categoryParentId ?? this.categoryParentId.value;
       final list = await _categoryRepository.getCategories(
         categoryParentId: targetParentId,
       );
       categories.assignAll(list);
     } catch (e) {
-      debugPrint("Error: While Getting Categories");
+      showErrorSnackBar(message: "Error: While Getting Categories \nERROR: {e.toString}");
     }
   }
 
@@ -56,15 +55,12 @@ class CategoryController extends BaseController {
       final newCategory = AppCategory(
         name: categoryName.value,
         color: categoryColor.value.hex,
-        parentId: categoryParentId,
+        parentId: categoryParentId.value,
       );
 
       await _categoryRepository.addCategory(newCategory);
       await fetchCategories();
       showSuccessSnackBar(message: "Succesfully Created Category");
-      debugPrint(
-        '${newCategory.id}, ${newCategory.parentId}, ${newCategory.name}',
-      );
     } catch (e) {
       showErrorSnackBar(
         message: "Error: While Creating Categories \nERROR:${e.toString()}",
@@ -81,7 +77,7 @@ class CategoryController extends BaseController {
         id: categoryId,
         name: categoryName.value,
         color: categoryColor.value.hex,
-        parentId: categoryParentId,
+        parentId: categoryParentId.value,
       );
 
       await _categoryRepository.updateCategory(updatedCategory);

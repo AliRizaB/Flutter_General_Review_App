@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_general_reviewer/models/app_category.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
+import 'package:flutter_general_reviewer/modules/category/sub_category/sub_category_controller.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/api_options.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/image_selector_field.dart';
@@ -7,21 +9,25 @@ import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widg
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/status_selector.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/title_field.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/change_category_selector.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_field.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get_rx/src/rx_workers/rx_workers.dart';
+import 'package:get/instance_manager.dart';
 
 class MediaFormFields extends StatefulWidget {
   final MediaController mediaController;
   final StatusController statusController;
   final StorageService storageService;
+  final bool isEditing;
 
   const MediaFormFields({
     super.key,
     required this.mediaController,
     required this.statusController,
     required this.storageService,
+    required this.isEditing,
   });
 
   @override
@@ -35,9 +41,13 @@ class _MediaFormFieldsState extends State<MediaFormFields> {
   late final SuggestionsController<AppMedia> _suggestionsController;
   late final Worker _apiKeyWorker;
 
+  late final SubCategoryController _subCategoryController;
+
   @override
   void initState() {
     super.initState();
+    _subCategoryController = Get.find<SubCategoryController>();
+
     _nameTextController = TextEditingController(
       text: widget.mediaController.name.value,
     );
@@ -73,6 +83,20 @@ class _MediaFormFieldsState extends State<MediaFormFields> {
 
         const SizedBox(height: 16),
 
+        ChangeCategorySelector<AppCategory>(
+          isEdit: widget.isEditing,
+          listValues: _subCategoryController.categories,
+          selectedId: widget.mediaController.categoryId.value,
+          getItemId: (subCategory) => subCategory.id,
+          getItemLabel: (subCategory) => subCategory.name,
+          onChanged: (int? newId) {
+            if (newId != null) {
+              widget.mediaController.categoryId.value = newId;
+            }
+          },
+        ),
+
+        const SizedBox(height: 16),
         // Media Name
         MediaTitleField(
           mediaController: widget.mediaController,

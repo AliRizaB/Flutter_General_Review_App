@@ -40,6 +40,7 @@ Future showMediaDialog(BuildContext context, {AppMedia? toUpdateMedia}) async {
       },
       children: [
         MediaFormFields(
+          isEditing: isEditing,
           mediaController: mediaController,
           statusController: statusController,
           storageService: storageService,
