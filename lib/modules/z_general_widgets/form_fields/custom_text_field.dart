@@ -46,6 +46,9 @@ class CustomTextField extends StatelessWidget {
       maxLength: maxLength,
       onSaved: onSaved,
 
+      autocorrect: true,
+      spellCheckConfiguration: const SpellCheckConfiguration(),
+
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,

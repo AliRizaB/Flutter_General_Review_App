@@ -77,12 +77,25 @@ class ApiService extends BaseController {
     final List results = response.data['results'] ?? [];
 
     return results.map((item) {
-      final String? ratingStr = item['rating']?.toString();
-      final String released = item['released'] ?? 'N/A';
+      final String released = item['released'] ?? 'Unknown Date';
+      final String releaseYear = released.split('-').first;
+      final String ratingStr = item['rating']?.toString() ?? 'N/A';
+      final int? metacritic = item['metacritic'];
+
+      // Extract genres if available
+      final List genresList = item['genres'] ?? [];
+      final String genres = genresList.map((g) => g['name']).take(2).join(', ');
+
+      // Description
+      final StringBuffer descBuilder = StringBuffer();
+      descBuilder.write('Released: $releaseYear');
+      if (genres.isNotEmpty) descBuilder.write(' • $genres');
+      descBuilder.write('\nRating: $ratingStr/5');
+      if (metacritic != null) descBuilder.write(' (Metacritic: $metacritic)');
 
       return AppMedia(
         name: item['name'] ?? '',
-        description: 'Released: $released • Rating: ${ratingStr ?? 'N/A'}',
+        description: descBuilder.toString(),
         rating: 1,
         imagePath: item['background_image'],
         categoryId: categoryId,
@@ -109,18 +122,55 @@ class ApiService extends BaseController {
 
     final List results = response.data['Search'] ?? [];
 
-    return results.map((item) {
-      final poster = item['Poster'];
-      final validPoster = (poster != null && poster != 'N/A') ? poster : null;
+    final detailedMediaList = await Future.wait(
+      results.take(5).map((item) async {
+        final String? imdbId = item['imdbID'];
 
-      return AppMedia(
-        name: item['Title'] ?? '',
-        description: '${item['Type']?.toUpperCase()} • ${item['Year']}',
-        rating: 1,
-        imagePath: validPoster,
-        categoryId: categoryId,
-      );
-    }).toList();
+        if (imdbId == null) {
+          return AppMedia(
+            name: item['Title'] ?? '',
+            description: '${item['Type']?.toUpperCase()} • ${item['Year']}',
+            rating: 1,
+            imagePath: item['Poster'] != 'N/A' ? item['Poster'] : null,
+            categoryId: categoryId,
+          );
+        }
+
+        // Secondary OMDb detail call using IMDb ID
+        final detailResponse = await _dio.get(
+          'https://www.omdbapi.com/',
+          queryParameters: {'apikey': apiKey, 'i': imdbId, 'plot': 'short'},
+        );
+
+        final detailData = detailResponse.data;
+        final String director = detailData['Director'] ?? 'N/A';
+        final String year = detailData['Year'] ?? item['Year'] ?? '';
+        final String type = (detailData['Type'] ?? item['Type'] ?? '')
+            .toUpperCase();
+        final String genre = detailData['Genre'] ?? '';
+        final String plot = detailData['Plot'] ?? '';
+
+        final poster = item['Poster'];
+        final validPoster = (poster != null && poster != 'N/A') ? poster : null;
+
+        // Concatenate Director, Year, Genre, and Plot
+        final StringBuffer descBuilder = StringBuffer();
+        descBuilder.write('$type • $year');
+        if (director != 'N/A') descBuilder.write(' • Dir: $director');
+        if (genre.isNotEmpty) descBuilder.write('\nGenre: $genre');
+        if (plot.isNotEmpty && plot != 'N/A') descBuilder.write('\n$plot');
+
+        return AppMedia(
+          name: detailData['Title'] ?? item['Title'] ?? '',
+          description: descBuilder.toString(),
+          rating: 1,
+          imagePath: validPoster,
+          categoryId: categoryId,
+        );
+      }),
+    );
+
+    return detailedMediaList;
   }
 
   //
@@ -173,70 +223,78 @@ class ApiService extends BaseController {
   }
 
   //
-  // OPEN LIBRARY
+  // Google Book
   //
   Future<List<AppMedia>> _searchBooks(
     String query,
     int categoryId, {
     String langCode = 'en',
   }) async {
-    final ollang = _mapToOpenLibraryLang(langCode);
+    try {
+      final ollang = _mapToOpenLibraryLang(langCode);
 
-    final response = await _dio.get(
-      'https://openlibrary.org/search.json',
-      queryParameters: {
-        'q': query,
-        'limit': 5,
-        'fields': 'title,author_name,cover_i,first_publish_year',
-        'language': ollang,
-      },
-    );
-
-    final List docs = response.data['docs'] ?? [];
-
-    return docs.map((doc) {
-      final coverId = doc['cover_i'];
-      final coverUrl = coverId != null
-          ? 'https://covers.openlibrary.org/b/id/$coverId-M.jpg'
-          : null;
-
-      final authorsList = doc['author_name'] as List?;
-      final authorText = authorsList != null
-          ? authorsList.join(', ')
-          : 'Unknown Author';
-      final year = doc['first_publish_year']?.toString() ?? 'N/A';
-
-      return AppMedia(
-        name: doc['title'] ?? 'Untitled Book',
-        description: 'By $authorText ($year)',
-        rating: 1,
-        imagePath: coverUrl,
-        categoryId: categoryId,
+      final response = await _dio.get(
+        'https://openlibrary.org/search.json',
+        queryParameters: {
+          'q': query,
+          'limit': 5,
+          // Request extended fields directly from Open Library
+          'fields':
+              'title,author_name,cover_i,first_publish_year,publisher,subject,number_of_pages_median',
+          'language': ollang,
+        },
       );
-    }).toList();
-  }
 
-  String _mapToOpenLibraryLang(String code) {
-    switch (code.toLowerCase()) {
-      case 'tr':
-        return 'tur';
-      // case 'es':
-      //   return 'spa';
-      // case 'fr':
-      //   return 'fre';
-      // case 'de':
-      //   return 'ger';
-      // case 'ja':
-      //   return 'jpn';
-      // case 'zh':
-      //   return 'chi';
-      // case 'it':
-      //   return 'ita';
-      // case 'ru':
-      //   return 'rus';
-      case 'en':
-      default:
-        return 'eng';
+      final List docs = response.data['docs'] ?? [];
+
+      return docs.map((doc) {
+        // 1. Cover Image
+        final coverId = doc['cover_i'];
+        final coverUrl = coverId != null
+            ? 'https://covers.openlibrary.org/b/id/$coverId-M.jpg'
+            : null;
+
+        // 2. Authors
+        final authorsList = doc['author_name'] as List?;
+        final authorText = authorsList != null
+            ? authorsList.join(', ')
+            : 'Unknown Author';
+
+        // 3. First Publish Year
+        final year = doc['first_publish_year']?.toString() ?? 'N/A';
+
+        // 4. Publishers
+        final publishersList = doc['publisher'] as List?;
+        final publisher = (publishersList != null && publishersList.isNotEmpty)
+            ? publishersList.first.toString()
+            : '';
+
+        // 5. Genres / Subjects (Take top 2)
+        final subjectsList = doc['subject'] as List?;
+        final genres = (subjectsList != null && subjectsList.isNotEmpty)
+            ? subjectsList.cast<String>().take(2).join(', ')
+            : '';
+
+        // 6. Median Page Count
+        final int? pageCount = doc['number_of_pages_median'];
+
+        // Construct Rich Description
+        final StringBuffer descBuilder = StringBuffer();
+        descBuilder.write('By $authorText ($year)');
+        if (publisher.isNotEmpty) descBuilder.write(' • $publisher');
+        if (genres.isNotEmpty) descBuilder.write('\nGenre: $genres');
+        if (pageCount != null) descBuilder.write('\nPages: ~$pageCount');
+
+        return AppMedia(
+          name: doc['title'] ?? 'Untitled Book',
+          description: descBuilder.toString(),
+          rating: 1,
+          imagePath: coverUrl,
+          categoryId: categoryId,
+        );
+      }).toList();
+    } catch (e) {
+      return [];
     }
   }
 
@@ -259,6 +317,17 @@ class ApiService extends BaseController {
     final cut = text.substring(0, maxLength - 1);
     final lastSpace = cut.lastIndexOf(' ');
     return '${cut.substring(0, lastSpace > 0 ? lastSpace : cut.length)}…';
+  }
+
+  String _mapToOpenLibraryLang(String langCode) {
+    switch (langCode) {
+      case 'tr':
+        return 'tur';
+
+      case 'en':
+      default:
+        return 'eng';
+    }
   }
 }
 

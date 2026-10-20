@@ -14,16 +14,19 @@ final List<Icon> _ratingIcons = [
 
 Widget ratingWidget(MediaController controller) {
   return Obx(
-    () => RatingBar.builder(
-      initialRating: controller.rating.value.toDouble(),
-      itemCount: _ratingIcons.length,
-      itemBuilder: (context, index) {
-        if (index >= 0 && index < _ratingIcons.length) {
-          return _ratingIcons[index];
-        }
-        return const Icon(Icons.error);
-      },
-      onRatingUpdate: (value) => controller.rating.value = value.toInt(),
+    () => FittedBox(
+      fit: BoxFit.scaleDown,
+      child: RatingBar.builder(
+        initialRating: controller.rating.value.toDouble(),
+        itemCount: _ratingIcons.length,
+        itemBuilder: (context, index) {
+          if (index >= 0 && index < _ratingIcons.length) {
+            return _ratingIcons[index];
+          }
+          return const Icon(Icons.error);
+        },
+        onRatingUpdate: (value) => controller.rating.value = value.toInt(),
+      ),
     ),
   );
 }

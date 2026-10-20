@@ -53,7 +53,7 @@ class HomePage extends GetView<HomeController> {
           indicatorColor: theme.colorScheme.primaryContainer,
           selectedIndex: controller.currentIndex.value,
           onDestinationSelected: controller.changePage,
-
+          
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.shelves),

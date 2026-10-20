@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_field.dart';
+import 'package:flutter_general_reviewer/modules/z_general_widgets/load_image.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class MediaTitleField extends StatelessWidget {
@@ -14,7 +15,8 @@ class MediaTitleField extends StatelessWidget {
     super.key,
     required this.mediaController,
     required this.nameTextController,
-    required this.descTextController, required this.suggestionsController,
+    required this.descTextController,
+    required this.suggestionsController,
   });
 
   @override
@@ -50,6 +52,14 @@ class MediaTitleField extends StatelessWidget {
 
       itemBuilder: (context, AppMedia suggestion) {
         return ListTile(
+          leading: ClipRRect(
+            borderRadius: BorderRadiusGeometry.circular(8),
+            child: SizedBox(
+              width: 44,
+              height: 60,
+              child: loadImage(suggestion.imagePath, BoxFit.contain),
+            ),
+          ),
           title: Text(suggestion.name),
           subtitle:
               (suggestion.description != null &&

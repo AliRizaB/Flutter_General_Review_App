@@ -41,16 +41,16 @@ Future<dynamic> showAPIKeyDialog() {
               ),
               const SizedBox(height: 12),
               NoApiKeyCard(
-                title: 'Anime Api',
-                providerName: 'AniList GraphQL',
-                icon: Icons.tv_rounded,
+                title: 'Book Api',
+                providerName: 'Open Library',
+                icon: Icons.book_outlined,
               ),
 
               const SizedBox(height: 12),
               NoApiKeyCard(
-                title: 'Book Api',
-                providerName: 'Open Library',
-                icon: Icons.book_outlined,
+                title: 'Anime Api',
+                providerName: 'AniList GraphQL',
+                icon: Icons.tv_rounded,
               ),
             ],
           ),
