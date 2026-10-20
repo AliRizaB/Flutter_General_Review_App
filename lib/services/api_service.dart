@@ -3,13 +3,11 @@ import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
 import 'package:get/get.dart' hide Response;
-import 'dart:convert';
 
 class ApiService extends BaseController {
   final StorageService _storageService = Get.find<StorageService>();
 
-  // String get _currentLanguage =>
-  //     _storageService.getValue(StorageKeys.languageCode) ?? 'en';
+  String get _currentLanguage => _storageService.selectedLanguageCode.value;
   late final Dio _dio;
 
   @override
@@ -19,14 +17,9 @@ class ApiService extends BaseController {
       BaseOptions(
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),
-        headers: {
-          'Accept': 'application/json; charset=utf-8',
-          'Accept-Charset': 'utf-8',
-        },
+        headers: {'Accept': 'application/json', 'Accept-Charset': 'utf-8'},
       ),
     );
-
-    _dio.interceptors.add(Utf8Interceptor());
   }
 
   Future<List<AppMedia>> searchMedia(
@@ -36,19 +29,37 @@ class ApiService extends BaseController {
   ) async {
     if (categoryKey == null || query.trim().isEmpty) return [];
 
-    final String? apiKey = _storageService.getValue(categoryKey);
+    final String? apiKey = _storageService.getValue<String>(categoryKey);
 
     try {
       if (categoryKey == StorageKeys.apiGame) {
         if (apiKey == null || apiKey.isEmpty) return [];
-        return await _searchGames(query, apiKey, categoryId);
+        return await _searchGames(
+          query,
+          apiKey,
+          categoryId,
+          langCode: _currentLanguage,
+        );
       } else if (categoryKey == StorageKeys.apiMovieAndSeries) {
         if (apiKey == null || apiKey.isEmpty) return [];
-        return await _searchMoviesAndSeries(query, apiKey, categoryId);
+        return await _searchMoviesAndSeries(
+          query,
+          apiKey,
+          categoryId,
+          langCode: _currentLanguage,
+        );
       } else if (categoryKey == StorageKeys.apiAnime) {
-        return await _searchAnimes(query, categoryId);
+        return await _searchAnimes(
+          query,
+          categoryId,
+          langCode: _currentLanguage,
+        );
       } else if (categoryKey == StorageKeys.apiBook) {
-        return await _searchBooks(query, categoryId);
+        return await _searchBooks(
+          query,
+          categoryId,
+          langCode: _currentLanguage,
+        );
       }
     } on DioException catch (e) {
       showErrorSnackBar(
@@ -67,40 +78,50 @@ class ApiService extends BaseController {
   Future<List<AppMedia>> _searchGames(
     String query,
     String apiKey,
-    int categoryId,
-  ) async {
-    final response = await _dio.get(
-      'https://api.rawg.io/api/games',
-      queryParameters: {'key': apiKey, 'search': query, 'page_size': 5},
-    );
-
-    final List results = response.data['results'] ?? [];
-
-    return results.map((item) {
-      final String released = item['released'] ?? 'Unknown Date';
-      final String releaseYear = released.split('-').first;
-      final String ratingStr = item['rating']?.toString() ?? 'N/A';
-      final int? metacritic = item['metacritic'];
-
-      // Extract genres if available
-      final List genresList = item['genres'] ?? [];
-      final String genres = genresList.map((g) => g['name']).take(2).join(', ');
-
-      // Description
-      final StringBuffer descBuilder = StringBuffer();
-      descBuilder.write('Released: $releaseYear');
-      if (genres.isNotEmpty) descBuilder.write(' • $genres');
-      descBuilder.write('\nRating: $ratingStr/5');
-      if (metacritic != null) descBuilder.write(' (Metacritic: $metacritic)');
-
-      return AppMedia(
-        name: item['name'] ?? '',
-        description: descBuilder.toString(),
-        rating: 1,
-        imagePath: item['background_image'],
-        categoryId: categoryId,
+    int categoryId, {
+    String langCode = 'en',
+  }) async {
+    try {
+      final response = await _dio.get(
+        'https://api.rawg.io/api/games',
+        queryParameters: {'key': apiKey, 'search': query, 'page_size': 5},
       );
-    }).toList();
+
+      final List results = response.data['results'] ?? [];
+
+      final isTr = langCode.toLowerCase() == 'tr';
+      final lblReleased = isTr ? 'Yayınlanma' : 'Released';
+      final lblRating = isTr ? 'Puan' : 'Rating';
+
+      return results.map((item) {
+        final String released = item['released'] ?? 'N/A';
+        final String releaseYear = released.split('-').first;
+        final String ratingStr = item['rating']?.toString() ?? 'N/A';
+        final int? metacritic = item['metacritic'];
+
+        final List genresList = item['genres'] ?? [];
+        final String genres = genresList
+            .map((g) => g['name'])
+            .take(2)
+            .join(', ');
+
+        final StringBuffer descBuilder = StringBuffer();
+        descBuilder.write('$lblReleased: $releaseYear');
+        if (genres.isNotEmpty) descBuilder.write(' • $genres');
+        descBuilder.write('\n$lblRating: $ratingStr/5');
+        if (metacritic != null) descBuilder.write(' (Metacritic: $metacritic)');
+
+        return AppMedia(
+          name: item['name'] ?? '',
+          description: descBuilder.toString(),
+          rating: 1,
+          imagePath: item['background_image'],
+          categoryId: categoryId,
+        );
+      }).toList();
+    } catch (e) {
+      return [];
+    }
   }
 
   //
@@ -109,68 +130,77 @@ class ApiService extends BaseController {
   Future<List<AppMedia>> _searchMoviesAndSeries(
     String query,
     String apiKey,
-    int categoryId,
-  ) async {
-    final response = await _dio.get(
-      'https://www.omdbapi.com/',
-      queryParameters: {'apikey': apiKey, 's': query},
-    );
+    int categoryId, {
+    String langCode = 'en',
+  }) async {
+    try {
+      final response = await _dio.get(
+        'https://www.omdbapi.com/',
+        queryParameters: {'apikey': apiKey, 's': query},
+      );
 
-    if (response.data['Response'] == 'False') {
-      return [];
-    }
+      if (response.data['Response'] == 'False') {
+        return [];
+      }
 
-    final List results = response.data['Search'] ?? [];
+      final List results = response.data['Search'] ?? [];
 
-    final detailedMediaList = await Future.wait(
-      results.take(5).map((item) async {
-        final String? imdbId = item['imdbID'];
+      final isTr = langCode.toLowerCase() == 'tr';
+      final lblDir = isTr ? 'Yön' : 'Dir';
+      final lblGenre = isTr ? 'Tür' : 'Genre';
 
-        if (imdbId == null) {
+      final detailedMediaList = await Future.wait(
+        results.take(5).map((item) async {
+          final String? imdbId = item['imdbID'];
+
+          if (imdbId == null) {
+            return AppMedia(
+              name: item['Title'] ?? '',
+              description: '${item['Type']?.toUpperCase()} • ${item['Year']}',
+              rating: 1,
+              imagePath: item['Poster'] != 'N/A' ? item['Poster'] : null,
+              categoryId: categoryId,
+            );
+          }
+
+          final detailResponse = await _dio.get(
+            'https://www.omdbapi.com/',
+            queryParameters: {'apikey': apiKey, 'i': imdbId, 'plot': 'short'},
+          );
+
+          final detailData = detailResponse.data;
+          final String director = detailData['Director'] ?? 'N/A';
+          final String year = detailData['Year'] ?? item['Year'] ?? '';
+          final String type = (detailData['Type'] ?? item['Type'] ?? '')
+              .toUpperCase();
+          final String genre = detailData['Genre'] ?? '';
+          final String plot = detailData['Plot'] ?? '';
+
+          final poster = item['Poster'];
+          final validPoster = (poster != null && poster != 'N/A')
+              ? poster
+              : null;
+
+          final StringBuffer descBuilder = StringBuffer();
+          descBuilder.write('$type • $year');
+          if (director != 'N/A') descBuilder.write(' • $lblDir: $director');
+          if (genre.isNotEmpty) descBuilder.write('\n$lblGenre: $genre');
+          if (plot.isNotEmpty && plot != 'N/A') descBuilder.write('\n$plot');
+
           return AppMedia(
-            name: item['Title'] ?? '',
-            description: '${item['Type']?.toUpperCase()} • ${item['Year']}',
+            name: detailData['Title'] ?? item['Title'] ?? '',
+            description: descBuilder.toString(),
             rating: 1,
-            imagePath: item['Poster'] != 'N/A' ? item['Poster'] : null,
+            imagePath: validPoster,
             categoryId: categoryId,
           );
-        }
+        }),
+      );
 
-        // Secondary OMDb detail call using IMDb ID
-        final detailResponse = await _dio.get(
-          'https://www.omdbapi.com/',
-          queryParameters: {'apikey': apiKey, 'i': imdbId, 'plot': 'short'},
-        );
-
-        final detailData = detailResponse.data;
-        final String director = detailData['Director'] ?? 'N/A';
-        final String year = detailData['Year'] ?? item['Year'] ?? '';
-        final String type = (detailData['Type'] ?? item['Type'] ?? '')
-            .toUpperCase();
-        final String genre = detailData['Genre'] ?? '';
-        final String plot = detailData['Plot'] ?? '';
-
-        final poster = item['Poster'];
-        final validPoster = (poster != null && poster != 'N/A') ? poster : null;
-
-        // Concatenate Director, Year, Genre, and Plot
-        final StringBuffer descBuilder = StringBuffer();
-        descBuilder.write('$type • $year');
-        if (director != 'N/A') descBuilder.write(' • Dir: $director');
-        if (genre.isNotEmpty) descBuilder.write('\nGenre: $genre');
-        if (plot.isNotEmpty && plot != 'N/A') descBuilder.write('\n$plot');
-
-        return AppMedia(
-          name: detailData['Title'] ?? item['Title'] ?? '',
-          description: descBuilder.toString(),
-          rating: 1,
-          imagePath: validPoster,
-          categoryId: categoryId,
-        );
-      }),
-    );
-
-    return detailedMediaList;
+      return detailedMediaList;
+    } catch (e) {
+      return [];
+    }
   }
 
   //
@@ -193,37 +223,40 @@ class ApiService extends BaseController {
     }
   ''';
 
-    final response = await _dio.post(
-      'https://graphql.anilist.co',
-      data: {
-        'query': gql,
-        'variables': {'search': query, 'perPage': 5},
-      },
-      options: Options(headers: {'Content-Type': 'application/json'}),
-    );
-
-    final List results = response.data['data']?['Page']?['media'] ?? [];
-
-    return results.map((item) {
-      final titleObj = item['title'] ?? {};
-      final title = langCode == 'ja'
-          ? (titleObj['native'] ?? titleObj['romaji'] ?? titleObj['english'])
-          : (titleObj['english'] ?? titleObj['romaji'] ?? titleObj['native']);
-
-      final desc = _cleanDescription(item['description'] as String?);
-
-      return AppMedia(
-        name: title ?? 'Untitled Anime',
-        description: desc ?? 'No description available.',
-        rating: 1,
-        imagePath: item['coverImage']?['large'],
-        categoryId: categoryId,
+    try {
+      final response = await _dio.post(
+        'https://graphql.anilist.co',
+        data: {
+          'query': gql,
+          'variables': {'search': query, 'perPage': 5},
+        },
       );
-    }).toList();
+
+      final List results = response.data['data']?['Page']?['media'] ?? [];
+
+      return results.map((item) {
+        final titleObj = item['title'] ?? {};
+        final title = langCode == 'ja'
+            ? (titleObj['native'] ?? titleObj['romaji'] ?? titleObj['english'])
+            : (titleObj['english'] ?? titleObj['romaji'] ?? titleObj['native']);
+
+        final desc = _cleanDescription(item['description'] as String?);
+
+        return AppMedia(
+          name: title ?? 'Untitled Anime',
+          description: desc ?? 'No description available.',
+          rating: 1,
+          imagePath: item['coverImage']?['large'],
+          categoryId: categoryId,
+        );
+      }).toList();
+    } catch (e) {
+      return [];
+    }
   }
 
   //
-  // Google Book
+  // OPEN LIBRARY BOOKS
   //
   Future<List<AppMedia>> _searchBooks(
     String query,
@@ -231,59 +264,53 @@ class ApiService extends BaseController {
     String langCode = 'en',
   }) async {
     try {
-      final ollang = _mapToOpenLibraryLang(langCode);
-
       final response = await _dio.get(
         'https://openlibrary.org/search.json',
         queryParameters: {
           'q': query,
           'limit': 5,
-          // Request extended fields directly from Open Library
           'fields':
               'title,author_name,cover_i,first_publish_year,publisher,subject,number_of_pages_median',
-          'language': ollang,
         },
       );
 
       final List docs = response.data['docs'] ?? [];
 
+      final isTr = langCode.toLowerCase() == 'tr';
+      final lblBy = isTr ? 'Yazar:' : 'By';
+      final lblGenre = isTr ? 'Tür' : 'Genre';
+      final lblPages = isTr ? 'Sayfa' : 'Pages';
+
       return docs.map((doc) {
-        // 1. Cover Image
         final coverId = doc['cover_i'];
         final coverUrl = coverId != null
             ? 'https://covers.openlibrary.org/b/id/$coverId-M.jpg'
             : null;
 
-        // 2. Authors
         final authorsList = doc['author_name'] as List?;
         final authorText = authorsList != null
             ? authorsList.join(', ')
-            : 'Unknown Author';
+            : (isTr ? 'Bilinmeyen Yazar' : 'Unknown Author');
 
-        // 3. First Publish Year
         final year = doc['first_publish_year']?.toString() ?? 'N/A';
 
-        // 4. Publishers
         final publishersList = doc['publisher'] as List?;
         final publisher = (publishersList != null && publishersList.isNotEmpty)
             ? publishersList.first.toString()
             : '';
 
-        // 5. Genres / Subjects (Take top 2)
         final subjectsList = doc['subject'] as List?;
         final genres = (subjectsList != null && subjectsList.isNotEmpty)
             ? subjectsList.cast<String>().take(2).join(', ')
             : '';
 
-        // 6. Median Page Count
         final int? pageCount = doc['number_of_pages_median'];
 
-        // Construct Rich Description
         final StringBuffer descBuilder = StringBuffer();
-        descBuilder.write('By $authorText ($year)');
+        descBuilder.write('$lblBy $authorText ($year)');
         if (publisher.isNotEmpty) descBuilder.write(' • $publisher');
-        if (genres.isNotEmpty) descBuilder.write('\nGenre: $genres');
-        if (pageCount != null) descBuilder.write('\nPages: ~$pageCount');
+        if (genres.isNotEmpty) descBuilder.write('\n$lblGenre: $genres');
+        if (pageCount != null) descBuilder.write('\n$lblPages: ~$pageCount');
 
         return AppMedia(
           name: doc['title'] ?? 'Untitled Book',
@@ -317,33 +344,5 @@ class ApiService extends BaseController {
     final cut = text.substring(0, maxLength - 1);
     final lastSpace = cut.lastIndexOf(' ');
     return '${cut.substring(0, lastSpace > 0 ? lastSpace : cut.length)}…';
-  }
-
-  String _mapToOpenLibraryLang(String langCode) {
-    switch (langCode) {
-      case 'tr':
-        return 'tur';
-
-      case 'en':
-      default:
-        return 'eng';
-    }
-  }
-}
-
-// Interceptor
-class Utf8Interceptor extends Interceptor {
-  @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
-    // If the response body is raw String data, force UTF-8 decoding
-    if (response.data is String) {
-      try {
-        final String rawBody = response.data as String;
-        response.data = jsonDecode(utf8.decode(rawBody.codeUnits));
-      } catch (_) {
-        // If already parsed or valid JSON, let Dio continue naturally
-      }
-    }
-    super.onResponse(response, handler);
   }
 }

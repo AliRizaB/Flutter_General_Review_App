@@ -12,7 +12,7 @@ abstract class StorageKeys {
   static const String apiAnime = 'api_anime';
   static const String apiBook = 'api_book';
 
-  // static const String languageCode = 'languageCode';
+  static const String languageCode = 'languageCode';
 }
 
 class StorageService extends GetxController {
@@ -21,10 +21,22 @@ class StorageService extends GetxController {
   late final SharedPreferences _preferences;
   var selectedCategoryKey = RxnString();
 
+  final selectedLanguageCode = 'en'.obs;
+
   // Bu servisler sonradan Future init() ile initialize edilirler.
   Future<StorageService> init() async {
     _preferences = await SharedPreferences.getInstance();
+
+    // default dil olarak.
+    selectedLanguageCode.value =
+        getValue<String>(StorageKeys.languageCode) ?? 'en';
+
     return this;
+  }
+
+  Future<void> setLanguageCode(String code) async {
+    selectedLanguageCode.value = code;
+    await setValue(StorageKeys.languageCode, code);
   }
 
   Future<bool> setValue<T>(String key, T value) async {
