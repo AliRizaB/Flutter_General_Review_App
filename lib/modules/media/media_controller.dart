@@ -65,13 +65,17 @@ class MediaController extends BaseController {
   }
 
   // Api Search
-  Future<List<AppMedia>> searchMediaFromApi(String query) async {
+  Future<List<AppMedia>> searchMediaFromApi(
+    String query, {
+    int page = 1,
+  }) async {
     try {
       final activeCategoryKey = _storageService.selectedCategoryKey.value;
       return await apiService.searchMedia(
         query,
         activeCategoryKey,
         categoryId.value,
+        page,
       );
     } catch (e) {
       return [];

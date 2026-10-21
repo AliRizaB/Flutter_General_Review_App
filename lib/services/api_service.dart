@@ -26,6 +26,7 @@ class ApiService extends BaseController {
     String query,
     String? categoryKey,
     int categoryId,
+    int page,
   ) async {
     if (categoryKey == null || query.trim().isEmpty) return [];
 
@@ -39,6 +40,7 @@ class ApiService extends BaseController {
           apiKey,
           categoryId,
           langCode: _currentLanguage,
+          page: page,
         );
       } else if (categoryKey == StorageKeys.apiMovieAndSeries) {
         if (apiKey == null || apiKey.isEmpty) return [];
@@ -47,18 +49,21 @@ class ApiService extends BaseController {
           apiKey,
           categoryId,
           langCode: _currentLanguage,
+          page: page,
         );
       } else if (categoryKey == StorageKeys.apiAnime) {
         return await _searchAnimes(
           query,
           categoryId,
           langCode: _currentLanguage,
+          page: page,
         );
       } else if (categoryKey == StorageKeys.apiBook) {
         return await _searchBooks(
           query,
           categoryId,
           langCode: _currentLanguage,
+          page: page,
         );
       }
     } on DioException catch (e) {
@@ -80,11 +85,25 @@ class ApiService extends BaseController {
     String apiKey,
     int categoryId, {
     String langCode = 'en',
+    int page = 1,
   }) async {
     try {
+      final (titleQuery, yearFilter) = _parseQueryNotation(query);
+      final Map<String, dynamic> queryParams = {
+        'key': apiKey,
+        'search': titleQuery,
+        'page_size': 10,
+        'page': page,
+      };
+
+      // Filter games released in that specific year range (e.g. 2026-01-01 to 2026-12-31)
+      if (yearFilter != null && int.tryParse(yearFilter) != null) {
+        queryParams['dates'] = '$yearFilter-01-01,$yearFilter-12-31';
+      }
+
       final response = await _dio.get(
         'https://api.rawg.io/api/games',
-        queryParameters: {'key': apiKey, 'search': query, 'page_size': 5},
+        queryParameters: queryParams,
       );
 
       final List results = response.data['results'] ?? [];
@@ -132,11 +151,23 @@ class ApiService extends BaseController {
     String apiKey,
     int categoryId, {
     String langCode = 'en',
+    int page = 1,
   }) async {
     try {
+      final (titleQuery, yearFilter) = _parseQueryNotation(query);
+      final Map<String, dynamic> queryParams = {
+        'apikey': apiKey,
+        's': titleQuery,
+        'page': page,
+      };
+
+      if (yearFilter != null && int.tryParse(yearFilter) != null) {
+        queryParams['y'] = yearFilter;
+      }
+
       final response = await _dio.get(
         'https://www.omdbapi.com/',
-        queryParameters: {'apikey': apiKey, 's': query},
+        queryParameters: queryParams,
       );
 
       if (response.data['Response'] == 'False') {
@@ -210,35 +241,58 @@ class ApiService extends BaseController {
     String query,
     int categoryId, {
     String langCode = 'en',
+    int page = 1,
   }) async {
-    const gql = r'''
-    query ($search: String, $perPage: Int) {
-      Page(page: 1, perPage: $perPage) {
-        media(search: $search, type: ANIME, sort: SEARCH_MATCH) {
-          title { romaji english native }
-          description(asHtml: false)
-          coverImage { large }
+    try {
+      final (titleQuery, filter) = _parseQueryNotation(query);
+
+      const gql = r'''
+        query ($search: String, $page: Int, $year: Int, $format: MediaFormat) {
+        Page(page: $page, perPage: 10) {
+        media(search: $search, seasonYear: $year, format: $format, type: ANIME, sort: SEARCH_MATCH) {
+            title { romaji english native }
+            description(asHtml: false)
+            coverImage { large }
+            startDate { year }
+            format
         }
       }
     }
-  ''';
+    ''';
 
-    try {
+      final Map<String, dynamic> variables = {
+        'search': titleQuery,
+        'page': page,
+      };
+
+      if (filter != null) {
+        final parsedYear = int.tryParse(filter);
+        if (parsedYear != null) {
+          variables['year'] = parsedYear;
+        } else if ([
+          'TV',
+          'MOVIE',
+          'OVA',
+          'SPECIAL',
+        ].contains(filter.toUpperCase())) {
+          variables['format'] = filter.toUpperCase();
+        }
+      }
+
       final response = await _dio.post(
         'https://graphql.anilist.co',
-        data: {
-          'query': gql,
-          'variables': {'search': query, 'perPage': 5},
-        },
+        data: {'query': gql, 'variables': variables},
       );
 
       final List results = response.data['data']?['Page']?['media'] ?? [];
 
       return results.map((item) {
         final titleObj = item['title'] ?? {};
-        final title = langCode == 'ja'
-            ? (titleObj['native'] ?? titleObj['romaji'] ?? titleObj['english'])
-            : (titleObj['english'] ?? titleObj['romaji'] ?? titleObj['native']);
+        final title =
+            titleObj['english'] ??
+            titleObj['romaji'] ??
+            titleObj['native'] ??
+            'Untitled Anime';
 
         final desc = _cleanDescription(item['description'] as String?);
 
@@ -262,26 +316,36 @@ class ApiService extends BaseController {
     String query,
     int categoryId, {
     String langCode = 'en',
+    int page = 1,
   }) async {
     try {
+      final (titleQuery, authorFilter) = _parseQueryNotation(query);
+      final Map<String, dynamic> queryParams = {
+        'limit': 10,
+        'page': page,
+        'fields':
+            'title,author_name,cover_i,first_publish_year,publisher,subject,number_of_pages_median',
+      };
+
+      if (authorFilter != null) {
+        queryParams['q'] = 'title:"$titleQuery" author:"$authorFilter"';
+      } else {
+        queryParams['q'] = titleQuery;
+      }
+
       final response = await _dio.get(
         'https://openlibrary.org/search.json',
-        queryParameters: {
-          'q': query,
-          'limit': 5,
-          'fields':
-              'title,author_name,cover_i,first_publish_year,publisher,subject,number_of_pages_median',
-        },
+        queryParameters: queryParams,
       );
 
-      final List docs = response.data['docs'] ?? [];
+      final List results = response.data['docs'] ?? [];
 
       final isTr = langCode.toLowerCase() == 'tr';
       final lblBy = isTr ? 'Yazar:' : 'By';
       final lblGenre = isTr ? 'Tür' : 'Genre';
       final lblPages = isTr ? 'Sayfa' : 'Pages';
 
-      return docs.map((doc) {
+      return results.map((doc) {
         final coverId = doc['cover_i'];
         final coverUrl = coverId != null
             ? 'https://covers.openlibrary.org/b/id/$coverId-M.jpg'
@@ -323,6 +387,20 @@ class ApiService extends BaseController {
     } catch (e) {
       return [];
     }
+  }
+
+  (String mainQuery, String? filter) _parseQueryNotation(String rawQuery) {
+    // Get the last ',' comma's index so this will help with the title's with the commas
+    final lastCommaIndex = rawQuery.lastIndexOf(',');
+
+    // If there is no ',' then do not query it and just give the rawQuery
+    if (lastCommaIndex == -1) {
+      return (rawQuery.trim(), null);
+    }
+
+    final mainQuery = rawQuery.substring(0, lastCommaIndex).trim();
+    final filter = rawQuery.substring(lastCommaIndex + 1).trim();
+    return (mainQuery, filter.isEmpty ? null : filter);
   }
 
   String? _cleanDescription(String? raw, {int maxLength = 200}) {
