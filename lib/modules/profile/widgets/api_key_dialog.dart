@@ -17,14 +17,38 @@ Future<dynamic> showAPIKeyDialog() {
           key: formKey,
           child: Column(
             children: [
+              // ApiKeyField(
+              //   title: 'Game Api Key',
+              //   initialValue:
+              //       storageService.getValue(StorageKeys.apiGame) ?? '',
+              //   providerName: 'RAWG.io',
+              //   providerUrl: 'https://rawg.io/',
+              //   onSaved: (newValue) =>
+              //       storageService.setValue(StorageKeys.apiGame, newValue),
+              // ),
               ApiKeyField(
-                title: 'Game Api Key',
+                title: 'IGDB Client ID',
                 initialValue:
-                    storageService.getValue(StorageKeys.apiGame) ?? '',
-                providerName: 'RAWG.io',
-                providerUrl: 'https://rawg.io/',
-                onSaved: (newValue) =>
-                    storageService.setValue(StorageKeys.apiGame, newValue),
+                    storageService.getValue(StorageKeys.apiGameClientId) ?? '',
+                providerName: 'Twitch Dev Console',
+                providerUrl: 'https://dev.twitch.tv/console',
+                onSaved: (newValue) => storageService.setValue(
+                  StorageKeys.apiGameClientId,
+                  newValue,
+                ),
+              ),
+              const SizedBox(height: 12),
+              ApiKeyField(
+                title: 'IGDB Client Secret',
+                initialValue:
+                    storageService.getValue(StorageKeys.apiGameClientSecret) ??
+                    '',
+                providerName: 'Twitch Dev Console',
+                providerUrl: 'https://dev.twitch.tv/console',
+                onSaved: (newValue) => storageService.setValue(
+                  StorageKeys.apiGameClientSecret,
+                  newValue,
+                ),
               ),
 
               const SizedBox(height: 12),
@@ -54,10 +78,8 @@ Future<dynamic> showAPIKeyDialog() {
                 icon: Icons.tv_rounded,
               ),
 
-              const SizedBox(height: 12,),
-              ChangeLanguageSelector(
-                
-              ),
+              const SizedBox(height: 12),
+              ChangeLanguageSelector(),
             ],
           ),
         ),
