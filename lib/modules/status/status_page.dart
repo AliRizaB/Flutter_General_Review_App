@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/appbar_base.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/build_swipe_background.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/empty_state.dart';
+import 'package:flutter_general_reviewer/modules/shared/appbar_base.dart';
+import 'package:flutter_general_reviewer/modules/shared/dissmissible/build_swipe_background.dart';
+import 'package:flutter_general_reviewer/modules/shared/empty_state.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:flutter_general_reviewer/modules/status/widgets/status_dialog.dart';
 import 'package:flutter_general_reviewer/modules/status/widgets/status_tile.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/handle_dismiss.dart';
+import 'package:flutter_general_reviewer/modules/shared/dissmissible/handle_dismiss.dart';
 import 'package:get/get.dart';
 
 class StatusPage extends StatelessWidget {

@@ -2,7 +2,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/models/media_status.dart';
-import 'package:flutter_general_reviewer/repository/status_repo.dart';
+import 'package:flutter_general_reviewer/repositories/status_repo.dart';
 import 'package:get/get.dart';
 
 class StatusController extends BaseController {

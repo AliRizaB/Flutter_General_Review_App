@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/delete_confirmation.dart';
+import 'package:flutter_general_reviewer/modules/shared/dissmissible/delete_confirmation.dart';
 
 
 Future<bool> handleDismiss({

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/media_review.dart';
 import 'package:flutter_general_reviewer/modules/review/review_controller.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/alert_dialog_base.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_field.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/alert_dialog_base.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/custom_text_field.dart';
 import 'package:get/get.dart';
 
 // A dialog menu for both Update and Create usage for reviewies

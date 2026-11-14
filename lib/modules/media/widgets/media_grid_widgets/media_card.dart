@@ -1,6 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/load_image.dart';
+import 'package:flutter_general_reviewer/modules/shared/load_image.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 
 const _titleGradient = LinearGradient(

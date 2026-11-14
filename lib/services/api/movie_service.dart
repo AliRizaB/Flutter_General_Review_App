@@ -3,7 +3,7 @@
 //
 import 'package:dio/dio.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
-import 'package:flutter_general_reviewer/services/api_services/helper/parse_query_notation.dart';
+import 'package:flutter_general_reviewer/services/api/helper/parse_query_notation.dart';
 
 Future<List<AppMedia>> searchMoviesAndSeries({
   required Dio dio,

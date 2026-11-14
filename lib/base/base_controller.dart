@@ -9,6 +9,26 @@ class BaseController extends GetxController {
   bool get isLoading => _isLoading.value;
   void setLoading(bool value) => _isLoading.value = value;
 
+  Future<void> runAction({
+    required Future<void> Function() action,
+    required String errorMsg,
+    String? successMsg,
+    bool loading = true // For the Action that do not need to load the page. 
+  }) async {
+    try {
+      if(loading) setLoading(true);
+      await action();
+
+      if (successMsg != null) {
+        showSuccessSnackBar(message: successMsg);
+      }
+    } catch (e) {
+      showErrorSnackBar(message: "$errorMsg \nERROR: ${e.toString()}");
+    } finally {
+      if(loading) setLoading(false);
+    }
+  }
+
   void showErrorSnackBar({
     required String message,
     String title = "ERROR",

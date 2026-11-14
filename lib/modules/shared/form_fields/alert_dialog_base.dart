@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/form_cancel_button.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/form_submit_button.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/form_cancel_button.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/form_submit_button.dart';
 
 class AlertDialogBase extends StatefulWidget {
   final bool isEditing;

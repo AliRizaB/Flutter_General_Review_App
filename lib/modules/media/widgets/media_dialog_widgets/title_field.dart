@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_field.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/load_image.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/custom_text_field.dart';
+import 'package:flutter_general_reviewer/modules/shared/load_image.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class MediaTitleField extends StatefulWidget {

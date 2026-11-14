@@ -9,8 +9,8 @@ import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widg
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/status_selector.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_dialog_widgets/title_field.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/change_category_selector.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_field.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/change_category_selector.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/custom_text_field.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get_rx/src/rx_workers/rx_workers.dart';

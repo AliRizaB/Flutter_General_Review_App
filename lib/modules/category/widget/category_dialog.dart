@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/app_category.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
-import 'package:flutter_general_reviewer/modules/category/sub_category/sub_category_controller.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/alert_dialog_base.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/build_color_picker.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/change_category_selector.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_field.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/alert_dialog_base.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/build_color_picker.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/change_category_selector.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/custom_text_field.dart';
 import 'package:get/get.dart';
 
 // A dialog menu for both Update and Create usage for Categories
@@ -35,10 +34,8 @@ Future<void> showCategoryDialog<T extends CategoryController>(
       },
       children: [
         ChangeCategorySelector<AppCategory>(
-          isEdit: isEditing && T != CategoryController,
-          listValues: (controller is SubCategoryController)
-              ? (controller as SubCategoryController).parentCategories
-              : controller.categories,
+          isEdit: isEditing && controller.canEditParentCategory,
+          listValues: controller.parentCategories,
           selectedId: controller.categoryParentId.value,
           getItemId: (subCategory) => subCategory.id,
           getItemLabel: (subCategory) => subCategory.name,
@@ -48,7 +45,6 @@ Future<void> showCategoryDialog<T extends CategoryController>(
             }
           },
         ),
-
         const SizedBox(height: 12),
         // Category Name
         CustomTextField(

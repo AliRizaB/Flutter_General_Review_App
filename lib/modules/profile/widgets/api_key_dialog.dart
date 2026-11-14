@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/modules/profile/widgets/api_key_widgets/api_key_field.dart';
 import 'package:flutter_general_reviewer/modules/profile/widgets/api_key_widgets/change_language_selector.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/form_cancel_button.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/form_cancel_button.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
 import 'package:get/get.dart';
 
@@ -16,6 +16,7 @@ Future<dynamic> showAPIKeyDialog() {
         child: Form(
           key: formKey,
           child: Column(
+            spacing: 12,
             children: [
               // ApiKeyField(
               //   title: 'Game Api Key',
@@ -37,7 +38,7 @@ Future<dynamic> showAPIKeyDialog() {
                   newValue,
                 ),
               ),
-              const SizedBox(height: 12),
+              
               ApiKeyField(
                 title: 'IGDB Client Secret',
                 initialValue:
@@ -51,7 +52,6 @@ Future<dynamic> showAPIKeyDialog() {
                 ),
               ),
 
-              const SizedBox(height: 12),
               ApiKeyField(
                 title: 'Film & TV API Key',
                 initialValue:
@@ -64,14 +64,13 @@ Future<dynamic> showAPIKeyDialog() {
                   value,
                 ),
               ),
-              const SizedBox(height: 12),
+             
               NoApiKeyCard(
                 title: 'Book Api',
                 providerName: 'Open Library',
                 icon: Icons.book_outlined,
               ),
 
-              const SizedBox(height: 12),
               NoApiKeyCard(
                 title: 'Anime Api',
                 providerName: 'AniList GraphQL',

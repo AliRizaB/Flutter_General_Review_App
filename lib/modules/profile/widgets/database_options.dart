@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
 import 'package:flutter_general_reviewer/modules/profile/widgets/build_button.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/form_cancel_button.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/form_cancel_button.dart';
 import 'package:flutter_general_reviewer/services/database_service.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
@@ -16,6 +16,7 @@ Future<void> showDatabaseOptions() async {
       title: const Text('Database Options'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
+        spacing: 12,
         children: [
           BuildButton(
             icon: Icons.download_outlined,
@@ -34,7 +35,6 @@ Future<void> showDatabaseOptions() async {
               }
             },
           ),
-          const SizedBox(height: 12),
           BuildButton(
             icon: Icons.upload_outlined,
             label: 'Import Database',

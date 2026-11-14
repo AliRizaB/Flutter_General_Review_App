@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/load_image.dart';
+import 'package:flutter_general_reviewer/modules/shared/load_image.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 
 final _blurFilter = ImageFilter.blur(sigmaX: 10, sigmaY: 10);

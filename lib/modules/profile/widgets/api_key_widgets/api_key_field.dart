@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_field.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/custom_text_field.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ApiKeyField extends StatelessWidget {

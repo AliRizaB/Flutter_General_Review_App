@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/media_status.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/alert_dialog_base.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/build_color_picker.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/form_fields/custom_text_field.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/alert_dialog_base.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/build_color_picker.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/custom_text_field.dart';
 import 'package:get/get.dart';
 
 Future<void> showStatusDialog(

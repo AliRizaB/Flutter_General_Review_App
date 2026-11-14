@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
 import 'package:flutter_general_reviewer/modules/category/widget/category_dialog.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/build_swipe_background.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/empty_state.dart';
+import 'package:flutter_general_reviewer/modules/shared/dissmissible/swipeable_item.dart';
+import 'package:flutter_general_reviewer/modules/shared/empty_state.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
 import 'package:flutter_general_reviewer/modules/category/widget/category_tile.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/handle_dismiss.dart';
 import 'package:flutter_general_reviewer/routes/app_pages.dart';
-import 'package:get/get.dart';
 
 class CategoryPage extends GetView<CategoryController> {
   const CategoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final categories = controller.categories;
 
     return Obx(() {
@@ -35,45 +34,17 @@ class CategoryPage extends GetView<CategoryController> {
         itemBuilder: (context, index) {
           final category = categories[index];
 
-          return Dismissible(
-            key: ValueKey(category.id ?? index),
-
-            direction: DismissDirection.horizontal,
-
-            confirmDismiss: (direction) async {
-              if (category.id == null) {
-                controller.showErrorSnackBar(
-                  message: 'CategoryId can not be null',
-                );
-                return false;
-              }
-              return handleDismiss(
-                context: context,
-                direction: direction,
-                itemTitle: 'Category',
-                onDelete: () => controller.deleteCategory(category.id!),
-                onEdit: () => showCategoryDialog<CategoryController>(
-                  'Category',
-                  'Movies, Game, Book',
-                  context,
-                  toUpdateCategory: category,
-                ),
-              );
-            },
-
-            secondaryBackground: buildSwipeBackground(
-              color: Theme.of(context).colorScheme.errorContainer,
-              icon: Icons.delete,
-              alignment: Alignment.centerRight,
+          return SwipeableItem(
+            itemKey: ValueKey(category.id ?? index),
+            itemTitle: 'Category',
+            onDelete: () => controller.deleteCategory(category.id!),
+            onEdit: () => showCategoryDialog<CategoryController>(
+              'Category',
+              'Movies, Game, Book',
+              context,
+              toUpdateCategory: category,
             ),
-
-            background: buildSwipeBackground(
-              color: theme.colorScheme.secondaryContainer,
-              icon: Icons.edit,
-              alignment: Alignment.centerLeft,
-            ),
-
-            child: CategoryTile(
+            swipeItem: CategoryTile(
               category: category,
               fontSize: 25,
               iconSize: 30,

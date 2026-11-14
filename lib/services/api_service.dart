@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
-import 'package:flutter_general_reviewer/services/api_services/anime_service.dart';
-import 'package:flutter_general_reviewer/services/api_services/book.service.dart';
-import 'package:flutter_general_reviewer/services/api_services/game_service.dart';
-import 'package:flutter_general_reviewer/services/api_services/movie_service.dart';
+import 'package:flutter_general_reviewer/services/api/anime_service.dart';
+import 'package:flutter_general_reviewer/services/api/book.service.dart';
+import 'package:flutter_general_reviewer/services/api/game_service.dart';
+import 'package:flutter_general_reviewer/services/api/movie_service.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
 import 'package:get/get.dart' hide Response;
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
-import 'package:flutter_general_reviewer/repository/media_repo.dart';
+import 'package:flutter_general_reviewer/repositories/media_repo.dart';
 import 'package:flutter_general_reviewer/services/api_service.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
 import 'package:get/get.dart';

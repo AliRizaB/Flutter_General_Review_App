@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/empty_state.dart';
+import 'package:flutter_general_reviewer/modules/shared/empty_state.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/media_grid_widgets/media_card.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';

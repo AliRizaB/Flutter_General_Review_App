@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/models/media_review.dart';
-import 'package:flutter_general_reviewer/repository/review_repo.dart';
+import 'package:flutter_general_reviewer/repositories/review_repo.dart';
 import 'package:get/get.dart';
 
 class ReviewController extends BaseController {

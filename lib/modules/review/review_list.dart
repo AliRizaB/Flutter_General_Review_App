@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/appbar_base.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/build_swipe_background.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/dissmissible/handle_dismiss.dart';
-import 'package:flutter_general_reviewer/modules/z_general_widgets/empty_state.dart';
+import 'package:flutter_general_reviewer/modules/shared/appbar_base.dart';
+import 'package:flutter_general_reviewer/modules/shared/dissmissible/swipeable_item.dart';
+import 'package:flutter_general_reviewer/modules/shared/empty_state.dart';
 import 'package:flutter_general_reviewer/modules/review/review_controller.dart';
 import 'package:flutter_general_reviewer/modules/review/widget/review_dialog.dart';
 import 'package:flutter_general_reviewer/modules/review/widget/review_tile.dart';
@@ -14,7 +13,6 @@ class ReviewList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<ReviewController>();
-    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBarBase(
@@ -46,42 +44,12 @@ class ReviewList extends StatelessWidget {
           itemBuilder: (context, index) {
             final review = reviews[index];
 
-            return Dismissible(
-              key: ValueKey(review.id ?? index),
-
-              direction: DismissDirection.horizontal,
-
-              confirmDismiss: (direction) async {
-                if (review.id == null) {
-                  controller.showErrorSnackBar(
-                    message: 'Review Id can not be Null',
-                  );
-                  return false;
-                }
-
-                return handleDismiss(
-                  context: context,
-                  direction: direction,
-                  itemTitle: 'Review',
-                  onDelete: () => controller.deleteReview(review.id!),
-                  onEdit: () =>
-                      showReviewDialog(context, toUpdateReview: review),
-                );
-              },
-
-              background: buildSwipeBackground(
-                color: theme.colorScheme.inversePrimary,
-                icon: Icons.edit_outlined,
-                alignment: Alignment.centerLeft,
-              ),
-
-              secondaryBackground: buildSwipeBackground(
-                color: theme.colorScheme.errorContainer,
-                icon: Icons.delete_outline,
-                alignment: Alignment.centerRight,
-              ),
-
-              child: ReviewTile(review: review),
+            return SwipeableItem(
+              itemKey: ValueKey(review.id ?? index),
+              itemTitle: "Review",
+              onDelete: () => controller.deleteReview(review.id!),
+              onEdit: ()=> showReviewDialog(context, toUpdateReview: review),
+              swipeItem: ReviewTile(review: review),
             );
           },
         );

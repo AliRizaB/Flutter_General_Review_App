@@ -1,17 +1,23 @@
 import 'package:flutter_general_reviewer/models/app_category.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
-import 'package:flutter_general_reviewer/repository/category_repo.dart';
+import 'package:flutter_general_reviewer/repositories/category_repo.dart';
 import 'package:get/get.dart';
 
 class SubCategoryController extends CategoryController {
   Rx<int?> parentId = (null as int?).obs;
 
   late final String parentName;
-  RxList<AppCategory> parentCategories = <AppCategory>[].obs;
   final CategoryRepository _categoryRepository = Get.find<CategoryRepository>();
 
   @override
   void onInit() {
+    _parseArguments();
+    categoryParentId.value = parentId.value;
+    getParentCategories();
+    super.onInit();
+  }
+
+  void _parseArguments() {
     if (Get.arguments != null && Get.arguments is List) {
       final args = Get.arguments as List;
       parentId.value = args[0] as int?;
@@ -21,11 +27,6 @@ class SubCategoryController extends CategoryController {
     } else {
       parentName = 'Sub Category';
     }
-    categoryParentId.value = parentId.value;
-
-    getParentCategories();
-
-    super.onInit();
   }
 
   @override
@@ -37,13 +38,14 @@ class SubCategoryController extends CategoryController {
   }
 
   Future<void> getParentCategories() async {
-    try {
-      final list = await _categoryRepository.getCategories(
-        categoryParentId: null,
-      );
-      parentCategories.assignAll(list);
-    } catch (e) {
-      showErrorSnackBar(message: "Error: While Getting Categories");
-    }
+    await super.runAction(
+      action: () async {
+        parentCategories = await _categoryRepository.getCategories(
+          categoryParentId: null,
+        );
+      },
+      errorMsg: "Error: While Getting Parent Categories",
+      loading: false,
+    );
   }
 }

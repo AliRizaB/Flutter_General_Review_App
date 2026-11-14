@@ -3,8 +3,8 @@
 //
 import 'package:dio/dio.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
-import 'package:flutter_general_reviewer/services/api_services/helper/clean_description.dart';
-import 'package:flutter_general_reviewer/services/api_services/helper/parse_query_notation.dart';
+import 'package:flutter_general_reviewer/services/api/helper/clean_description.dart';
+import 'package:flutter_general_reviewer/services/api/helper/parse_query_notation.dart';
 
 Future<List<AppMedia>> searchAnimes({
   required Dio dio,
@@ -63,6 +63,7 @@ Future<List<AppMedia>> searchAnimes({
 
       final desc = cleanDescription(item['description'] as String?);
 
+      // TODO: Need to add for ID's in Update section
       return AppMedia(
         name: title ?? 'Untitled Anime',
         description: desc ?? 'No description available.',
