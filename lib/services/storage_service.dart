@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
 abstract class StorageKeys {
   //
@@ -118,5 +123,37 @@ class StorageService extends GetxController {
     }
 
     return map;
+  }
+
+  // Image saving
+  // Image Writing
+  Future<String?> pickAndSaveImage(ImageSource source) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(
+      source: source,
+      imageQuality: 80,
+      maxWidth: 1200,
+      maxHeight: 1200,
+    );
+
+    if (pickedFile == null) return null;
+
+    final Directory appDocDir = await getApplicationDocumentsDirectory();
+    final String extension = path.extension(pickedFile.path);
+    final String fileName =
+        '${DateTime.now().millisecondsSinceEpoch}$extension';
+    final String savedPath = path.join(appDocDir.path, fileName);
+
+    final File permanentImage = await File(pickedFile.path).copy(savedPath);
+    return permanentImage.path;
+  }
+
+  // Image Deletion
+  Future<void> deleteImageFile(String? filePath) async {
+    if (filePath == null || filePath.isEmpty) return;
+    try {
+      final file = File(filePath);
+      if (await file.exists()) await file.delete();
+    } catch (_) {}
   }
 }

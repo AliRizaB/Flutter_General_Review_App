@@ -1,5 +1,7 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/shared/app_bar_theme.dart';
+import 'package:flutter_general_reviewer/modules/shared/functions/app_bar_theme.dart';
+
 class AppBarBase extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
@@ -15,13 +17,18 @@ class AppBarBase extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: getAppBarColor(theme),
       foregroundColor: getAppBarForegroundColor(theme),
-      title: Text(
+      title: AutoSizeText(
         title,
+        maxLines: 2,
+        maxFontSize: 20,
+        overflow: TextOverflow.ellipsis,
         style: theme.textTheme.headlineMedium!.copyWith(
           color: getAppBarForegroundColor(theme),
           fontFamily: 'Isometra',
+          height: 1.1,
         ),
       ),
+
       actions: actions,
     );
   }

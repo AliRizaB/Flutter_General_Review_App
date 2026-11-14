@@ -1,67 +1,98 @@
-import 'dart:io';
-
+// Essentials
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
+import 'package:get/get.dart';
+
+// Controllers & Services
 import 'package:flutter_general_reviewer/base/base_controller.dart';
-import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/repositories/media_repo.dart';
 import 'package:flutter_general_reviewer/services/api_service.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
-import 'package:get/get.dart';
+
+// Helper Wigdets
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
+
+// Model
+import 'package:flutter_general_reviewer/models/app_media.dart';
 
 class MediaController extends BaseController {
   final MediaRepository _mediaRepository = Get.find<MediaRepository>();
-  final ApiService apiService = Get.find<ApiService>();
+  final ApiService _apiService = Get.find<ApiService>();
   final StorageService _storageService = Get.find<StorageService>();
+
   RxList<AppMedia> medias = <AppMedia>[].obs;
 
+  // form State
   int? mediaId;
   Rx<int?> statusId = (-1).obs;
   Rx<String> name = ''.obs;
   Rx<int> rating = 1.obs;
   Rx<String> description = ''.obs;
   Rx<String> imagePath = ''.obs;
-
   String? _originalImagePath;
 
+  // Route Arguments
   Rx<int> categoryId = RxInt(0);
   late final String categoryName;
+
+  // Media Dialog Controlls
+  final nameTextController = TextEditingController();
+  final descTextController = TextEditingController();
+  final suggestionsController = SuggestionsController<AppMedia>();
+  late final Worker _apiKeyWorker;
 
   @override
   void onInit() {
     super.onInit();
-    // Just safely getting arguments
+    _parseArguments();
+    fetchMedias();
+
+    // EveryTime The API Key changes in the Dialog refreshes suggestion Box
+    _apiKeyWorker = ever(
+      _storageService.selectedCategoryKey,
+      (_) => suggestionsController.refresh(),
+    );
+  }
+
+  void _parseArguments() {
     if (Get.arguments != null && Get.arguments is List) {
       categoryId.value = Get.arguments[0] as int;
       categoryName = Get.arguments[1] as String;
     } else {
       categoryName = 'Category';
     }
-    fetchMedias();
+  }
+
+  @override
+  void onClose() {
+    nameTextController.dispose();
+    descTextController.dispose();
+    suggestionsController.dispose();
+    _apiKeyWorker.dispose();
+    super.onClose();
+  }
+
+  Future<void> saveMedia() async {
+    if (mediaId != null) {
+      await updateMedia();
+    } else {
+      await addMedia();
+    }
   }
 
   void initMediaForm(AppMedia? media) {
-    if (media != null) {
-      mediaId = media.id;
-      name.value = media.name;
-      description.value = media.description ?? '';
-      rating.value = media.rating;
-      statusId.value = media.statusId ?? -1;
-      categoryId.value = media.categoryId;
-      imagePath.value = media.imagePath ?? '';
-      _originalImagePath = media.imagePath;
-    } else {
-      mediaId = null;
-      name.value = '';
-      description.value = '';
-      rating.value = 1;
-      statusId.value = -1;
-      imagePath.value = '';
-      _originalImagePath = null;
-    }
+    mediaId = media?.id;
+    name.value = media?.name ?? '';
+    description.value = media?.description ?? '';
+    rating.value = media?.rating ?? 1;
+    statusId.value = media?.statusId ?? -1;
+    imagePath.value = media?.imagePath ?? '';
+    _originalImagePath = media?.imagePath;
+    if (media != null) categoryId.value = media.categoryId;
+
+    // SynchFields
+    nameTextController.text = name.value;
+    descTextController.text = description.value;
   }
 
   // Api Search
@@ -71,7 +102,7 @@ class MediaController extends BaseController {
   }) async {
     try {
       final activeCategoryKey = _storageService.selectedCategoryKey.value;
-      return await apiService.searchMedia(
+      return await _apiService.searchMedia(
         query,
         activeCategoryKey,
         categoryId.value,
@@ -83,136 +114,110 @@ class MediaController extends BaseController {
   }
 
   // Api Select
-  void applySelectedMedia({
-    required AppMedia selectedMedia,
-    required TextEditingController nameController,
-    required TextEditingController descController,
-  }) {
+  void applySelectedMedia({required AppMedia selectedMedia}) {
+    // For the Update Media API deletes the Id and the image Path
+    final preserveId = mediaId;
+    final preserveImg = _originalImagePath;
+    final preserveRating = rating.value;
+    final preserveStatusId = statusId.value;
+
     initMediaForm(selectedMedia);
 
-    // SynchFields
-    nameController.text = name.value;
-    descController.text = description.value;
-  }
-
-  // Image Writing
-  Future<void> pickAndSaveImage(ImageSource source) async {
-    try {
-      final ImagePicker picker = ImagePicker();
-      final XFile? pickedFile = await picker.pickImage(
-        source: source,
-        imageQuality: 80,
-        maxWidth: 1200,
-        maxHeight: 1200,
-      );
-
-      if (pickedFile == null) return;
-
-      final Directory appDocDir = await getApplicationDocumentsDirectory();
-      final String extension = path.extension(pickedFile.path);
-      final String fileName =
-          '${DateTime.now().millisecondsSinceEpoch}$extension';
-      final String savedPath = path.join(appDocDir.path, fileName);
-
-      final File permanentImage = await File(pickedFile.path).copy(savedPath);
-      imagePath.value = permanentImage.path;
-    } catch (e) {
-      showErrorSnackBar(message: 'Failed to pick image: $e');
+    // For the Update Media API deletes the Id and the image Path
+    if (preserveId != null) {
+      mediaId = preserveId;
+      _originalImagePath = preserveImg;
+      rating.value = preserveRating;
+      statusId.value = preserveStatusId;
     }
-  }
-
-  Future<void> _deleteImageFile(String? filePath) async {
-    if (filePath == null || filePath.isEmpty) return;
-    try {
-      final file = File(filePath);
-      if (await file.exists()) await file.delete();
-    } catch (_) {}
   }
 
   // CRUD OPERATIONS
   Future<void> fetchMedias() async {
-    try {
-      setLoading(true);
-      await Get.find<StatusController>().fetchStatuses();
-      final list = await _mediaRepository.getMedias(categoryId.value);
-      medias.assignAll(list);
-    } catch (e) {
-      showErrorSnackBar(
-        message: "Error: while Getting the Medias \nERROR: ${e.toString()}",
-      );
-    } finally {
-      setLoading(false);
-    }
+    await super.runAction(
+      action: () async {
+        final list = await _mediaRepository.getMedias(categoryId.value);
+        medias.assignAll(list);
+      },
+      errorMsg: "Error: while Getting the Medias",
+      loading: false,
+    );
   }
 
   Future<void> addMedia() async {
-    try {
-      setLoading(true);
-      final newMedia = AppMedia(
-        name: name.value,
-        categoryId: categoryId.value,
-        statusId: statusId.value,
-        rating: rating.value,
-        description: description.value,
-        imagePath: imagePath.value.isEmpty ? null : imagePath.value,
-      );
-      await _mediaRepository.addMedia(newMedia);
-      await fetchMedias();
-      showSuccessSnackBar(message: "Successfully Created Media");
-    } catch (e) {
-      showErrorSnackBar(
-        message: "Error: While Creating Medias \nERROR:${e.toString()}",
-      );
-    } finally {
-      setLoading(false);
-    }
+    await super.runAction(
+      action: () async {
+        final newMedia = AppMedia(
+          name: name.value,
+          categoryId: categoryId.value,
+          statusId: statusId.value,
+          rating: rating.value,
+          description: description.value,
+          imagePath: imagePath.value.isEmpty ? null : imagePath.value,
+        );
+        await _mediaRepository.addMedia(newMedia);
+        await fetchMedias();
+      },
+      errorMsg: "Error: While Creating Media",
+      successMsg: "Successfully Created Media",
+    );
   }
 
   Future<void> updateMedia() async {
-    try {
-      setLoading(true);
-      final String? newImage = imagePath.value.isEmpty ? null : imagePath.value;
+    await super.runAction(
+      action: () async {
+        final String? newImage = imagePath.value.isEmpty
+            ? null
+            : imagePath.value;
 
-      final updatedMedia = AppMedia(
-        id: mediaId ?? (throw ("Media ID is null")),
-        statusId: statusId.value,
-        name: name.value,
-        categoryId: categoryId.value,
-        rating: rating.value,
-        description: description.value,
-        imagePath: newImage,
-      );
-      await _mediaRepository.updateMedia(updatedMedia);
+        final updatedMedia = AppMedia(
+          id: mediaId ?? (throw ("Media ID is null")),
+          statusId: statusId.value,
+          name: name.value,
+          categoryId: categoryId.value,
+          rating: rating.value,
+          description: description.value,
+          imagePath: newImage,
+        );
+        await _mediaRepository.updateMedia(updatedMedia);
 
-      if (_originalImagePath != null && _originalImagePath != newImage) {
-        await _deleteImageFile(_originalImagePath);
-      }
+        if (_originalImagePath != null && _originalImagePath != newImage) {
+          await _storageService.deleteImageFile(_originalImagePath);
+        }
 
-      await fetchMedias();
-      showSuccessSnackBar(message: "Successfully Updated Media");
-    } catch (e) {
-      showErrorSnackBar(
-        message: "Error: While Updating Medias \nERROR:${e.toString()}",
-      );
-    } finally {
-      setLoading(false);
-    }
+        await fetchMedias();
+      },
+      errorMsg: "Error: While Updating Media",
+      successMsg: "Successfully Updated Media",
+    );
   }
 
   // Takes the whole media now (was: int id) so its image file can be deleted.
   Future<void> deleteMedia(AppMedia media) async {
-    try {
-      setLoading(true);
-      await _mediaRepository.deleteMedia(media.id!);
-      await _deleteImageFile(media.imagePath);
-      await fetchMedias();
-      showSuccessSnackBar(message: "Successfully Deleted Media");
-    } catch (e) {
-      showErrorSnackBar(
-        message: "Error: While Deleting Medias \nERROR:${e.toString()}",
-      );
-    } finally {
-      setLoading(false);
-    }
+    await super.runAction(
+      action: () async {
+        await _mediaRepository.deleteMedia(media.id!);
+        await _storageService.deleteImageFile(media.imagePath);
+        await fetchMedias();
+      },
+      errorMsg: "Error: While Deleting Media",
+      successMsg: "Successfully Deleted Media",
+    );
   }
+
+  // Image Saving
+  Future<void> saveImage(ImageSource source) async {
+    await super.runAction(
+      action: () async {
+        final savedPath = await _storageService.pickAndSaveImage(source);
+        if (savedPath != null) imagePath.value = savedPath;
+      },
+      errorMsg: "Failed to save image",
+    );
+  }
+
+  // Helper
+  AppMedia resolveMedia(AppMedia fallbackMedia) =>
+      medias.firstWhereOrNull((media) => media.id == fallbackMedia.id) ??
+      fallbackMedia;
 }

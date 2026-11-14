@@ -1,33 +1,32 @@
+// Essentials
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+// Controllers & Model
 import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
+import 'package:flutter_general_reviewer/services/storage_service.dart';
+
+// Widgets & Helper Functions
 import 'package:flutter_general_reviewer/modules/shared/form_fields/custom_text_field.dart';
-import 'package:flutter_general_reviewer/modules/shared/load_image.dart';
+import 'package:flutter_general_reviewer/modules/shared/functions/load_image.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class MediaTitleField extends StatefulWidget {
-  final MediaController mediaController;
-  final TextEditingController nameTextController;
-  final TextEditingController descTextController;
-  final SuggestionsController<AppMedia> suggestionsController;
-
-  const MediaTitleField({
-    super.key,
-    required this.mediaController,
-    required this.nameTextController,
-    required this.descTextController,
-    required this.suggestionsController,
-  });
+  const MediaTitleField({super.key});
 
   @override
   State<MediaTitleField> createState() => _MediaTitleFieldState();
 }
 
 class _MediaTitleFieldState extends State<MediaTitleField> {
+  final MediaController _controller = Get.find<MediaController>();
+  final StorageService _storageService = Get.find<StorageService>();
   final ScrollController _scrollController = ScrollController();
 
   List<AppMedia> _accumulatedResults = [];
   String _lastQuery = '';
+  String? _lastApiKey;
   int _currentPage = 1;
   bool _isLoadingMore = false;
   bool _hasMore = true;
@@ -38,59 +37,62 @@ class _MediaTitleFieldState extends State<MediaTitleField> {
     _scrollController.addListener(_onScroll);
   }
 
-  void _onScroll() async {
-    // Trigger next page when scrolled from 80 px
-    if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 80 &&
-        !_isLoadingMore &&
-        _hasMore &&
-        _lastQuery.length >= 3) {
-      setState(() => _isLoadingMore = true);
-
-      _currentPage++;
-      final newItems = await widget.mediaController.searchMediaFromApi(
-        _lastQuery,
-        page: _currentPage,
-      );
-
-      if (mounted) {
-        setState(() {
-          if (newItems.isEmpty) {
-            _hasMore = false;
-          } else {
-            _accumulatedResults.addAll(newItems);
-          }
-          _isLoadingMore = false;
-        });
-      }
-    }
-  }
-
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
   }
 
+  void _onScroll() async {
+    // Trigger next page when scrolled from 80 px
+    final pos = _scrollController.position;
+    if (pos.pixels >= pos.maxScrollExtent - 80 &&
+        !_isLoadingMore &&
+        _hasMore &&
+        _lastQuery.length >= 3) {
+      setState(() => _isLoadingMore = true);
+      _currentPage++;
+
+      final newItems = await _controller.searchMediaFromApi(
+        _lastQuery,
+        page: _currentPage,
+      );
+
+      if (!mounted) return;
+      setState(() {
+        if (newItems.isEmpty) {
+          _hasMore = false;
+        } else {
+          _accumulatedResults.addAll(newItems);
+        }
+        _isLoadingMore = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return TypeAheadField<AppMedia>(
-      controller: widget.nameTextController,
+      controller: _controller.nameTextController,
       debounceDuration: const Duration(milliseconds: 400),
-      suggestionsController: widget.suggestionsController,
+      suggestionsController: _controller.suggestionsController,
       suggestionsCallback: (search) async {
         final query = search.trim();
-        if (query.length < 3) {
+        final currentApiKey = _storageService.selectedCategoryKey.value;
+
+        if (query.length < 3 || currentApiKey == null) {
           _accumulatedResults = [];
+          _lastQuery = '';
           return [];
         }
 
         // Reset pagination for a new search query
-        if (query != _lastQuery) {
+        if (query != _lastQuery || currentApiKey != _lastApiKey) {
           _lastQuery = query;
+          _lastApiKey = currentApiKey;
           _currentPage = 1;
           _hasMore = true;
-          _accumulatedResults = await widget.mediaController.searchMediaFromApi(
+          _accumulatedResults = await _controller.searchMediaFromApi(
             query,
             page: 1,
           );
@@ -166,16 +168,12 @@ class _MediaTitleFieldState extends State<MediaTitleField> {
       },
 
       onSelected: (AppMedia selectedMedia) =>
-          widget.mediaController.applySelectedMedia(
-            selectedMedia: selectedMedia,
-            nameController: widget.nameTextController,
-            descController: widget.descTextController,
-          ),
+          _controller.applySelectedMedia(selectedMedia: selectedMedia),
 
       builder: (context, textController, focusNode) {
         return CustomTextField(
           labelText: 'Media Name',
-          onChanged: (value) => widget.mediaController.name.value = value,
+          onChanged: (value) => _controller.name.value = value,
           hintText: 'Type to search...',
           controller: textController,
           focusNode: focusNode,

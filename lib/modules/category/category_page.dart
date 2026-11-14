@@ -1,11 +1,15 @@
+// Essentials
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
 
-import 'package:flutter_general_reviewer/modules/category/widget/category_dialog.dart';
+// Used Widgets
 import 'package:flutter_general_reviewer/modules/shared/dissmissible/swipeable_item.dart';
 import 'package:flutter_general_reviewer/modules/shared/empty_state.dart';
-import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
-import 'package:flutter_general_reviewer/modules/category/widget/category_tile.dart';
+import 'package:flutter_general_reviewer/modules/category/widgets/category_tile.dart';
+
+// Routing
+import 'package:flutter_general_reviewer/modules/category/widgets/category_dialog.dart';
 import 'package:flutter_general_reviewer/routes/app_pages.dart';
 
 class CategoryPage extends GetView<CategoryController> {
@@ -41,7 +45,6 @@ class CategoryPage extends GetView<CategoryController> {
             onEdit: () => showCategoryDialog<CategoryController>(
               'Category',
               'Movies, Game, Book',
-              context,
               toUpdateCategory: category,
             ),
             swipeItem: CategoryTile(

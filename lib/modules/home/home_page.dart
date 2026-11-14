@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
 import 'package:flutter_general_reviewer/modules/category/category_page.dart';
-import 'package:flutter_general_reviewer/modules/category/widget/category_dialog.dart';
+import 'package:flutter_general_reviewer/modules/category/widgets/category_dialog.dart';
 import 'package:flutter_general_reviewer/modules/home/home_controller.dart';
 import 'package:flutter_general_reviewer/modules/shared/appbar_base.dart';
 import 'package:flutter_general_reviewer/modules/profile/profile_page.dart';
@@ -34,7 +34,6 @@ class HomeScaffold extends StatelessWidget {
             onPressed: () async => showCategoryDialog<CategoryController>(
               'Category',
               'Movies, Game, Book',
-              context,
             ),
             icon: Icon(Icons.add, size: 30),
           ),

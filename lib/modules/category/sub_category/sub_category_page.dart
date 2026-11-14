@@ -1,12 +1,19 @@
+// Essentials
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/shared/dissmissible/swipeable_item.dart';
+import 'package:get/get.dart';
+
+// Controller
 import 'package:flutter_general_reviewer/modules/category/sub_category/sub_category_controller.dart';
-import 'package:flutter_general_reviewer/modules/category/widget/category_dialog.dart';
+
+// Used Wigdets
+import 'package:flutter_general_reviewer/modules/shared/dissmissible/swipeable_item.dart';
 import 'package:flutter_general_reviewer/modules/shared/appbar_base.dart';
 import 'package:flutter_general_reviewer/modules/shared/empty_state.dart';
-import 'package:flutter_general_reviewer/modules/category/widget/category_tile.dart';
+import 'package:flutter_general_reviewer/modules/category/widgets/category_tile.dart';
+
+// Routing
+import 'package:flutter_general_reviewer/modules/category/widgets/category_dialog.dart';
 import 'package:flutter_general_reviewer/routes/app_pages.dart';
-import 'package:get/get.dart';
 
 class SubCategoryPage extends GetView<SubCategoryController> {
   const SubCategoryPage({super.key});
@@ -23,7 +30,6 @@ class SubCategoryPage extends GetView<SubCategoryController> {
             onPressed: () => showCategoryDialog<SubCategoryController>(
               'Sub-Category',
               'Action, Horror, Sci-fi, ...',
-              context,
             ),
             icon: const Icon(Icons.add, size: 30),
           ),
@@ -55,7 +61,6 @@ class SubCategoryPage extends GetView<SubCategoryController> {
               onEdit: () => showCategoryDialog<SubCategoryController>(
                 'Sub-Category',
                 '',
-                context,
                 toUpdateCategory: category,
               ),
               swipeItem: CategoryTile(

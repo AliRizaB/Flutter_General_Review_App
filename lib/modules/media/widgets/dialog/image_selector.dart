@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/shared/load_image.dart';
+import 'package:flutter_general_reviewer/modules/shared/functions/load_image.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ImageSelectorField extends StatelessWidget {
-  final MediaController mediaController;
-
-  const ImageSelectorField({super.key, required this.mediaController});
+class ImageSelector extends GetView<MediaController> {
+  const ImageSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Obx(() {
-      final path = mediaController.imagePath.value;
+      final path = controller.imagePath.value;
       final hasImage = path.isNotEmpty && path != 'assets/images/noImage.jpg';
 
       return Column(
         children: [
           InkWell(
-            onTap: () => mediaController.pickAndSaveImage(ImageSource.gallery),
+            onTap: _showImageSourceSheet,
             borderRadius: BorderRadius.circular(12),
             child: Container(
               height: 150,
@@ -33,7 +31,7 @@ class ImageSelectorField extends StatelessWidget {
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: loadImage(
-                        mediaController.imagePath.value,
+                        controller.imagePath.value,
                         BoxFit.cover,
                       ),
                     )
@@ -46,14 +44,14 @@ class ImageSelectorField extends StatelessWidget {
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
                         SizedBox(height: 8),
-                        Text('Tap to select from gallery'),
+                        Text('Tap to select an Image'),
                       ],
                     ),
             ),
           ),
           if (hasImage)
             TextButton.icon(
-              onPressed: () => mediaController.imagePath.value = '',
+              onPressed: () => controller.imagePath.value = '',
               icon: const Icon(Icons.delete, color: Colors.red),
               label: const Text(
                 'Remove Photo',
@@ -63,5 +61,42 @@ class ImageSelectorField extends StatelessWidget {
         ],
       );
     });
+  }
+
+  Future<void> _showImageSourceSheet() {
+    return Get.bottomSheet(
+      backgroundColor: Get.theme.colorScheme.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Get.theme.colorScheme.primary),
+      ),
+      SafeArea(
+        child: Padding(
+          padding: const EdgeInsetsGeometry.symmetric(vertical: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 8,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: Text("Gallery"),
+                onTap: () {
+                  Get.back();
+                  controller.saveImage(ImageSource.gallery);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: Text("Camera"),
+                onTap: () {
+                  Get.back();
+                  controller.saveImage(ImageSource.camera);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

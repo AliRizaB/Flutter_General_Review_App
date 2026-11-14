@@ -17,27 +17,24 @@ Future<void> showReviewDialog(
   final bool isEditing = (toUpdateReview != null);
   controller.initReviewForm(toUpdateReview);
 
-  await Get.dialog(
-    AlertDialogBase(
-      isEditing: isEditing,
-      label: 'Review',
-      onSubmit: () async {
-        if (isEditing) {
-          await controller.updateReview();
-        } else {
-          await controller.addReview();
-        }
-      },
-      children: [
-        // Review Content
-        CustomTextField(
-          labelText: 'Review',
-          onChanged: (value) => controller.content.value = value,
-          initialValue: controller.content.value,
-          maxLines: 5,
-        ),
-      ],
-    ),
-    barrierDismissible: true,
+  await AlertDialogBase.show(
+    isEditing: isEditing,
+    label: 'Review',
+    onSubmit: () async {
+      if (isEditing) {
+        await controller.updateReview();
+      } else {
+        await controller.addReview();
+      }
+    },
+    children: [
+      // Review Content
+      CustomTextField(
+        labelText: 'Review',
+        onChanged: (value) => controller.content.value = value,
+        initialValue: controller.content.value,
+        maxLines: 5,
+      ),
+    ],
   );
 }

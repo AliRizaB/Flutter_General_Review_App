@@ -1,11 +1,14 @@
-// After Debug remove foundation.dart
-
-import 'package:flex_color_picker/flex_color_picker.dart';
-import 'package:flutter/animation.dart';
-import 'package:flutter_general_reviewer/base/base_controller.dart';
-import 'package:flutter_general_reviewer/models/app_category.dart';
-import 'package:flutter_general_reviewer/repositories/category_repo.dart';
+// Essential
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_general_reviewer/base/base_controller.dart';
+import 'package:flutter_general_reviewer/repositories/category_repo.dart';
+
+// Helper Package
+import 'package:flex_color_picker/flex_color_picker.dart';
+
+// Model
+import 'package:flutter_general_reviewer/models/app_category.dart';
 
 class CategoryController extends BaseController {
   final CategoryRepository _categoryRepository = Get.find<CategoryRepository>();
@@ -28,16 +31,17 @@ class CategoryController extends BaseController {
   }
 
   void initCategoryForm(AppCategory? category) {
-    if (category != null) {
-      categoryId = category.id;
-      categoryParentId.value = category.parentId;
-      categoryName.value = category.name;
-      categoryColor.value = category.getColor;
+    categoryId = category?.id;
+    categoryParentId.value = category?.parentId;
+    categoryName.value = category?.name ?? '';
+    categoryColor.value = category?.getColor ?? const Color(0xff443a49);
+  }
+
+  Future<void> saveCategory() async {
+    if (categoryId != null) {
+      await updateCategory();
     } else {
-      categoryId = null;
-      categoryParentId.value = null;
-      categoryName.value = '';
-      categoryColor.value = const Color(0xff443a49);
+      await addCategory();
     }
   }
 

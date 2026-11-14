@@ -1,5 +1,3 @@
-// Burada Genel olarak tüm kontrollerda gerçekleşen işlemleri yazabiliriz.
-// Daha derli toplu ve sonradan düzenlemesi kolay olur.
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

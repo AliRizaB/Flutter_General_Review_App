@@ -10,8 +10,8 @@ import 'package:flutter_general_reviewer/modules/home/home_page.dart';
 
 // Media
 import 'package:flutter_general_reviewer/modules/media/media_binding.dart';
-import 'package:flutter_general_reviewer/modules/media/media_list_page.dart';
-import 'package:flutter_general_reviewer/modules/media/widgets/media_page.dart';
+import 'package:flutter_general_reviewer/modules/media/medias_page.dart';
+import 'package:flutter_general_reviewer/modules/media/media_detail_page.dart';
 
 // Review
 import 'package:flutter_general_reviewer/modules/review/review_binding.dart';
@@ -50,7 +50,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.MEDIA,
-      page: () => MediaPage(),
+      page: () => MediaDetailPage(),
       binding: MediaBinding(),
     ),
     GetPage(

@@ -1,7 +1,10 @@
-import 'package:flutter_general_reviewer/models/app_category.dart';
+// Essentials
+import 'package:get/get.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
 import 'package:flutter_general_reviewer/repositories/category_repo.dart';
-import 'package:get/get.dart';
+
+// Model
+import 'package:flutter_general_reviewer/models/app_category.dart';
 
 class SubCategoryController extends CategoryController {
   Rx<int?> parentId = (null as int?).obs;

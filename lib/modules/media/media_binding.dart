@@ -1,10 +1,10 @@
+import 'package:get/get.dart';
 import 'package:flutter_general_reviewer/modules/category/sub_category/sub_category_controller.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 import 'package:flutter_general_reviewer/repositories/media_repo.dart';
 import 'package:flutter_general_reviewer/repositories/status_repo.dart';
 import 'package:flutter_general_reviewer/services/api_service.dart';
-import 'package:get/get.dart';
 
 class MediaBinding extends Bindings {
   @override

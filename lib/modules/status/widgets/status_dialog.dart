@@ -16,38 +16,33 @@ Future<void> showStatusDialog(
 
   controller.initStatusForm(toUpdateStatus);
 
-  await Get.dialog(
-    AlertDialogBase(
-      isEditing: isEditing,
-      label: 'Status',
-      onSubmit: () async {
-        if (isEditing) {
-          await controller.updateStatus();
-        } else {
-          await controller.addStatus();
-        }
-      },
-      children: [
-        // Status Content
-        CustomTextField(
-          labelText: 'Status Name',
-          hintText: 'e.g., Completed, Plan To Watch, Dropped',
-          onChanged: (value) => controller.statusName.value = value,
-          initialValue: controller.statusName.value,
+  await AlertDialogBase.show(
+    isEditing: isEditing,
+    label: 'Status',
+    onSubmit: () async {
+      if (isEditing) {
+        await controller.updateStatus();
+      } else {
+        await controller.addStatus();
+      }
+    },
+    children: [
+      // Status Content
+      CustomTextField(
+        labelText: 'Status Name',
+        hintText: 'e.g., Completed, Plan To Watch, Dropped',
+        onChanged: (value) => controller.statusName.value = value,
+        initialValue: controller.statusName.value,
+      ),
+      // Status color
+      Obx(
+        () => ColorPickerField(
+          initialColor: controller.statusColor.value,
+          onColorChanged: (Color newColor) {
+            controller.statusColor.value = newColor;
+          },
         ),
-
-        const SizedBox(height: 16),
-        // Status color
-        Obx(
-          () => ColorPickerField(
-            initialColor: controller.statusColor.value,
-            onColorChanged: (Color newColor) {
-              controller.statusColor.value = newColor;
-            },
-          ),
-        ),
-      ],
-    ),
-    barrierDismissible: true,
+      ),
+    ],
   );
 }

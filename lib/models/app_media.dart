@@ -48,7 +48,7 @@ class AppMedia {
     };
   }
 
-  Future<Color> getStatusColor() async{
+  Future<Color> getStatusColor() async {
     return Get.find<StatusController>().getStatusColor(statusId);
   }
 }

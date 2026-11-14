@@ -1,9 +1,14 @@
+// Essentials
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/shared/empty_state.dart';
-import 'package:flutter_general_reviewer/modules/media/widgets/media_grid_widgets/media_card.dart';
+import 'package:get/get.dart';
+
+// Controllers
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
-import 'package:get/get.dart';
+
+// Widgets
+import 'package:flutter_general_reviewer/modules/shared/empty_state.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/grid/media_card.dart';
 
 const _sliverGridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
   crossAxisCount: 3,
@@ -12,8 +17,8 @@ const _sliverGridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
   childAspectRatio: 0.75,
 );
 
-class MediaGridView extends GetView<MediaController> {
-  const MediaGridView({super.key});
+class MediaGrid extends GetView<MediaController> {
+  const MediaGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
