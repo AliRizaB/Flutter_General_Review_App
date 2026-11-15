@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/shared/dissmissible/build_swipe_background.dart';
-import 'package:flutter_general_reviewer/modules/shared/dissmissible/handle_dismiss.dart';
+import 'package:flutter_general_reviewer/modules/shared/dissmissible/dissmiss_functions.dart';
 
 class SwipeableItem extends StatelessWidget {
   final Key itemKey;
   final String itemTitle;
-  final Future<void> Function() onDelete;
-  final Future<void> Function() onEdit;
+  final Future<void> Function() onDeleted;
+  final Future<void> Function() onEdited;
   final Widget swipeItem;
   const SwipeableItem({
     super.key,
     required this.itemKey,
     required this.itemTitle,
-    required this.onDelete,
-    required this.onEdit,
+    required this.onDeleted,
+    required this.onEdited,
     required this.swipeItem,
   });
 
@@ -30,18 +29,18 @@ class SwipeableItem extends StatelessWidget {
           context: context,
           direction: direction,
           itemTitle: itemTitle,
-          onDelete: onDelete,
-          onEdit: onEdit,
+          onDelete: onDeleted,
+          onEdit: onEdited,
         );
       },
 
-      secondaryBackground: buildSwipeBackground(
+      secondaryBackground: SwipeBackground(
         color: theme.colorScheme.errorContainer,
         icon: Icons.delete,
         alignment: Alignment.centerRight,
       ),
 
-      background: buildSwipeBackground(
+      background: SwipeBackground(
         color: theme.colorScheme.secondaryContainer,
         icon: Icons.edit,
         alignment: Alignment.centerLeft,

@@ -1,10 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 // Essentials
 import 'package:flutter/material.dart';
+import 'package:flutter_general_reviewer/modules/shared/dissmissible/dissmiss_functions.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter_general_reviewer/modules/shared/appbar_base.dart';
-import 'package:flutter_general_reviewer/modules/shared/dissmissible/delete_confirmation.dart';
 import 'package:flutter_general_reviewer/routes/app_pages.dart';
 
 // Models
@@ -14,13 +14,13 @@ import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 
 // Build Widgets
-import 'package:flutter_general_reviewer/modules/media/widgets/detail/media_description.dart';
-import 'package:flutter_general_reviewer/modules/media/widgets/detail/media_banner.dart';
-import 'package:flutter_general_reviewer/modules/media/widgets/detail/media_info.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/detail/media_description_widget.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/detail/media_banner_widget.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/detail/media_infobar_widget.dart';
 import 'package:flutter_general_reviewer/modules/shared/form_fields/build_button.dart';
 
 // Connection to Widget
-import 'package:flutter_general_reviewer/modules/media/widgets/dialog/media_dialog.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/dialog/show_media_dialog.dart';
 
 class MediaDetailPage extends GetView<MediaController> {
   MediaDetailPage({super.key});
@@ -39,19 +39,19 @@ class MediaDetailPage extends GetView<MediaController> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Image
-              MediaBanner(media: currentMedia),
+              MediaBannerWidget(media: currentMedia),
 
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    MediaInfoBar(media: currentMedia),
+                    MediaInfoBarWidget(media: currentMedia),
 
                     const SizedBox(height: 16),
 
                     // Description Section
-                    MediaDescription(media: currentMedia),
+                    MediaDescriptionWidget(media: currentMedia),
 
                     const SizedBox(height: 16),
                     // Reviews

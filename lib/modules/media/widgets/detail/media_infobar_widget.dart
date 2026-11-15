@@ -4,10 +4,10 @@ import 'package:flutter_general_reviewer/models/app_media.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:get/get.dart';
 
-class MediaInfoBar extends StatelessWidget {
+class MediaInfoBarWidget extends StatelessWidget {
   final AppMedia media;
 
-  const MediaInfoBar({super.key, required this.media});
+  const MediaInfoBarWidget({super.key, required this.media});
 
   @override
   Widget build(BuildContext context) {

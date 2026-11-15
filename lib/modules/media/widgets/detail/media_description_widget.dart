@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/models/app_media.dart';
 
-class MediaDescription extends StatelessWidget {
+class MediaDescriptionWidget extends StatelessWidget {
   final AppMedia media;
 
-  const MediaDescription({super.key, required this.media});
+  const MediaDescriptionWidget({super.key, required this.media});
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/profile/widgets/api_key_widgets/api_key_field.dart';
-import 'package:flutter_general_reviewer/modules/profile/widgets/api_key_widgets/change_language_selector.dart';
-import 'package:flutter_general_reviewer/modules/shared/form_fields/form_cancel_button.dart';
+import 'package:flutter_general_reviewer/modules/profile/widgets/api/api_field.dart';
+import 'package:flutter_general_reviewer/modules/profile/widgets/api/change_language_widget.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/form_buttons.dart';
 import 'package:flutter_general_reviewer/services/storage_service.dart';
 import 'package:get/get.dart';
 
@@ -27,7 +27,7 @@ Future<dynamic> showAPIKeyDialog() {
               //   onSaved: (newValue) =>
               //       storageService.setValue(StorageKeys.apiGame, newValue),
               // ),
-              ApiKeyField(
+              ApiField(
                 title: 'IGDB Client ID',
                 initialValue:
                     storageService.getValue(StorageKeys.apiGameClientId) ?? '',
@@ -38,8 +38,8 @@ Future<dynamic> showAPIKeyDialog() {
                   newValue,
                 ),
               ),
-              
-              ApiKeyField(
+
+              ApiField(
                 title: 'IGDB Client Secret',
                 initialValue:
                     storageService.getValue(StorageKeys.apiGameClientSecret) ??
@@ -52,7 +52,7 @@ Future<dynamic> showAPIKeyDialog() {
                 ),
               ),
 
-              ApiKeyField(
+              ApiField(
                 title: 'Film & TV API Key',
                 initialValue:
                     storageService.getValue(StorageKeys.apiMovieAndSeries) ??
@@ -64,21 +64,21 @@ Future<dynamic> showAPIKeyDialog() {
                   value,
                 ),
               ),
-             
-              NoApiKeyCard(
+
+              NoApiCard(
                 title: 'Book Api',
                 providerName: 'Open Library',
                 icon: Icons.book_outlined,
               ),
 
-              NoApiKeyCard(
+              NoApiCard(
                 title: 'Anime Api',
                 providerName: 'AniList GraphQL',
                 icon: Icons.tv_rounded,
               ),
 
               const SizedBox(height: 12),
-              ChangeLanguageSelector(),
+              ChangeLanguageWidget(),
             ],
           ),
         ),
@@ -87,20 +87,12 @@ Future<dynamic> showAPIKeyDialog() {
       actionsAlignment: MainAxisAlignment.center,
       actions: [
         FormCancelButton(),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            side: BorderSide(
-              color: Theme.of(Get.context!).colorScheme.primary,
-              width: 2, // Border width
-            ),
-          ),
-          onPressed: () {
-            if (formKey.currentState?.validate() ?? false) {
-              formKey.currentState!.save();
-              Get.back();
-            }
+        FormSubmitButton(
+          formKey: formKey,
+          isEditing: false,
+          onSubmit: () async {
+            formKey.currentState!.save();
           },
-          child: Text("Save"),
         ),
       ],
     ),

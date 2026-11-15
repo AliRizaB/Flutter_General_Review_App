@@ -5,7 +5,7 @@ import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 
 // Widgets & Shared 
 import 'package:flutter_general_reviewer/modules/shared/appbar_base.dart';
-import 'package:flutter_general_reviewer/modules/media/widgets/dialog/media_dialog.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/dialog/show_media_dialog.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/grid/media_grid.dart';
 
 class MediaListPage extends GetView<MediaController> {

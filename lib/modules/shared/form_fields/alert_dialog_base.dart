@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_general_reviewer/modules/shared/form_fields/form_cancel_button.dart';
-import 'package:flutter_general_reviewer/modules/shared/form_fields/form_submit_button.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/form_buttons.dart';
 import 'package:get/route_manager.dart';
 
 class AlertDialogBase extends StatefulWidget {

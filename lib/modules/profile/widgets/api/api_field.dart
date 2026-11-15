@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/modules/shared/form_fields/custom_text_field.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ApiKeyField extends StatelessWidget {
+class ApiField extends StatelessWidget {
   final String title;
   final String initialValue;
   final String providerName;
   final String providerUrl;
   final ValueChanged<String?> onSaved;
 
-  const ApiKeyField({
+  const ApiField({
     super.key,
     required this.title,
     required this.initialValue,
@@ -72,12 +72,12 @@ class ApiKeyField extends StatelessWidget {
 }
 
 // No API Key Needed
-class NoApiKeyCard extends StatelessWidget {
+class NoApiCard extends StatelessWidget {
   final String title;
   final String providerName;
   final IconData icon;
 
-  const NoApiKeyCard({
+  const NoApiCard({
     super.key,
     required this.title,
     required this.providerName,

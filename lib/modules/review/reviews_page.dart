@@ -7,8 +7,8 @@ import 'package:flutter_general_reviewer/modules/review/widget/review_dialog.dar
 import 'package:flutter_general_reviewer/modules/review/widget/review_tile.dart';
 import 'package:get/get.dart';
 
-class ReviewList extends StatelessWidget {
-  const ReviewList({super.key});
+class ReviewsPage extends StatelessWidget {
+  const ReviewsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +47,8 @@ class ReviewList extends StatelessWidget {
             return SwipeableItem(
               itemKey: ValueKey(review.id ?? index),
               itemTitle: "Review",
-              onDelete: () => controller.deleteReview(review.id!),
-              onEdit: ()=> showReviewDialog(context, toUpdateReview: review),
+              onDeleted: () => controller.deleteReview(review.id!),
+              onEdited: () => showReviewDialog(context, toUpdateReview: review),
               swipeItem: ReviewTile(review: review),
             );
           },

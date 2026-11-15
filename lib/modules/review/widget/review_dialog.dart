@@ -20,13 +20,7 @@ Future<void> showReviewDialog(
   await AlertDialogBase.show(
     isEditing: isEditing,
     label: 'Review',
-    onSubmit: () async {
-      if (isEditing) {
-        await controller.updateReview();
-      } else {
-        await controller.addReview();
-      }
-    },
+    onSubmit: controller.onSubmit,
     children: [
       // Review Content
       CustomTextField(

@@ -1,11 +1,11 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 
-class ColorPickerField extends StatelessWidget {
+class BuildColorPicker extends StatelessWidget {
   final Color initialColor;
   final ValueChanged<Color> onColorChanged;
 
-  const ColorPickerField({
+  const BuildColorPicker({
     super.key,
     required this.initialColor,
     required this.onColorChanged,

@@ -12,14 +12,14 @@ import 'package:flutter_general_reviewer/modules/shared/form_fields/custom_text_
 import 'package:flutter_general_reviewer/modules/shared/functions/load_image.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-class MediaTitleField extends StatefulWidget {
-  const MediaTitleField({super.key});
+class TitleSearchWidget extends StatefulWidget {
+  const TitleSearchWidget({super.key});
 
   @override
-  State<MediaTitleField> createState() => _MediaTitleFieldState();
+  State<TitleSearchWidget> createState() => _TitleSearchWidgetState();
 }
 
-class _MediaTitleFieldState extends State<MediaTitleField> {
+class _TitleSearchWidgetState extends State<TitleSearchWidget> {
   final MediaController _controller = Get.find<MediaController>();
   final StorageService _storageService = Get.find<StorageService>();
   final ScrollController _scrollController = ScrollController();

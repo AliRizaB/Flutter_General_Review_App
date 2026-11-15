@@ -6,10 +6,7 @@ import 'package:flutter_general_reviewer/modules/shared/form_fields/build_color_
 import 'package:flutter_general_reviewer/modules/shared/form_fields/custom_text_field.dart';
 import 'package:get/get.dart';
 
-Future<void> showStatusDialog(
-  BuildContext context, {
-  MediaStatus? toUpdateStatus,
-}) async {
+Future<void> showStatusDialog({MediaStatus? toUpdateStatus}) async {
   final controller = Get.find<StatusController>();
 
   final bool isEditing = (toUpdateStatus != null);
@@ -19,13 +16,7 @@ Future<void> showStatusDialog(
   await AlertDialogBase.show(
     isEditing: isEditing,
     label: 'Status',
-    onSubmit: () async {
-      if (isEditing) {
-        await controller.updateStatus();
-      } else {
-        await controller.addStatus();
-      }
-    },
+    onSubmit: controller.onSubmit,
     children: [
       // Status Content
       CustomTextField(
@@ -36,7 +27,7 @@ Future<void> showStatusDialog(
       ),
       // Status color
       Obx(
-        () => ColorPickerField(
+        () => BuildColorPicker(
           initialColor: controller.statusColor.value,
           onColorChanged: (Color newColor) {
             controller.statusColor.value = newColor;

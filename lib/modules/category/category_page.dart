@@ -41,8 +41,8 @@ class CategoryPage extends GetView<CategoryController> {
           return SwipeableItem(
             itemKey: ValueKey(category.id ?? index),
             itemTitle: 'Category',
-            onDelete: () => controller.deleteCategory(category.id!),
-            onEdit: () => showCategoryDialog<CategoryController>(
+            onDeleted: () => controller.deleteCategory(category.id!),
+            onEdited: () => showCategoryDialog<CategoryController>(
               'Category',
               'Movies, Game, Book',
               toUpdateCategory: category,

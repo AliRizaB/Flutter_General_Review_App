@@ -22,26 +22,29 @@ class StatusController extends BaseController {
     setLoading(false);
   }
 
-  void initStatusForm(MediaStatus? status) {
-    if (status != null) {
-      statusId = status.id;
-      statusName.value = status.name;
-      statusColor.value = status.getColor;
+  Future<void> onSubmit() async {
+    if (statusId != null) {
+      await updateStatus();
     } else {
-      statusName.value = '';
-      statusColor.value = const Color(0xff443a49);
+      await addStatus();
     }
   }
 
+  void initStatusForm(MediaStatus? status) {
+    statusId = status?.id;
+    statusName.value = status?.name ?? '';
+    statusColor.value = status?.getColor ?? const Color(0xff443a49);
+  }
+
+  // CRUD operations
   Future<void> fetchStatuses() async {
-    try {
-      final list = await _statusRepository.getStatuses();
-      statuses.assignAll(list);
-    } catch (e) {
-      showErrorSnackBar(
-        message: "Error: while Getting the Statuses \nERROR: ${e.toString()}",
-      );
-    }
+    await super.runAction(
+      action: () async {
+        final list = await _statusRepository.getStatuses();
+        statuses.assignAll(list);
+      },
+      errorMsg: "Error: while Getting the Statuses",
+    );
   }
 
   Color getStatusColor(int? id) {
@@ -53,68 +56,52 @@ class StatusController extends BaseController {
       return status?.getColor ?? Colors.grey;
     } catch (e) {
       showErrorSnackBar(
-        message: "Error: while Getting the Statuses \nERROR: ${e.toString()}",
+        message:
+            "Error: while Getting the Status Color \nERROR: ${e.toString()}",
       );
       return Colors.grey;
     }
   }
 
   Future<void> addStatus() async {
-    try {
-      setLoading(true);
-      final newStatus = MediaStatus(
-        name: statusName.value,
-        color: statusColor.value.hex,
-      );
-      debugPrint("CREATED: ${newStatus.id}, ${newStatus.name}");
-      await _statusRepository.addStatus(newStatus);
-      await fetchStatuses();
-      showSuccessSnackBar(message: "Succesfully Created Status");
-    } catch (e) {
-      showErrorSnackBar(
-        message: "Error: While Creating Statuss \nERROR:${e.toString()}",
-      );
-    } finally {
-      setLoading(false);
-    }
+    await super.runAction(
+      action: () async {
+        final newStatus = MediaStatus(
+          name: statusName.value,
+          color: statusColor.value.hex,
+        );
+        await _statusRepository.addStatus(newStatus);
+        await fetchStatuses();
+      },
+      errorMsg: "Error: While Creating Status",
+      successMsg: "Succesfully Created Status",
+    );
   }
 
   Future<void> updateStatus() async {
-    try {
-      setLoading(true);
-      if (statusId == null) {
-        showErrorSnackBar(message: "No status selected to update");
-        return;
-      }
-      final updatedStatus = MediaStatus(
-        id: statusId,
-        name: statusName.value,
-        color: statusColor.value.hex,
-      );
-      await _statusRepository.updateStatus(updatedStatus);
-      await fetchStatuses();
-      showSuccessSnackBar(message: "Succesfully Updated Status");
-    } catch (e) {
-      showErrorSnackBar(
-        message: "Error: While Updating Statuss \nERROR:${e.toString()}",
-      );
-    } finally {
-      setLoading(false);
-    }
+    await super.runAction(
+      action: () async {
+        final updatedStatus = MediaStatus(
+          id: statusId,
+          name: statusName.value,
+          color: statusColor.value.hex,
+        );
+        await _statusRepository.updateStatus(updatedStatus);
+        await fetchStatuses();
+      },
+      errorMsg: "Error: While Updating Status",
+      successMsg: "Succesfully Updated Status",
+    );
   }
 
   Future<void> deleteStatus(int id) async {
-    try {
-      setLoading(true);
-      await _statusRepository.deleteStatus(id);
-      await fetchStatuses();
-      showSuccessSnackBar(message: "Succesfully Deleted Status");
-    } catch (e) {
-      showErrorSnackBar(
-        message: "Error: While Deleting Statuss \nERROR:${e.toString()}",
-      );
-    } finally {
-      setLoading(false);
-    }
+    await super.runAction(
+      action: () async {
+        await _statusRepository.deleteStatus(id);
+        await fetchStatuses();
+      },
+      errorMsg: "Error: While Deleting Status",
+      successMsg: "Succesfully Deleted Status",
+    );
   }
 }

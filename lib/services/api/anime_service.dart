@@ -63,7 +63,6 @@ Future<List<AppMedia>> searchAnimes({
 
       final desc = cleanDescription(item['description'] as String?);
 
-      // TODO: Need to add for ID's in Update section
       return AppMedia(
         name: title ?? 'Untitled Anime',
         description: desc ?? 'No description available.',

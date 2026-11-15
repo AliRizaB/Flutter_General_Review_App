@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/modules/category/category_controller.dart';
 import 'package:flutter_general_reviewer/modules/shared/form_fields/build_button.dart';
-import 'package:flutter_general_reviewer/modules/shared/form_fields/form_cancel_button.dart';
+import 'package:flutter_general_reviewer/modules/shared/form_fields/form_buttons.dart';
 import 'package:flutter_general_reviewer/services/database_service.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';

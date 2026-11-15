@@ -51,7 +51,7 @@ Future<void> showCategoryDialog<T extends CategoryController>(
 
       // Category color
       Obx(
-        () => ColorPickerField(
+        () => BuildColorPicker(
           initialColor: controller.categoryColor.value,
           onColorChanged: (Color newColor) {
             controller.categoryColor.value = newColor;

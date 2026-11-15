@@ -8,11 +8,11 @@ import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 import 'package:flutter_general_reviewer/models/app_category.dart';
 
 // Widgets
-import 'package:flutter_general_reviewer/modules/media/widgets/dialog/api_options.dart';
-import 'package:flutter_general_reviewer/modules/media/widgets/dialog/image_selector.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/dialog/api_search_options_widget.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/dialog/image_selector_widget.dart';
 import 'package:flutter_general_reviewer/modules/media/widgets/dialog/rating_widget.dart';
-import 'package:flutter_general_reviewer/modules/media/widgets/dialog/status_selector.dart';
-import 'package:flutter_general_reviewer/modules/media/widgets/dialog/title_field.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/dialog/status_selector_widget.dart';
+import 'package:flutter_general_reviewer/modules/media/widgets/dialog/title_search_wigdet.dart';
 import 'package:flutter_general_reviewer/modules/shared/form_fields/change_category_selector.dart';
 import 'package:flutter_general_reviewer/modules/shared/form_fields/custom_text_field.dart';
 
@@ -30,9 +30,7 @@ class MediaFormFields extends GetView<MediaController> {
       spacing: 16,
       children: [
         // Api Search Options
-        ApiSearchOptions(),
-
-        const SizedBox(height: 16),
+        ApiSearchOptionsWidget(),
 
         ChangeCategorySelector<AppCategory>(
           isEdit: isEditing,
@@ -47,8 +45,8 @@ class MediaFormFields extends GetView<MediaController> {
           },
         ),
 
-        // Media Name
-        MediaTitleField(),
+        // Media Name & TypeAhead Search Option
+        TitleSearchWidget(),
 
         // Media Description
         CustomTextField(
@@ -64,9 +62,9 @@ class MediaFormFields extends GetView<MediaController> {
         // Rating Bar
         RatingWidget(),
 
-        StatusSelectorDropdown(),
+        StatusSelectorWidget(),
 
-        ImageSelector(),
+        ImageSelectorWidget(),
       ],
     );
   }

@@ -15,7 +15,7 @@ import 'package:flutter_general_reviewer/modules/media/media_detail_page.dart';
 
 // Review
 import 'package:flutter_general_reviewer/modules/review/review_binding.dart';
-import 'package:flutter_general_reviewer/modules/review/review_list.dart';
+import 'package:flutter_general_reviewer/modules/review/reviews_page.dart';
 
 // Status
 import 'package:flutter_general_reviewer/modules/status/status_binding.dart';
@@ -55,7 +55,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.REVIEWS,
-      page: () => ReviewList(),
+      page: () => ReviewsPage(),
       binding: ReviewBinding(),
     ),
     GetPage(

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/base/base_controller.dart';
 import 'package:flutter_general_reviewer/models/media_review.dart';
 import 'package:flutter_general_reviewer/repositories/review_repo.dart';
@@ -19,86 +18,78 @@ class ReviewController extends BaseController {
   @override
   void onInit() {
     super.onInit();
-    setLoading(true);
     mediaId = Get.arguments as int;
     fetchReviews();
-    setLoading(false);
   }
 
-  void initReviewForm(MediaReview? review) {
-    if (review != null) {
-      reviewId = review.id;
-      content.value = review.content;
-      date = review.date;
+  Future<void> onSubmit() async {
+    if (reviewId != null) {
+      await updateReview();
     } else {
-      reviewId = null;
-      content.value = '';
-      date = DateTime.now();
+      await addReview();
     }
   }
 
+  // Both used for Update and Create review
+  void initReviewForm(MediaReview? review) {
+    reviewId = review?.id;
+    content.value = review?.content ?? '';
+    date = review?.date ?? DateTime.now();
+  }
+
+  // CRUD operations
   Future<void> fetchReviews() async {
-    try {
-      final list = await _reviewRepository.getReviews(mediaId);
-      reviews.assignAll(list);
-    } catch (e) {
-      debugPrint("Error: While Getting Reviews");
-    }
+    await super.runAction(
+      action: () async {
+        final list = await _reviewRepository.getReviews(mediaId);
+        reviews.assignAll(list);
+      },
+      errorMsg: "Error: While Getting Reviews",
+      loading: false,
+    );
   }
 
   Future<void> addReview() async {
-    try {
-      setLoading(true);
-      final newReview = MediaReview(
-        mediaId: mediaId,
-        content: content.value,
-        date: date,
-      );
-      await _reviewRepository.addReview(newReview);
-      await fetchReviews();
-      showSuccessSnackBar(message: "Succesfully Created Review");
-    } catch (e) {
-      showErrorSnackBar(
-        message: "Error: While Creating Reviews \nERROR:${e.toString()}",
-      );
-    } finally {
-      setLoading(false);
-    }
+    await super.runAction(
+      action: () async {
+        final newReview = MediaReview(
+          mediaId: mediaId,
+          content: content.value,
+          date: date,
+        );
+        await _reviewRepository.addReview(newReview);
+        await fetchReviews();
+      },
+      errorMsg: "Error: While Creating Review",
+      successMsg: "Succesfully Created Review",
+    );
   }
 
   Future<void> updateReview() async {
-    try {
-      setLoading(true);
-      final updatedReview = MediaReview(
-        id: reviewId ?? (throw ("Review Id is NULL")),
-        mediaId: mediaId,
-        content: content.value,
-        date: date,
-      );
-      await _reviewRepository.updateReview(updatedReview);
-      await fetchReviews();
-      showSuccessSnackBar(message: "Succesfully Updated Review");
-    } catch (e) {
-      showErrorSnackBar(
-        message: "Error: While Updating Reviews \nERROR:${e.toString()}",
-      );
-    } finally {
-      setLoading(false);
-    }
+    await super.runAction(
+      action: () async {
+        final updatedReview = MediaReview(
+          id: reviewId ?? (throw ("Review Id is NULL")),
+          mediaId: mediaId,
+          content: content.value,
+          date: date,
+        );
+        await _reviewRepository.updateReview(updatedReview);
+        await fetchReviews();
+      },
+      errorMsg: "Error: While Updating Review",
+      successMsg: "Succesfully Updated Review",
+    );
   }
 
   Future<void> deleteReview(int id) async {
-    try {
-      setLoading(true);
-      await _reviewRepository.deleteReview(id);
-      await fetchReviews();
-      showSuccessSnackBar(message: "Succesfully Deleted Review");
-    } catch (e) {
-      showErrorSnackBar(
-        message: "Error: While Deleting Reviews \nERROR:${e.toString()}",
-      );
-    } finally {
-      setLoading(false);
-    }
+    await super.runAction(
+      action: () async {
+        await _reviewRepository.deleteReview(id);
+        await fetchReviews();
+      },
+      errorMsg: "Error: While Deleting Review",
+      successMsg: "Succesfully Deleted Review",
+    );
   }
 }

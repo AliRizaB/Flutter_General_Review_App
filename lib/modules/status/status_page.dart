@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_general_reviewer/modules/shared/appbar_base.dart';
-import 'package:flutter_general_reviewer/modules/shared/dissmissible/build_swipe_background.dart';
+import 'package:flutter_general_reviewer/modules/shared/dissmissible/swipeable_item.dart';
 import 'package:flutter_general_reviewer/modules/shared/empty_state.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:flutter_general_reviewer/modules/status/widgets/status_dialog.dart';
 import 'package:flutter_general_reviewer/modules/status/widgets/status_tile.dart';
-import 'package:flutter_general_reviewer/modules/shared/dissmissible/handle_dismiss.dart';
 import 'package:get/get.dart';
 
 class StatusPage extends StatelessWidget {
@@ -14,14 +13,13 @@ class StatusPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<StatusController>();
-    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBarBase(
         title: 'Statuses',
         actions: [
           IconButton(
-            onPressed: () => showStatusDialog(context),
+            onPressed: () => showStatusDialog(),
             icon: const Icon(Icons.add, size: 30),
           ),
         ],
@@ -45,37 +43,12 @@ class StatusPage extends StatelessWidget {
           itemBuilder: (context, index) {
             final status = statuses[index];
 
-            return Dismissible(
-              key: ValueKey(status.id ?? index),
-              direction: DismissDirection.horizontal,
-              confirmDismiss: (direction) async {
-                if (status.id == null) {
-                  controller.showErrorSnackBar(
-                    message: 'Review Id can not be Null',
-                  );
-                  return false;
-                }
-
-                return handleDismiss(
-                  context: context,
-                  direction: direction,
-                  itemTitle: 'Review',
-                  onDelete: () => controller.deleteStatus(status.id!),
-                  onEdit: () =>
-                      showStatusDialog(context, toUpdateStatus: status),
-                );
-              },
-              background: buildSwipeBackground(
-                color: theme.colorScheme.inversePrimary,
-                icon: Icons.edit_outlined,
-                alignment: Alignment.centerLeft,
-              ),
-              secondaryBackground: buildSwipeBackground(
-                color: theme.colorScheme.errorContainer,
-                icon: Icons.delete_outline,
-                alignment: Alignment.centerRight,
-              ),
-              child: StatusTile(status: status),
+            return SwipeableItem(
+              itemKey: ValueKey(status.id ?? index),
+              itemTitle: "Status",
+              onDeleted: () => controller.deleteStatus(status.id!),
+              onEdited: () => showStatusDialog(toUpdateStatus: status),
+              swipeItem: StatusTile(status: status),
             );
           },
         );

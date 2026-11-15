@@ -3,8 +3,8 @@ import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 import 'package:flutter_general_reviewer/modules/status/status_controller.dart';
 import 'package:get/get.dart';
 
-class StatusSelectorDropdown extends GetView<MediaController> {
-  const StatusSelectorDropdown({super.key});
+class StatusSelectorWidget extends GetView<MediaController> {
+  const StatusSelectorWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -57,8 +57,8 @@ class SubCategoryPage extends GetView<SubCategoryController> {
             return SwipeableItem(
               itemKey: ValueKey(category.id ?? index),
               itemTitle: "Sub-Category",
-              onDelete: () => controller.deleteCategory(category.id!),
-              onEdit: () => showCategoryDialog<SubCategoryController>(
+              onDeleted: () => controller.deleteCategory(category.id!),
+              onEdited: () => showCategoryDialog<SubCategoryController>(
                 'Sub-Category',
                 '',
                 toUpdateCategory: category,

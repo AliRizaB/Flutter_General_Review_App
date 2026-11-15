@@ -4,8 +4,8 @@ import 'package:flutter_general_reviewer/modules/media/media_controller.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ImageSelector extends GetView<MediaController> {
-  const ImageSelector({super.key});
+class ImageSelectorWidget extends GetView<MediaController> {
+  const ImageSelectorWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

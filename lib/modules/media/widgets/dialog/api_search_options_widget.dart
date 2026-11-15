@@ -10,8 +10,8 @@ const Map<String, String?> _apiCategories = {
   'Film & TV': StorageKeys.apiMovieAndSeries,
 };
 
-class ApiSearchOptions extends GetView<StorageService> {
-  const ApiSearchOptions({super.key});
+class ApiSearchOptionsWidget extends GetView<StorageService> {
+  const ApiSearchOptionsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
