@@ -1,7 +1,7 @@
 name: flutter_general_reviewer
 description: "Reviewer Application"
 publish_to: "none"
-version: 0.1.0+2
+version: 0.1.0+3
 
 environment:
   sdk: ^3.11.1
